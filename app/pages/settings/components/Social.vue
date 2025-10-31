@@ -1,0 +1,62 @@
+<template>
+  <UForm
+    :schema="schema"
+    :state="inputs"
+    class="grid grid-cols-1 gap-4 p-2 sm:grid-cols-2"
+    id="social-settings-form"
+    @submit="onSubmit"
+  >
+    <UFormField
+      v-for="field in fields"
+      :label="field.label"
+      :name="field.name"
+      :key="field.name"
+      :required="field.required"
+    >
+      <UInput v-model="inputs[field.name]" />
+    </UFormField>
+  </UForm>
+  <UButton class="mt-4 ml-2" form="social-settings-form" type="submit">Save Changes</UButton>
+</template>
+
+<script setup lang="ts">
+import * as z from 'zod'
+import type { FormSubmitEvent } from '@nuxt/ui'
+const settingStore = useSettingStore()
+const schema = z.object({
+  facebook: z.string().url('Invalid URL').optional().or(z.literal('')),
+  instagram: z.string().url('Invalid URL').optional().or(z.literal('')),
+  tiktok: z.string().url('Invalid URL').optional().or(z.literal('')),
+  faviconUrl: z.string().url('Invalid URL').optional().or(z.literal('')),
+})
+
+type InputFields = z.output<typeof schema>
+
+const inputs = reactive<InputFields>({
+  facebook: '',
+  instagram: '',
+  tiktok: '',
+  faviconUrl: '',
+})
+
+const fields: { label: string; name: keyof InputFields; type: string; required?: boolean }[] = [
+  { label: 'Facebook', name: 'facebook', type: 'url' },
+  { label: 'Instagram', name: 'instagram', type: 'url' },
+  { label: 'Tiktok', name: 'tiktok', type: 'url' },
+  { label: 'Fav Icon Url', name: 'faviconUrl', type: 'url' },
+]
+
+onMounted(async () => {
+  if (!settingStore.setting) {
+    await settingStore.fetchSetting()
+  }
+  if (settingStore.setting) {
+    Object.assign(inputs, settingStore.setting)
+  }
+})
+
+const onSubmit = async () => {
+  const res = await settingStore.updateSetting(inputs)
+  console.log(res)
+}
+</script>
