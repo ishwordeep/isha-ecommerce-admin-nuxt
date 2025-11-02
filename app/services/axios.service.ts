@@ -1,11 +1,12 @@
-import axios, { AxiosError, type AxiosInstance, type AxiosResponse } from 'axios'
+import axios, {
+  AxiosError,
+  type AxiosInstance,
+  type AxiosResponse,
+  type RawAxiosRequestHeaders,
+} from 'axios'
 import AuthHeader from './auth.header'
 
 // Type definitions
-interface AuthHeaders {
-  [key: string]: string
-}
-
 interface ApiResponse<T = any> {
   data?: T
   error?: any
@@ -33,9 +34,9 @@ class AxiosService {
    */
   get<T = any>(path: string, showErrorToast: boolean = true): Promise<ApiResponse<T>> {
     return new Promise((resolve) => {
-      Axios.get<T>(path, { headers: AuthHeader() })
-        .then(({ data }: AxiosResponse<T>) => {
-          resolve({ data })
+      Axios.get<T>(path, { headers: AuthHeader() as RawAxiosRequestHeaders })
+        .then((response: AxiosResponse<T>) => {
+          resolve({ data: response.data })
         })
         .catch((error: AxiosError<ErrorResponse>) =>
           this.handleError(error, resolve, showErrorToast)
@@ -51,9 +52,9 @@ class AxiosService {
    */
   delete<T = any>(path: string, showErrorToast: boolean = true): Promise<ApiResponse<T>> {
     return new Promise((resolve) => {
-      Axios.delete<T>(path, { headers: AuthHeader() })
-        .then(({ data }: AxiosResponse<T>) => {
-          resolve({ data })
+      Axios.delete<T>(path, { headers: AuthHeader() as RawAxiosRequestHeaders })
+        .then((response: AxiosResponse<T>) => {
+          resolve({ data: response.data })
         })
         .catch((error: AxiosError<ErrorResponse>) =>
           this.handleError(error, resolve, showErrorToast)
@@ -74,9 +75,9 @@ class AxiosService {
     showErrorToast: boolean = true
   ): Promise<ApiResponse<T>> {
     return new Promise((resolve) => {
-      Axios.post<T>(path, data, { headers: AuthHeader() })
-        .then(({ data }: AxiosResponse<T>) => {
-          resolve({ data })
+      Axios.post<T>(path, data, { headers: AuthHeader() as RawAxiosRequestHeaders })
+        .then((response: AxiosResponse<T>) => {
+          resolve({ data: response.data })
         })
         .catch((error: AxiosError<ErrorResponse>) =>
           this.handleError(error, resolve, showErrorToast)
@@ -97,9 +98,9 @@ class AxiosService {
     showErrorToast: boolean = true
   ): Promise<ApiResponse<T>> {
     return new Promise((resolve) => {
-      Axios.patch<T>(path, data, { headers: AuthHeader() })
-        .then(({ data }: AxiosResponse<T>) => {
-          resolve({ data })
+      Axios.patch<T>(path, data, { headers: AuthHeader() as RawAxiosRequestHeaders })
+        .then((response: AxiosResponse<T>) => {
+          resolve({ data: response.data })
         })
         .catch((error: AxiosError<ErrorResponse>) =>
           this.handleError(error, resolve, showErrorToast)
@@ -120,9 +121,9 @@ class AxiosService {
     showErrorToast: boolean = true
   ): Promise<ApiResponse<T>> {
     return new Promise((resolve) => {
-      Axios.put<T>(path, data, { headers: AuthHeader() })
-        .then(({ data }: AxiosResponse<T>) => {
-          resolve({ data })
+      Axios.put<T>(path, data, { headers: AuthHeader() as RawAxiosRequestHeaders })
+        .then((response: AxiosResponse<T>) => {
+          resolve({ data: response.data })
         })
         .catch((error: AxiosError<ErrorResponse>) =>
           this.handleError(error, resolve, showErrorToast)
@@ -137,7 +138,7 @@ class AxiosService {
    */
   downloadFile(path: string): Promise<AxiosResponse<Blob>> {
     return Axios.get<Blob>(path, {
-      headers: AuthHeader(),
+      headers: AuthHeader() as RawAxiosRequestHeaders,
       responseType: 'blob',
     })
   }

@@ -5,7 +5,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devServer: {
-    port: 6001,
+    port: 6003,
   },
   srcDir: 'app',
   app: {

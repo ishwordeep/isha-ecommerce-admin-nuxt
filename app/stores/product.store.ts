@@ -23,19 +23,19 @@ export const useProductStore = defineStore('product', {
   },
 
   actions: {
-    // async fetchProducts() {
-    //   this.loading = true
-    //   try {
-    //     const response = await ProductService.fetchProducts()
-    //     if (response.data?.data) {
-    //       this.products = response.data.data
-    //     }
-    //   } catch (error) {
-    //     console.error('Failed to fetch products:', error)
-    //   } finally {
-    //     this.loading = false
-    //   }
-    // },
+    async fetchProducts() {
+      this.loading = true
+      try {
+        const response = await ProductService.fetchProducts()
+        if (response.data?.data) {
+          this.products = response.data.data
+        }
+      } catch (error) {
+        console.error('Failed to fetch products:', error)
+      } finally {
+        this.loading = false
+      }
+    },
 
     async addProduct(payload: ProductInterface) {
       this.loading = true
@@ -83,8 +83,10 @@ export const useProductStore = defineStore('product', {
       }
     },
 
-    async deleteProduct(_id: string) {
+    async deleteProduct() {
       this.loading = true
+      const _id = this.selectedProduct?._id
+      if (!_id) return
       try {
         const response = await ProductService.deleteProduct(_id)
         console.log(response)

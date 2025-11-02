@@ -27,10 +27,6 @@ const items: NavigationMenuItem[][] = [
           label: 'Information',
           to: '/products',
         },
-        // {
-        //   label: 'Colors',
-        //   to: '/products/colors',
-        // },
       ],
     },
   ],
@@ -42,39 +38,38 @@ const isProducts = computed(() => {
 </script>
 
 <template>
-  <UDashboardSidebar
-    class="sticky top-0 h-[100dvh] max-w-[250px] min-w-[250px]"
-    style="width: 100%"
-    :ui="{ footer: 'border-t border-default' }"
-  >
-    <template #header="{ collapsed }">
-      <UIcon name="i-simple-icons-nuxtdotjs" class="text-primary mx-auto size-5" />
-    </template>
+  <UDashboardGroup class="top-0 lg:sticky lg:h-[100dvh] lg:max-w-[250px] lg:min-w-[250px]">
+    <UDashboardSidebar style="width: 100%" :ui="{ footer: 'border-t border-default' }">
+      <template #default="{ collapsed }">
+        <UNavigationMenu
+          :key="route.path"
+          :collapsed="collapsed"
+          :items="items[0]"
+          orientation="vertical"
+          :ui="{
+            link: 'hover:bg-accent hover:text-accent-foreground p-2.5',
+            childList: 'border-none mt-1',
+          }"
+        />
+      </template>
 
-    <template #default="{ collapsed }">
-      <UNavigationMenu
-        :key="route.path"
-        :collapsed="collapsed"
-        :items="items[0]"
-        orientation="vertical"
-        :ui="{
-          link: 'hover:bg-accent hover:text-accent-foreground p-2.5',
-          childList: 'border-none mt-1',
-        }"
-      />
-    </template>
-
-    <template #footer="{ collapsed }">
-      <UButton
-        :avatar="{
-          src: 'https://github.com/benjamincanac.png',
-        }"
-        :label="collapsed ? undefined : 'Benjamin'"
-        color="neutral"
-        variant="ghost"
-        class="w-full"
-        :block="collapsed"
-      />
-    </template>
-  </UDashboardSidebar>
+      <template #footer="{ collapsed }">
+        <UButton
+          :avatar="{
+            src: 'https://github.com/benjamincanac.png',
+          }"
+          :label="collapsed ? undefined : 'Benjamin'"
+          color="neutral"
+          variant="ghost"
+          class="w-full"
+          :block="collapsed"
+        />
+      </template>
+    </UDashboardSidebar>
+    <UDashboardPanel>
+      <template #header>
+        <UDashboardNavbar class="border-b-0 pt-4" />
+      </template>
+    </UDashboardPanel>
+  </UDashboardGroup>
 </template>

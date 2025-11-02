@@ -2,7 +2,7 @@
   <div>
     <!-- Dropzone Area -->
     <div
-      class="relative flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 p-6 text-center transition hover:bg-gray-50 dark:hover:bg-gray-800"
+      class="relative flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 text-center transition hover:bg-gray-50 dark:hover:bg-gray-800"
       :class="containerClass"
       @dragover.prevent="isDragging = true"
       @dragleave.prevent="isDragging = false"
@@ -10,18 +10,19 @@
       @click="fileInput?.click()"
     >
       <!-- Single Image Preview -->
-      <template v-if="!isMultiple && modelValue?.length">
-        <img :src="modelValue[0]" alt="Uploaded" class="h-64 w-full rounded-lg object-cover" />
-        <button
-          class="absolute top-2 right-2 rounded-full bg-black/60 p-1 text-white"
+      <template v-if="!isMultiple && singleImageUrl">
+        <img :src="singleImageUrl" alt="Uploaded" class="h-full w-full rounded-lg object-cover" />
+        <UButton
+          class="absolute -top-2 -right-2 rounded-full"
+          size="xs"
+          square
           @click.stop="remove(0)"
-        >
-          ✕
-        </button>
+          icon="i-lucide-x"
+        />
       </template>
 
       <!-- Dropzone Content (no image yet) -->
-      <template v-else>
+      <template v-else-if="!isMultiple || !multipleImageUrls.length">
         <div class="m-auto flex flex-col items-center justify-center gap-2">
           <UIcon name="i-lucide-upload" class="m-auto h-8 w-8 text-gray-500" />
           <p class="text-sm text-gray-600 dark:text-gray-400" v-if="showMessage">
@@ -34,11 +35,23 @@
         </div>
       </template>
 
+      <!-- Multiple Images - Show in dropzone if exists -->
+      <template v-else-if="isMultiple && multipleImageUrls.length">
+        <div class="m-auto flex flex-col items-center justify-center gap-2">
+          <UIcon name="i-lucide-upload" class="m-auto h-8 w-8 text-gray-500" />
+          <p class="text-sm text-gray-600 dark:text-gray-400">
+            <span v-if="!isDragging">Click or drag to add more images</span>
+            <span v-else>Drop to add more images</span>
+          </p>
+        </div>
+      </template>
+
       <!-- Hidden File Input -->
       <input
         ref="fileInput"
         type="file"
         :multiple="isMultiple"
+        accept="image/*"
         class="hidden"
         @change="handleSelect"
       />
@@ -48,7 +61,6 @@
         v-if="isUploading"
         class="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-black/30"
       >
-        <!-- inline spinner -->
         <svg
           class="h-8 w-8 animate-spin text-white"
           xmlns="http://www.w3.org/2000/svg"
@@ -74,19 +86,19 @@
     </div>
 
     <!-- Multiple Image Previews -->
-    <div v-if="isMultiple && modelValue?.length" class="mt-4 flex flex-wrap gap-3">
+    <div v-if="isMultiple && multipleImageUrls.length" class="mt-4 flex flex-wrap gap-3">
       <div
-        v-for="(url, idx) in modelValue"
+        v-for="(url, idx) in multipleImageUrls"
         :key="idx"
-        class="relative h-32 w-32 overflow-hidden rounded-lg"
+        class="relative h-32 w-32 rounded-lg border-2 border-gray-200"
       >
         <img :src="url" alt="Uploaded" class="h-full w-full object-cover" />
-        <button
-          class="absolute top-1 right-1 rounded-full bg-black/50 p-1 text-white"
+        <UButton
+          class="absolute -top-2 -right-2 rounded-full"
           @click="remove(idx)"
-        >
-          ✕
-        </button>
+          icon="i-lucide-x"
+          size="xs"
+        />
       </div>
     </div>
   </div>
@@ -94,7 +106,7 @@
 
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { UButton, UIcon } from '#components'
+import { UIcon } from '#components'
 import axios from 'axios'
 
 interface Props {
@@ -107,7 +119,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  fieldName: 'file',
+  fieldName: 'image',
   showMessage: false,
 })
 
@@ -117,8 +129,21 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const isDragging = ref(false)
 const isUploading = ref(false)
 const config = useRuntimeConfig()
-// ✅ Determine if it’s multiple or single
+
+// Determine if it's multiple or single
 const isMultiple = computed(() => Array.isArray(props.modelValue))
+
+// Get the single image URL
+const singleImageUrl = computed(() => {
+  if (isMultiple.value) return ''
+  return typeof props.modelValue === 'string' ? props.modelValue : ''
+})
+
+// Get multiple image URLs
+const multipleImageUrls = computed(() => {
+  if (!isMultiple.value) return []
+  return Array.isArray(props.modelValue) ? props.modelValue : []
+})
 
 const handleSelect = (e: Event) => {
   const files = (e.target as HTMLInputElement).files
@@ -137,29 +162,64 @@ const uploadFiles = async (files: File[]) => {
 
   try {
     const formData = new FormData()
-    for (const file of files) {
-      formData.append(props.fieldName, file)
+
+    // Append files based on mode
+    if (isMultiple.value) {
+      // For multiple files, append each with the same field name
+      for (const file of files) {
+        formData.append(props.fieldName, file)
+      }
+    } else {
+      // For single file, just append one
+      formData.append(props.fieldName, files[0])
     }
 
-    const { data } = await axios.post(`${config.public.apiUrl}${props.uploadUrl}`, formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    })
+    const { data: response } = await axios.post(
+      `${config.public.apiUrl}${props.uploadUrl}`,
+      formData,
+      {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }
+    )
 
-    // Support various API return formats
-    const urls = data?.urls || data?.data?.urls || [data?.url || data?.data?.url].filter(Boolean)
+    // Handle the response format: { success: true, data: "url" } or { success: true, data: ["url1", "url2"] }
+    if (!response.success) {
+      throw new Error(response.message || 'Upload failed')
+    }
+
+    const uploadedData = response.data
+
+    // Handle both single URL (string) and multiple URLs (array)
+    let urls: string[] = []
+
+    if (typeof uploadedData === 'string') {
+      urls = [uploadedData]
+    } else if (Array.isArray(uploadedData)) {
+      urls = uploadedData
+    } else {
+      throw new Error('Invalid response format')
+    }
 
     if (!urls.length) throw new Error('No URLs returned from upload')
 
+    // Update the model value
     if (isMultiple.value) {
-      const newUrls = Array.isArray(props.modelValue) ? [...props.modelValue, ...urls] : urls
-      emit('update:modelValue', newUrls)
+      const currentUrls = Array.isArray(props.modelValue) ? props.modelValue : []
+      emit('update:modelValue', [...currentUrls, ...urls])
     } else {
+      // For single mode, just use the first URL
       emit('update:modelValue', urls[0])
     }
-  } catch (err) {
+  } catch (err: any) {
     console.error('Upload failed:', err)
+    // You can emit an error event or show a toast notification here
+    // emit('upload-error', err.message)
   } finally {
     isUploading.value = false
+    // Reset file input
+    if (fileInput.value) {
+      fileInput.value.value = ''
+    }
   }
 }
 

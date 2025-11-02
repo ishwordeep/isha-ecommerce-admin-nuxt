@@ -83,5 +83,10 @@ export default defineAppConfig({
         },
       },
     },
+    table: {
+      slots: {
+        tr: 'hover:bg-gray-100',
+      },
+    },
   },
 })

@@ -3,7 +3,7 @@
     <Sidebar />
     <div class="flex flex-1 flex-col overflow-x-hidden bg-gray-50 p-6">
       <div class="mb-4 flex items-center justify-between gap-2">
-        <div class="flex flex-col">
+        <div class="flex flex-col max-lg:pl-12 max-sm:pl-10">
           <h1 class="text-2xl font-bold">{{ headerStore.title }}</h1>
           <p class="text-sm text-gray-600">{{ headerStore.description }}</p>
         </div>

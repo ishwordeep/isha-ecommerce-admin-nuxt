@@ -23,7 +23,7 @@ onMounted(async () => {
   const authStore = useAuthStore()
   const settingStore = useSettingStore()
   authStore.initAuth()
-  if (!settingStore.setting) {
+  if (!settingStore.setting && authStore.isAuthenticated) {
     await settingStore.fetchSetting()
   }
   // Small delay to prevent flash

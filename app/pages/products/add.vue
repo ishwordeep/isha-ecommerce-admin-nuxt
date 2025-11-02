@@ -94,8 +94,8 @@
             <UFormField label="Image" name="image">
               <FileDropzone
                 v-model="inputs.image"
-                upload-url="/upload"
-                containerClass="w-[150px] aspect-square"
+                upload-url="/upload/single"
+                containerClass="w-[150px] aspect-square max-h-[150px]"
               />
             </UFormField>
 
@@ -117,7 +117,12 @@
           </div>
 
           <UFormField label="Images" name="images" class="my-4">
-            <FileDropzone v-model="inputs.images" upload-url="/upload" containerClass="min-h-48" />
+            <FileDropzone
+              v-model="inputs.images"
+              upload-url="/upload/multiple"
+              fieldName="images"
+              containerClass="min-h-48"
+            />
           </UFormField>
         </template>
       </UCollapsible>
@@ -150,7 +155,7 @@ useSeoMeta({
   description: 'Add your products here',
   ogTitle: 'Add Product',
 })
-const value = ref<File[]>([])
+const toast = useToast()
 const isSubmitting = ref(false)
 const productStore = useProductStore()
 const schema = z.object({
@@ -203,7 +208,20 @@ const onSubmit = async () => {
   isSubmitting.value = true
   const response = await productStore.addProduct(inputs)
   console.log(response)
-  isSubmitting.value = false
-  resetForm()
+  setTimeout(() => {}, 3000)
+  if (response?.data?.success) {
+    toast.add({
+      color: 'success',
+      title: 'Product added successfully',
+    })
+    isSubmitting.value = false
+    resetForm()
+    navigateTo('/products')
+  } else {
+    toast.add({
+      color: 'error',
+      title: 'Something went wrong',
+    })
+  }
 }
 </script>

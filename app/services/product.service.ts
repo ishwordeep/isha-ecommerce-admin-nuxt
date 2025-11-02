@@ -39,7 +39,7 @@ class ProductService {
   /**
    * Get Categories
    */
-  async fetchCategories(): Promise<ProductServiceResponse<ProductListResponse>> {
+  async fetchProducts(): Promise<ProductServiceResponse<ProductListResponse>> {
     return await AxiosService.get<ProductListResponse>('/product')
   }
 

@@ -1,10 +1,8 @@
 <script setup lang="ts">
 import { h, resolveComponent } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
-import type { Row } from '@tanstack/vue-table'
-import { useClipboard } from '@vueuse/core'
-import { NuxtImg, USwitch } from '#components'
-import DeleteCategory from '~/pages/category/components/DeleteCategory.vue'
+
+import DeleteProduct from '~/pages/products/components/DeleteProduct.vue'
 import type { ProductInterface } from '~/services/product.service'
 
 const UButton = resolveComponent('UButton')
@@ -32,6 +30,10 @@ const columns: TableColumn<ProductInterface>[] = [
     },
   },
   {
+    id: 'image',
+    header: 'Image',
+  },
+  {
     accessorKey: 'price',
     header: 'Price',
   },
@@ -57,11 +59,20 @@ const columns: TableColumn<ProductInterface>[] = [
     },
   },
   {
-    accessorKey: 'actions',
+    id: 'actions',
     header: 'Actions',
   },
 ]
+const states = reactive({
+  fetching: false,
+  adding: false,
+})
 
+onMounted(async () => {
+  states.fetching = true
+  await productStore.fetchProducts()
+  states.fetching = false
+})
 const handleDelete = async (row: ProductInterface) => {
   productStore.selectedProduct = row
   console.log('Selected Product for Deletion:', productStore.selectedProduct)
@@ -76,20 +87,26 @@ const handleDelete = async (row: ProductInterface) => {
       :columns="columns"
       class="flex-1"
       :ui="{ thead: 'bg-gray-100' }"
+      :loading="states.fetching"
     >
-      <template #actions="{ row }">
+      <template #image-cell="{ row }">
+        <NuxtImg :src="row.original.image" class="h-24 w-24 object-fill" />
+      </template>
+      <template #actions-cell="{ row }">
         <div class="flex gap-2">
-          <UButton variant="outline" size="md" to="/products/add"
-            ><UIcon name="i-lucide-pencil" />
-          </UButton>
-          <UButton variant="outline" size="md" to="/products/add" @click="handleDelete(row)"
-            ><UIcon name="i-lucide-pencil" />
-          </UButton>
+          <UButton variant="outline" size="md" icon="i-lucide-pencil" color="info" />
+          <UButton
+            variant="outline"
+            size="md"
+            @click="handleDelete(row.original)"
+            icon="i-lucide-trash"
+            color="error"
+          />
         </div>
       </template>
     </UTable>
   </div>
-  <DeleteCategory
+  <DeleteProduct
     :open="openDelete"
     @update:open="
       () => {
