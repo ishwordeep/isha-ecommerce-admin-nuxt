@@ -24,6 +24,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: '',
+      secureCookies: process.env.NODE_ENV === 'production',
     },
   },
   modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/ui', '@nuxt/fonts', '@pinia/nuxt'],

@@ -18,10 +18,18 @@ export interface ProductInterface {
   isTrending?: boolean
 }
 
+export interface PaginationInterface {
+  total: number
+  page: number
+  limit: number
+  pages: number
+}
+
 interface ProductListResponse {
   data: ProductInterface[] | null
   message: string
   success: boolean
+  pagination: PaginationInterface
 }
 
 interface ProductItemResponse {
@@ -39,8 +47,19 @@ class ProductService {
   /**
    * Get Categories
    */
-  async fetchProducts(): Promise<ProductServiceResponse<ProductListResponse>> {
-    return await AxiosService.get<ProductListResponse>('/product')
+  async fetchProducts({
+    page,
+    limit,
+    query,
+  }: {
+    page: number
+    limit: number
+    query?: string
+  }): Promise<ProductServiceResponse<ProductListResponse>> {
+    const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+    if (query) params.append('query', query)
+    const url = `/products?${params.toString()}`
+    return await AxiosService.get<ProductListResponse>(url)
   }
 
   /**

@@ -106,6 +106,14 @@ const handleDelete = async (row: ProductInterface) => {
       </template>
     </UTable>
   </div>
+  <div class="border-default flex justify-end pt-4">
+    <UPagination
+      :default-page="productStore?.pagination?.page"
+      :items-per-page="10"
+      :total="20"
+      @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+    />
+  </div>
   <DeleteProduct
     :open="openDelete"
     @update:open="

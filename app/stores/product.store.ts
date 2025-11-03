@@ -2,13 +2,14 @@
 // FILE: stores/auth.ts
 // ============================================
 import { defineStore } from 'pinia'
-import ProductService from '~/services/product.service'
+import ProductService, { type PaginationInterface } from '~/services/product.service'
 import type { ProductInterface } from '~/services/product.service'
 
 export interface ProductState {
   products: ProductInterface[] | null
   loading: boolean
   selectedProduct: ProductInterface | null
+  pagination: PaginationInterface | null
 }
 
 export const useProductStore = defineStore('product', {
@@ -16,6 +17,7 @@ export const useProductStore = defineStore('product', {
     products: null,
     loading: false,
     selectedProduct: null,
+    pagination: null,
   }),
 
   getters: {
@@ -23,12 +25,17 @@ export const useProductStore = defineStore('product', {
   },
 
   actions: {
-    async fetchProducts() {
+    async fetchProducts(page = 1, limit = 20, query = '') {
       this.loading = true
       try {
-        const response = await ProductService.fetchProducts()
+        const response = await ProductService.fetchProducts({
+          page,
+          limit,
+          query,
+        })
         if (response.data?.data) {
           this.products = response.data.data
+          this.pagination = response.data?.pagination
         }
       } catch (error) {
         console.error('Failed to fetch products:', error)
