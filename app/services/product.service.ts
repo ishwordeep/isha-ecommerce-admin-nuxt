@@ -58,7 +58,7 @@ class ProductService {
   }): Promise<ProductServiceResponse<ProductListResponse>> {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) })
     if (query) params.append('query', query)
-    const url = `/products?${params.toString()}`
+    const url = `/product?${params.toString()}`
     return await AxiosService.get<ProductListResponse>(url)
   }
 
