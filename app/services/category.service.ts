@@ -2,7 +2,7 @@ import AxiosService from './axios.service'
 import type { PaginationInterface } from '~/services/index.interface'
 
 export interface CategoryInterface {
-  _id?: string
+  _id: string
   name?: string
   slug?: string
   description?: string
@@ -59,12 +59,17 @@ class CategoryService {
   }
 
   /**
+   * Get single category by id
+   */
+  async getCategory(id: string): Promise<CategoryServiceResponse<CategoryItemResponse>> {
+    return await AxiosService.get<CategoryItemResponse>(`/category/${id}`)
+  }
+
+  /**
    * Add Categories
    */
-  async addCategory(
-    category: CategoryInterface
-  ): Promise<CategoryServiceResponse<CategoryItemResponse>> {
-    return await AxiosService.post('/category', category)
+  async addCategory(payload: CategoryForm): Promise<CategoryServiceResponse<CategoryItemResponse>> {
+    return await AxiosService.post('/category', payload)
   }
 
   /**
@@ -72,9 +77,9 @@ class CategoryService {
    */
   async updateCategory(
     id: string,
-    payload: CategoryInterface
+    payload: CategoryForm
   ): Promise<CategoryServiceResponse<CategoryItemResponse>> {
-    return await AxiosService.patch(`/category/${id}`, payload)
+    return await AxiosService.put(`/category/${id}`, payload)
   }
 
   /**

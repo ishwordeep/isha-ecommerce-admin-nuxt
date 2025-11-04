@@ -1,5 +1,6 @@
 import AxiosService from './axios.service'
 import type { PaginationInterface } from '~/services/index.interface'
+import type { CategoryInterface } from '~/services/category.service'
 
 export interface ProductInterface {
   _id?: string
@@ -17,6 +18,7 @@ export interface ProductInterface {
   isFeatured?: boolean
   isNew?: boolean
   isTrending?: boolean
+  categoryDetails?: CategoryInterface | null
 }
 
 interface ProductListResponse {
@@ -57,6 +59,13 @@ class ProductService {
   }
 
   /**
+   * Get single product by id
+   */
+  async getProduct(id: string): Promise<ProductServiceResponse<ProductItemResponse>> {
+    return await AxiosService.get<ProductItemResponse>(`/product/${id}`)
+  }
+
+  /**
    * Add Categories
    */
   async addProduct(
@@ -72,7 +81,7 @@ class ProductService {
     id: string,
     payload: ProductInterface
   ): Promise<ProductServiceResponse<ProductItemResponse>> {
-    return await AxiosService.patch(`/product/${id}`, payload)
+    return await AxiosService.put(`/product/${id}`, payload)
   }
 
   /**

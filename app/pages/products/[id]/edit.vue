@@ -1,8 +1,11 @@
 <script setup lang="ts">
-import ProductForm from './components/ProductForm.vue'
+import ProductForm from '../components/ProductForm.vue'
 import { useProductStore } from '~/stores/product.store'
+import { useRoute } from 'vue-router'
 
+const route = useRoute()
 const productStore = useProductStore()
+
 const headerStore = useHeaderStore()
 
 definePageMeta({ layout: 'admin' })
@@ -14,14 +17,17 @@ useSeoMeta({
 })
 
 onBeforeMount(() => {
-  headerStore.setHeaders('Products', 'Add your product here.')
+  headerStore.setHeaders('Products', 'Edit your product here.')
 })
 
-onMounted(() => {
-  productStore.initializeForAdd()
+onMounted(async () => {
+  const id = route.params.id as string
+  if (id) {
+    await productStore.initializeForEdit(id)
+  }
 })
 </script>
 
 <template>
-  <ProductForm mode="add" />
+  <ProductForm mode="edit" />
 </template>

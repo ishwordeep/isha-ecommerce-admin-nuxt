@@ -42,7 +42,7 @@ const columns: TableColumn<ProductInterface>[] = [
     accessorKey: 'category',
     header: 'Category',
     cell: ({ row }) => {
-      return row.getValue('category')
+      return row.original.categoryDetails?.name || '-'
     },
   },
   {
@@ -110,7 +110,13 @@ const handleDelete = async (row: ProductInterface) => {
       </template>
       <template #actions-cell="{ row }">
         <div class="flex gap-2">
-          <UButton variant="outline" size="md" icon="i-lucide-pencil" color="info" />
+          <UButton
+            variant="outline"
+            size="md"
+            icon="i-lucide-pencil"
+            color="info"
+            :to="`/products/${row.original._id}/edit`"
+          />
           <UButton
             variant="outline"
             size="md"

@@ -2,11 +2,14 @@
 import { h, resolveComponent, watch } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import DeleteCategory from '~/pages/category/components/DeleteCategory.vue'
+import CategoryForm from '~/pages/category/components/CategoryForm.vue'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
 const categoryStore = useCategoryStore()
 const openDelete = ref(false)
+const openEdit = ref(false)
+
 const states = reactive({
   fetching: false,
 })
@@ -94,6 +97,13 @@ const columns: TableColumn<any>[] = [
             variant: 'subtle',
             icon: 'i-lucide-pencil',
             color: 'info',
+            onClick() {
+              categoryStore.selectedCategory = row.original
+              console.log('Selected Category for Deletion:', categoryStore.selectedCategory)
+              openEdit.value = true
+
+              console.log(openEdit.value)
+            },
           }),
           h(UButton, {
             size: 'md',
@@ -102,7 +112,6 @@ const columns: TableColumn<any>[] = [
             icon: 'i-lucide-trash',
             onClick() {
               categoryStore.selectedCategory = row.original
-              console.log('Selected Category for Deletion:', categoryStore.selectedCategory)
               openDelete.value = true
             },
           }),
@@ -138,4 +147,6 @@ const columns: TableColumn<any>[] = [
       }
     "
   />
+
+  <CategoryForm mode="edit" v-model:open="openEdit" />
 </template>
