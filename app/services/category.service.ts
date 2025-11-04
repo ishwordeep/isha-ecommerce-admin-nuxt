@@ -1,7 +1,8 @@
 import AxiosService from './axios.service'
+import type { PaginationInterface } from '~/services/index.interface'
 
 export interface CategoryInterface {
-  _id: string
+  _id?: string
   name?: string
   slug?: string
   description?: string
@@ -10,13 +11,14 @@ export interface CategoryInterface {
   displayOrder?: number
   createdAt?: string
   updatedAt?: string
-  __v: number
+  __v?: number
 }
 
 interface CategoryListResponse {
   data: CategoryInterface[] | null
   message: string
   success: boolean
+  pagination: PaginationInterface | null
 }
 
 interface CategoryItemResponse {
@@ -32,10 +34,28 @@ interface CategoryServiceResponse<T> {
 
 class CategoryService {
   /**
+   * Get Categories List Only
+   */
+
+  async fetchCategoryList(): Promise<CategoryServiceResponse<CategoryListResponse>> {
+    return await AxiosService.get<CategoryListResponse>('/category/listOnly')
+  }
+
+  /**
    * Get Categories
    */
-  async fetchCategories(): Promise<CategoryServiceResponse<CategoryListResponse>> {
-    return await AxiosService.get<CategoryListResponse>('/category')
+  async fetchCategories({
+    page,
+    limit,
+    query,
+  }: {
+    page: number
+    limit: number
+    query: string
+  }): Promise<CategoryServiceResponse<CategoryListResponse>> {
+    let url = `/category?page=${page}&limit=${limit}`
+    if (query) url += `&query=${query}`
+    return await AxiosService.get<CategoryListResponse>(url)
   }
 
   /**

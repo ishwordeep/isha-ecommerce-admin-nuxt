@@ -30,37 +30,14 @@
         </UFormField>
 
         <UFormField label="Image" name="image">
-          <UFileUpload v-model="inputs.image" class="aspect-square min-h-[150px] max-w-[150px]" />
-          <!--          <UFileUpload-->
-          <!--            v-model="inputs.image"-->
-          <!--            class="aspect-square min-h-[150px] max-w-[150px]"-->
-          <!--            v-else-->
-          <!--            v-slot="{ open }"-->
-          <!--          >-->
-          <!--            <div class="relative h-full w-full">-->
-          <!--              <NuxtImg-->
-          <!--                class="h-full w-full object-cover"-->
-          <!--                src="https://images.hdqwalls.com/wallpapers/bthumb/goku-unleashed-in-the-highlands-rc.jpg"-->
-          <!--                @click="open()"-->
-          <!--              />-->
-          <!--              <UButton-->
-          <!--                icon="i-lucide-x"-->
-          <!--                size="sm"-->
-          <!--                variant="solid"-->
-          <!--                class="absolute -top-2 -right-2 rounded-full"-->
-          <!--                @click="inputs.image = null"-->
-          <!--              />-->
-          <!--            </div>-->
-          <!--          </UFileUpload>-->
+          <FileDropzone
+            v-model="inputs.image"
+            upload-url="/upload/single"
+            containerClass="w-[150px] aspect-square max-h-[150px]"
+          />
         </UFormField>
 
         <UFormField label="Status" name="isActive">
-          <!--          <USwitch-->
-          <!--            unchecked-icon="i-lucide-x"-->
-          <!--            checked-icon="i-lucide-check"-->
-          <!--            default-value-->
-          <!--            v-model="inputs.isActive"-->
-          <!--          />-->
           <URadioGroup
             indicator="hidden"
             v-model="inputs.isActive"
@@ -101,9 +78,11 @@
 <script setup lang="ts">
 import * as z from 'zod'
 import { useCategoryStore } from '~/stores/category.store'
+import FileDropzone from '~/components/ui/FileDropzone.vue'
 const categoryStore = useCategoryStore()
 const open = ref(false)
 const isSubmitting = ref(false)
+const toast = useToast()
 const schema = z.object({
   name: z
     .string()
@@ -113,11 +92,7 @@ const schema = z.object({
   description: z.string(),
   displayOrder: z.number().min(1, 'Display order must be at least 1'),
   isActive: z.boolean(),
-  image: z
-    .instanceof(File, {
-      message: 'Please select an image file.',
-    })
-    .nullable(),
+  image: z.string(),
 })
 type InputFields = z.output<typeof schema>
 
@@ -126,7 +101,7 @@ const inputs = reactive<InputFields>({
   description: '',
   displayOrder: 1,
   isActive: true,
-  image: null,
+  image: '',
 })
 
 const resetForm = () => {
@@ -134,24 +109,27 @@ const resetForm = () => {
   inputs.description = ''
   inputs.displayOrder = 1
   inputs.isActive = true
-  inputs.image = null
+  inputs.image = ''
 }
 
 const onSubmit = async () => {
   isSubmitting.value = true
-  // const formData = new FormData()
-  // formData.append('name', inputs.name)
-  // formData.append('description', inputs.description)
-  // formData.append('displayOrder', inputs.displayOrder.toString())
-  // formData.append('isActive', inputs.isActive.toString())
-  // if (inputs.image) {
-  //   formData.append('image', inputs.image)
-  // }
   const res = await categoryStore.addCategory(inputs)
-  if (res?.data) {
-    open.value = false
+  if (res?.data?.success) {
+    toast.add({
+      color: 'success',
+      title: 'Success',
+      description: 'Category added successfully.',
+    })
+  } else {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'Something went wrong',
+    })
   }
   isSubmitting.value = false
+  open.value = false
   resetForm()
 }
 </script>

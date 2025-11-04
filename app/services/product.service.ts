@@ -1,4 +1,5 @@
 import AxiosService from './axios.service'
+import type { PaginationInterface } from '~/services/index.interface'
 
 export interface ProductInterface {
   _id?: string
@@ -16,13 +17,6 @@ export interface ProductInterface {
   isFeatured?: boolean
   isNew?: boolean
   isTrending?: boolean
-}
-
-export interface PaginationInterface {
-  total: number
-  page: number
-  limit: number
-  pages: number
 }
 
 interface ProductListResponse {

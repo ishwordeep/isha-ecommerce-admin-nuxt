@@ -29,13 +29,7 @@
 
             <!--Category-->
             <UFormField label="Select Category" name="category">
-              <USelect
-                v-model="inputs.category"
-                :items="[
-                  { label: 'Category1', value: '68e657c08089c27e8c94de80' },
-                  { label: 'Category 2', value: '68e51e6918ad38b46a2d87a7' },
-                ]"
-              />
+              <USelect v-model="inputs.category" :items="categoryList" />
             </UFormField>
 
             <!--Price-->
@@ -158,6 +152,8 @@ useSeoMeta({
 const toast = useToast()
 const isSubmitting = ref(false)
 const productStore = useProductStore()
+const categoryStore = useCategoryStore()
+
 const schema = z.object({
   name: z
     .string()
@@ -224,4 +220,17 @@ const onSubmit = async () => {
     })
   }
 }
+
+onBeforeMount(() => {
+  if (!categoryStore.list?.length) {
+    categoryStore.fetchListOnly()
+  }
+})
+const categoryList = computed(
+  () =>
+    categoryStore.list?.map((item) => ({
+      label: item.name,
+      value: item._id,
+    })) ?? []
+)
 </script>

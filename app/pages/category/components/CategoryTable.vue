@@ -1,18 +1,36 @@
 <script setup lang="ts">
-import { h, resolveComponent } from 'vue'
+import { h, resolveComponent, watch } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
-import type { Row } from '@tanstack/vue-table'
-import { useClipboard } from '@vueuse/core'
-import { NuxtImg, USwitch } from '#components'
 import DeleteCategory from '~/pages/category/components/DeleteCategory.vue'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
-const UDropdownMenu = resolveComponent('UDropdownMenu')
 const categoryStore = useCategoryStore()
-const toast = useToast()
-const { copy } = useClipboard()
 const openDelete = ref(false)
+const states = reactive({
+  fetching: false,
+})
+const pagination = reactive({
+  page: 1,
+  limit: 20,
+  query: '',
+})
+
+onBeforeMount(() => {
+  if (!categoryStore.categories?.length) {
+    categoryStore.fetchCategories(pagination)
+  }
+})
+
+watch(
+  () => [pagination.page, pagination.limit, pagination.query],
+  async () => {
+    states.fetching = true
+    await categoryStore.fetchCategories(pagination)
+    states.fetching = false
+  }
+)
+
 const columns: TableColumn<any>[] = [
   {
     accessorKey: 's.n',
@@ -102,6 +120,13 @@ const columns: TableColumn<any>[] = [
       :columns="columns"
       class="flex-1"
       :ui="{ thead: 'bg-gray-100' }"
+    />
+  </div>
+  <div class="border-default flex justify-end pt-4">
+    <UPagination
+      v-model:page="pagination.page"
+      :items-per-page="pagination.limit"
+      :total="categoryStore.pagination?.total || 0"
     />
   </div>
   <DeleteCategory

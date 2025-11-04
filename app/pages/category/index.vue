@@ -12,9 +12,14 @@
 import { useHeaderStore } from '~/stores/header.store'
 import CategoryTable from '~/pages/category/components/CategoryTable.vue'
 import AddCategory from '~/pages/category/components/AddCategory.vue'
-const categoryStore = useCategoryStore()
+import { watch } from 'vue'
 definePageMeta({
   layout: 'admin',
+})
+
+const states = reactive({
+  fetching: false,
+  adding: false,
 })
 
 useSeoMeta({
@@ -26,8 +31,5 @@ const headerStore = useHeaderStore()
 
 onBeforeMount(() => {
   headerStore.setHeaders('Categories', 'Manage your categories here.')
-  if (!categoryStore.categories?.length) {
-    categoryStore.fetchCategories()
-  }
 })
 </script>

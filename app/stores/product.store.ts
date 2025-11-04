@@ -2,8 +2,9 @@
 // FILE: stores/auth.ts
 // ============================================
 import { defineStore } from 'pinia'
-import ProductService, { type PaginationInterface } from '~/services/product.service'
+import ProductService from '~/services/product.service'
 import type { ProductInterface } from '~/services/product.service'
+import type { PaginationInterface } from '~/services/index.interface'
 
 export interface ProductState {
   products: ProductInterface[] | null
