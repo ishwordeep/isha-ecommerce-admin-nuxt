@@ -16,7 +16,7 @@
           <UAvatar src="https://github.com/benjamincanac.png" />
         </UDropdownMenu>
       </div>
-      <main class="mt-4">
+      <main>
         <slot />
       </main>
     </div>

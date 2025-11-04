@@ -3,7 +3,9 @@
 
 @theme {
     --font-sans: "Inter", "sans-serif";
-
+    --color-primary: #571A18;
+    --color-secondary: #B08A3A;
+    --color-tertiary: #F6F3E8;
     /* breakpoints */
     --breakpoint-xs: 480px;
     --breakpoint-sm: 640px;
@@ -14,6 +16,7 @@
     --breakpoint-3xl: 1920px;
     --breakpoint-4xl: 2560px;
     --breakpoint-5xl: 3840px;
+
 }
 
 /* cursor pointer for all buttons */

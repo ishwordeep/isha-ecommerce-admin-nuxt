@@ -11,6 +11,11 @@ const items: NavigationMenuItem[][] = [
       to: '/',
     },
     {
+      label: 'Sliders',
+      icon: 'i-lucide-images',
+      to: '/sliders',
+    },
+    {
       label: 'Category',
       icon: 'i-lucide-grid-2x2',
       to: '/category',
@@ -26,6 +31,10 @@ const items: NavigationMenuItem[][] = [
         {
           label: 'Information',
           to: '/products',
+        },
+        {
+          label: 'New Arrivals',
+          to: '/products/new-arrivals',
         },
       ],
     },
@@ -47,8 +56,9 @@ const isProducts = computed(() => {
           :items="items[0]"
           orientation="vertical"
           :ui="{
-            link: 'hover:bg-accent hover:text-accent-foreground p-2.5',
-            childList: 'border-none mt-1',
+            link: 'hover:bg-primary hover:text-white p-2.5 rounded-md my-2 data-active:bg-primary data-active:text-white',
+            childList: 'border-none',
+            linkLeadingIcon: 'group-hover:text-white group-data-active:text-white',
           }"
         />
       </template>

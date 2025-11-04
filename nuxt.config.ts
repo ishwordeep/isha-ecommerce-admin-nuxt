@@ -32,7 +32,7 @@ export default defineNuxtConfig({
     colorMode: false,
     theme: {
       defaultVariants: {
-        color: 'neutral',
+        color: 'primary',
       },
     },
   },

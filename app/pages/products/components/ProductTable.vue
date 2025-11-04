@@ -10,17 +10,28 @@ const UBadge = resolveComponent('UBadge')
 const productStore = useProductStore()
 const openDelete = ref(false)
 
+const props = withDefaults(
+  defineProps<{
+    search?: string
+  }>(),
+  {
+    search: '',
+  }
+)
+
 const pagination = reactive({
   page: 1,
   limit: 20,
-  query: '',
 })
 
 watch(
-  () => [pagination.page, pagination.limit, pagination.query],
+  () => [pagination.page, pagination.limit, props.search],
   async () => {
     states.fetching = true
-    await productStore.fetchProducts(pagination)
+    await productStore.fetchProducts({
+      ...pagination,
+      search: props.search,
+    })
     states.fetching = false
   }
 )
@@ -52,6 +63,9 @@ const columns: TableColumn<ProductInterface>[] = [
   {
     accessorKey: 'price',
     header: 'Price',
+    cell: ({ row }) => {
+      return `$${row.original.price}`
+    },
   },
   {
     accessorKey: 'discount',
@@ -64,12 +78,11 @@ const columns: TableColumn<ProductInterface>[] = [
       return h(
         UBadge,
         {
-          color: row.getValue('isActive') ? 'success' : 'error',
+          color: row.original.isActive ? 'success' : 'error',
           variant: 'subtle',
-          class: 'px-2 py-1',
         },
         {
-          default: () => (row.getValue('isActive') ? 'Active' : 'Inactive'),
+          default: () => (row.original.isActive ? 'Active' : 'Inactive'),
         }
       )
     },
@@ -86,7 +99,10 @@ const states = reactive({
 
 onMounted(async () => {
   states.fetching = true
-  await productStore.fetchProducts(pagination)
+  await productStore.fetchProducts({
+    ...pagination,
+    search: props.search,
+  })
   states.fetching = false
 })
 const handleDelete = async (row: ProductInterface) => {
@@ -106,7 +122,7 @@ const handleDelete = async (row: ProductInterface) => {
       :loading="states.fetching"
     >
       <template #image-cell="{ row }">
-        <NuxtImg :src="row.original.image" class="h-24 w-24 object-fill" />
+        <NuxtImg :src="row.original.image" class="aspect-square w-24 min-w-16 object-fill" />
       </template>
       <template #actions-cell="{ row }">
         <div class="flex gap-2">

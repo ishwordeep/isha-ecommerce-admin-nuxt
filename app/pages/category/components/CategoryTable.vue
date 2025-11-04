@@ -3,12 +3,21 @@ import { h, resolveComponent, watch } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 import DeleteCategory from '~/pages/category/components/DeleteCategory.vue'
 import CategoryForm from '~/pages/category/components/CategoryForm.vue'
+import type { ProductInterface } from '~/services/product.service'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
 const categoryStore = useCategoryStore()
 const openDelete = ref(false)
 const openEdit = ref(false)
+const props = withDefaults(
+  defineProps<{
+    search?: string
+  }>(),
+  {
+    search: '',
+  }
+)
 
 const states = reactive({
   fetching: false,
@@ -16,20 +25,25 @@ const states = reactive({
 const pagination = reactive({
   page: 1,
   limit: 20,
-  query: '',
 })
 
 onBeforeMount(() => {
   if (!categoryStore.categories?.length) {
-    categoryStore.fetchCategories(pagination)
+    categoryStore.fetchCategories({
+      ...pagination,
+      search: props.search,
+    })
   }
 })
 
 watch(
-  () => [pagination.page, pagination.limit, pagination.query],
+  () => [pagination.page, pagination.limit, props.search],
   async () => {
     states.fetching = true
-    await categoryStore.fetchCategories(pagination)
+    await categoryStore.fetchCategories({
+      ...pagination,
+      search: props.search,
+    })
     states.fetching = false
   }
 )
@@ -55,7 +69,7 @@ const columns: TableColumn<any>[] = [
         ? h('img', {
             src: row.getValue('image'),
             alt: row.original.title,
-            class: 'rounded-md object-cover w-[50px] aspect-square',
+            class: 'rounded-xs object-cover w-[50px] aspect-square',
           })
         : h('div', { class: 'w-[50px] aspect-square border border-default' })
     },
@@ -84,42 +98,18 @@ const columns: TableColumn<any>[] = [
   {
     id: 'actions',
     header: 'Actions',
-    cell: ({ row }) => {
-      return h(
-        'div',
-
-        {
-          class: 'flex gap-2',
-        },
-        [
-          h(UButton, {
-            size: 'md',
-            variant: 'subtle',
-            icon: 'i-lucide-pencil',
-            color: 'info',
-            onClick() {
-              categoryStore.selectedCategory = row.original
-              console.log('Selected Category for Deletion:', categoryStore.selectedCategory)
-              openEdit.value = true
-
-              console.log(openEdit.value)
-            },
-          }),
-          h(UButton, {
-            size: 'md',
-            variant: 'subtle',
-            color: 'error',
-            icon: 'i-lucide-trash',
-            onClick() {
-              categoryStore.selectedCategory = row.original
-              openDelete.value = true
-            },
-          }),
-        ]
-      )
-    },
   },
 ]
+
+const handleDelete = async (row: ProductInterface) => {
+  categoryStore.selectedCategory = row
+  openDelete.value = true
+}
+
+const handleEdit = (row: ProductInterface) => {
+  categoryStore.selectedCategory = row
+  openEdit.value = true
+}
 </script>
 
 <template>
@@ -129,7 +119,26 @@ const columns: TableColumn<any>[] = [
       :columns="columns"
       class="flex-1"
       :ui="{ thead: 'bg-gray-100' }"
-    />
+    >
+      <template #actions-cell="{ row }">
+        <div class="flex gap-2">
+          <UButton
+            variant="outline"
+            size="md"
+            icon="i-lucide-pencil"
+            color="info"
+            @click="() => handleEdit(row.original)"
+          />
+          <UButton
+            variant="outline"
+            size="md"
+            @click="handleDelete(row.original)"
+            icon="i-lucide-trash"
+            color="error"
+          />
+        </div>
+      </template>
+    </UTable>
   </div>
   <div class="border-default flex justify-end pt-4">
     <UPagination

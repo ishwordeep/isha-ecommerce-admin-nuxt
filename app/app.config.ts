@@ -88,5 +88,10 @@ export default defineAppConfig({
         tr: 'hover:bg-gray-100',
       },
     },
+    modal: {
+      slots: {
+        overlay: 'bg-black/60',
+      },
+    },
   },
 })

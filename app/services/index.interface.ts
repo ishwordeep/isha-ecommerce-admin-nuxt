@@ -4,3 +4,9 @@ export interface PaginationInterface {
   limit: number
   pages: number
 }
+
+export interface QueryInterface {
+  page: number
+  limit: number
+  search?: string
+}

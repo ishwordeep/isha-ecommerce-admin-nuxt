@@ -86,10 +86,10 @@ export const useCategoryStore = defineStore('category', () => {
     }
   }
 
-  const fetchCategories = async ({ page = 1, limit = 10, query = '' } = {}) => {
+  const fetchCategories = async ({ page = 1, limit = 10, search = '' } = {}) => {
     isLoading.value = true
     try {
-      const response = await CategoryService.fetchCategories({ page, limit, query })
+      const response = await CategoryService.fetchCategories({ page, limit, search })
       if (response.data?.data) {
         categories.value = response.data.data
         pagination.value = response.data.pagination

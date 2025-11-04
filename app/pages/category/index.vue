@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex items-center justify-between gap-2">
-      <div></div>
+      <UiSearchInput :delay="500" :loading="true" @search="handleSearch" />
       <UButton label="Add Category" @click="openForm = true" />
     </div>
-    <CategoryTable />
+    <CategoryTable :search="searchQuery" />
     <CategoryForm mode="add" v-model:open="openForm" />
   </div>
 </template>
@@ -18,10 +18,6 @@ definePageMeta({
   layout: 'admin',
 })
 const openForm = ref(false)
-const states = reactive({
-  fetching: false,
-  adding: false,
-})
 
 useSeoMeta({
   title: 'Categories',
@@ -33,4 +29,9 @@ const headerStore = useHeaderStore()
 onBeforeMount(() => {
   headerStore.setHeaders('Categories', 'Manage your categories here.')
 })
+
+const searchQuery = ref('')
+const handleSearch = (value: string) => {
+  searchQuery.value = value
+}
 </script>

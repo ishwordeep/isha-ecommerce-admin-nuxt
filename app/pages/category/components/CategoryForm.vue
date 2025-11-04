@@ -65,17 +65,10 @@
     </template>
     <template v-if="!fetching" #footer="{ close }">
       <div class="flex w-full justify-end gap-2">
+        <UButton :disabled="isSubmitting" label="Cancel" variant="outline" @click="close" />
         <UButton
-          :disabled="isSubmitting"
-          label="Cancel"
-          color="neutral"
-          variant="outline"
-          @click="close"
-        />
-        <UButton
-          :loading="true"
+          :loading="isSubmitting"
           label="Submit"
-          color="neutral"
           type="submit"
           form="category-form"
           :disabled="isSubmitting"
@@ -186,6 +179,7 @@ const onSubmit = async () => {
       description: `Failed to ${isAdd ? 'add' : 'update'} category`,
     })
   }
+
   isSubmitting.value = false
   categoryStore.reset()
 }

@@ -1,5 +1,5 @@
 import AxiosService from './axios.service'
-import type { PaginationInterface } from '~/services/index.interface'
+import type { PaginationInterface, QueryInterface } from '~/services/index.interface'
 import type { CategoryInterface } from '~/services/category.service'
 
 export interface ProductInterface {
@@ -46,14 +46,10 @@ class ProductService {
   async fetchProducts({
     page,
     limit,
-    query,
-  }: {
-    page: number
-    limit: number
-    query?: string
-  }): Promise<ProductServiceResponse<ProductListResponse>> {
+    search,
+  }: QueryInterface): Promise<ProductServiceResponse<ProductListResponse>> {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) })
-    if (query) params.append('query', query)
+    if (search) params.append('search', search)
     const url = `/product?${params.toString()}`
     return await AxiosService.get<ProductListResponse>(url)
   }

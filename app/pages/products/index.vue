@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex items-center justify-between gap-2">
-      <div></div>
+      <UiSearchInput :delay="500" :loading="true" @search="handleSearch" />
       <UButton as="a" href="/products/add" label="Add Product" />
     </div>
-    <ProductTable />
+    <ProductTable :search="searchQuery" />
   </div>
 </template>
 
@@ -19,12 +19,16 @@ definePageMeta({
 const headerStore = useHeaderStore()
 
 onBeforeMount(() => {
-  headerStore.setHeaders('Product', 'Manage your products here')
+  headerStore.setHeaders('Products', 'Manage your products here')
+})
+useSeoMeta({
+  title: 'Products',
+  description: 'Manage your products here',
+  ogTitle: 'Products',
 })
 
-useSeoMeta({
-  title: 'Product',
-  description: 'Manage your products here',
-  ogTitle: 'Product',
-})
+const searchQuery = ref('')
+const handleSearch = (value: string) => {
+  searchQuery.value = value
+}
 </script>

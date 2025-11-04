@@ -2,8 +2,8 @@
   <div>
     <!-- Dropzone Area -->
     <div
-      class="relative flex cursor-pointer items-center justify-center rounded-xl border-2 border-dashed border-gray-300 text-center transition hover:bg-gray-50 dark:hover:bg-gray-800"
-      :class="containerClass"
+      class="relative flex cursor-pointer items-center justify-center rounded-xl border-gray-300 text-center transition hover:bg-gray-50 dark:hover:bg-gray-800"
+      :class="[containerClass, isMultiple || !singleImageUrl ? 'border-2 border-dashed' : '']"
       @dragover.prevent="isDragging = true"
       @dragleave.prevent="isDragging = false"
       @drop.prevent="handleDrop"
@@ -90,9 +90,9 @@
       <div
         v-for="(url, idx) in multipleImageUrls"
         :key="idx"
-        class="relative h-32 w-32 rounded-lg border-2 border-gray-200"
+        class="relative h-32 w-32 rounded-md border-2 border-gray-200"
       >
-        <img :src="url" alt="Uploaded" class="h-full w-full object-cover" />
+        <img :src="url" alt="Uploaded" class="h-full w-full rounded-md object-cover" />
         <UButton
           class="absolute -top-2 -right-2 rounded-full"
           @click="remove(idx)"

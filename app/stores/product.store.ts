@@ -102,14 +102,14 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const fetchProducts = async ({ page = 1, limit = 2, query = '' }) => {
+  const fetchProducts = async ({ page = 1, limit = 2, search = '' }) => {
     isLoading.value = true
 
     try {
       const response = await ProductService.fetchProducts({
         page,
         limit,
-        query,
+        search,
       })
       if (response.data?.data) {
         products.value = response.data.data

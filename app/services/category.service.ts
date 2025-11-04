@@ -1,5 +1,5 @@
 import AxiosService from './axios.service'
-import type { PaginationInterface } from '~/services/index.interface'
+import type { PaginationInterface, QueryInterface } from '~/services/index.interface'
 
 export interface CategoryInterface {
   _id: string
@@ -47,14 +47,10 @@ class CategoryService {
   async fetchCategories({
     page,
     limit,
-    query,
-  }: {
-    page: number
-    limit: number
-    query: string
-  }): Promise<CategoryServiceResponse<CategoryListResponse>> {
+    search,
+  }: QueryInterface): Promise<CategoryServiceResponse<CategoryListResponse>> {
     let url = `/category?page=${page}&limit=${limit}`
-    if (query) url += `&query=${query}`
+    if (search) url += `&search=${search}`
     return await AxiosService.get<CategoryListResponse>(url)
   }
 
