@@ -25,7 +25,7 @@ export const useProductStore = defineStore('product', {
   },
 
   actions: {
-    async fetchProducts(page = 1, limit = 20, query = '') {
+    async fetchProducts({ page = 1, limit = 2, query = '' }) {
       this.loading = true
       try {
         const response = await ProductService.fetchProducts({

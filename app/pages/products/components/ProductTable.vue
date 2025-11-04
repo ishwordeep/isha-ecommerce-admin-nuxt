@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { h, resolveComponent } from 'vue'
+import { h, resolveComponent, watch } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
 
 import DeleteProduct from '~/pages/products/components/DeleteProduct.vue'
@@ -9,6 +9,22 @@ const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
 const productStore = useProductStore()
 const openDelete = ref(false)
+
+const pagination = reactive({
+  page: 1,
+  limit: 20,
+  query: '',
+})
+
+watch(
+  () => [pagination.page, pagination.limit, pagination.query],
+  async () => {
+    states.fetching = true
+    await productStore.fetchProducts(pagination)
+    states.fetching = false
+  }
+)
+
 const columns: TableColumn<ProductInterface>[] = [
   {
     accessorKey: 's.n',
@@ -70,7 +86,7 @@ const states = reactive({
 
 onMounted(async () => {
   states.fetching = true
-  await productStore.fetchProducts()
+  await productStore.fetchProducts(pagination)
   states.fetching = false
 })
 const handleDelete = async (row: ProductInterface) => {
@@ -108,10 +124,9 @@ const handleDelete = async (row: ProductInterface) => {
   </div>
   <div class="border-default flex justify-end pt-4">
     <UPagination
-      :default-page="productStore?.pagination?.page"
-      :items-per-page="10"
-      :total="20"
-      @update:page="(p) => table?.tableApi?.setPageIndex(p - 1)"
+      v-model:page="pagination.page"
+      :items-per-page="pagination.limit"
+      :total="productStore.pagination?.total || 0"
     />
   </div>
   <DeleteProduct
