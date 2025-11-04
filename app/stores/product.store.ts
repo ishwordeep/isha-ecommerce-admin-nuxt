@@ -217,13 +217,20 @@ export const useProductStore = defineStore('product', () => {
   }
 
   const fetchByFlag = async (flag: ProductFlag) => {
+    if (isLoading.value) return
+
+    isLoading.value = true
+
     try {
       const response = await ProductService.getProductsByFlag(flag)
+
       if (response.data?.data) {
-        newArrivals.value = response.data.data
+        flagCollections.value[flag] = response.data.data
+      } else {
+        flagCollections.value[flag] = []
       }
     } catch (error) {
-      console.error('Failed to fetch products:', error)
+      console.error(`Failed to fetch ${flag} products:`, error)
     } finally {
       isLoading.value = false
     }

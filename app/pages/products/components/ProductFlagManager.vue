@@ -110,7 +110,6 @@
 </template>
 
 <script setup lang="ts">
-import { useHeaderStore } from '~/stores/header.store'
 import { useProductStore } from '~/stores/product.store'
 import { useCategoryStore } from '~/stores/category.store'
 import type { ProductInterface } from '~/services/product.service'

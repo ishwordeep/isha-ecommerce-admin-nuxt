@@ -106,7 +106,7 @@ class ProductService {
     flag: ProductFlag,
     { ids }: UpdateFlagPayload
   ): Promise<ProductServiceResponse<ProductListResponse>> {
-    return await AxiosService.patch<ProductListResponse>(`/products/update/${flag}`, { ids })
+    return await AxiosService.patch<ProductListResponse>(`/product/update/${flag}`, { ids })
   }
 
   /**
