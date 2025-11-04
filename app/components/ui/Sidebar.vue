@@ -36,6 +36,14 @@ const items: NavigationMenuItem[][] = [
           label: 'New Arrivals',
           to: '/products/new-arrivals',
         },
+        {
+          label: 'Trending',
+          to: '/products/trending',
+        },
+        {
+          label: 'Featured',
+          to: '/products/featured',
+        },
       ],
     },
   ],

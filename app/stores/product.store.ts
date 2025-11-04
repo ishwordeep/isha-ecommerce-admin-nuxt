@@ -1,7 +1,7 @@
 // stores/product.store.ts
 import { defineStore } from 'pinia'
 import { ref, reactive, computed } from 'vue'
-import ProductService from '~/services/product.service'
+import ProductService, { type ProductFlag } from '~/services/product.service'
 import type { ProductInterface } from '~/services/product.service'
 import { useCategoryStore } from './category.store'
 import type { PaginationInterface } from '~/services/index.interface'
@@ -67,6 +67,8 @@ export const useProductStore = defineStore('product', () => {
   const isLoading = ref(false)
   const isSubmitting = ref(false)
   const selectedProduct = ref<ProductInterface | null>(null)
+  const productByCategory = ref<ProductInterface[]>([])
+  const newArrivals = ref<ProductInterface[]>([])
   const list = ref<ProductInterface[]>([])
   const products = ref<ProductInterface[]>([])
   const pagination = ref<PaginationInterface | null>(null)
@@ -75,6 +77,12 @@ export const useProductStore = defineStore('product', () => {
 
   const isAddMode = computed(() => mode.value === 'add')
   const isEditMode = computed(() => mode.value === 'edit')
+
+  const flagCollections = ref({
+    new: [] as ProductInterface[],
+    featured: [] as ProductInterface[],
+    trending: [] as ProductInterface[],
+  })
 
   const initializeForAdd = () => {
     mode.value = 'add'
@@ -114,6 +122,21 @@ export const useProductStore = defineStore('product', () => {
       if (response.data?.data) {
         products.value = response.data.data
         pagination.value = response.data.pagination
+      }
+    } catch (error) {
+      console.error('Failed to fetch products:', error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const fetchProductsByCategory = async (id: string) => {
+    isLoading.value = true
+
+    try {
+      const response = await ProductService.getProductsByCategory(id)
+      if (response.data?.data) {
+        productByCategory.value = response.data.data
       }
     } catch (error) {
       console.error('Failed to fetch products:', error)
@@ -181,6 +204,42 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
+  const saveByFlag = async ({ flag, ids }: { flag: ProductFlag; ids: string[] }) => {
+    isSubmitting.value = true
+    try {
+      const res = await ProductService.saveProductsByFlag(flag, { ids })
+      if (res?.data?.success) {
+      }
+      return res
+    } finally {
+      isSubmitting.value = false
+    }
+  }
+
+  const fetchByFlag = async (flag: ProductFlag) => {
+    try {
+      const response = await ProductService.getProductsByFlag(flag)
+      if (response.data?.data) {
+        newArrivals.value = response.data.data
+      }
+    } catch (error) {
+      console.error('Failed to fetch products:', error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
+  const addToFlagCollection = (flag: ProductFlag, product: ProductInterface) => {
+    const collection = flagCollections.value[flag]
+    if (!collection.some((p) => p._id === product._id)) {
+      collection.push(product)
+    }
+  }
+
+  const removeFromFlagCollection = (flag: ProductFlag, id: string) => {
+    flagCollections.value[flag] = flagCollections.value[flag].filter((p) => p._id !== id)
+  }
+
   const reset = () => {
     initializeForAdd()
     selectedProduct.value = null
@@ -191,6 +250,7 @@ export const useProductStore = defineStore('product', () => {
     isSubmitting: readonly(isSubmitting),
     selectedProduct,
     products,
+    productByCategory,
     pagination,
     list: readonly(list),
 
@@ -198,8 +258,9 @@ export const useProductStore = defineStore('product', () => {
     mode: readonly(mode),
     isAddMode,
     isEditMode,
-
+    flagCollections,
     fetchProducts,
+    fetchProductsByCategory,
     initializeForAdd,
     initializeForEdit,
     resetToOriginal,
@@ -208,5 +269,10 @@ export const useProductStore = defineStore('product', () => {
     updateProduct,
     deleteProduct,
     reset,
+    newArrivals,
+    saveByFlag,
+    fetchByFlag,
+    addToFlagCollection,
+    removeFromFlagCollection,
   }
 })

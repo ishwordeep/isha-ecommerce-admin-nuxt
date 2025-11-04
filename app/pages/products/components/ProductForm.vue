@@ -204,7 +204,7 @@ const categoryList = computed(
   () =>
     categoryStore.list?.map((c) => ({
       label: c.name,
-      value: c.id, // we store name in form, map to ID on submit
+      value: c._id, // we store name in form, map to ID on submit
     })) ?? []
 )
 

@@ -2,6 +2,12 @@ import AxiosService from './axios.service'
 import type { PaginationInterface, QueryInterface } from '~/services/index.interface'
 import type { CategoryInterface } from '~/services/category.service'
 
+export type ProductFlag = 'new' | 'featured' | 'trending'
+
+interface UpdateFlagPayload {
+  ids: string[]
+}
+
 export interface ProductInterface {
   _id?: string
   name?: string
@@ -61,6 +67,12 @@ class ProductService {
     return await AxiosService.get<ProductItemResponse>(`/product/${id}`)
   }
 
+  async getProductsByCategory(
+    categoryId: string
+  ): Promise<ProductServiceResponse<ProductListResponse>> {
+    return await AxiosService.get<ProductListResponse>(`/product/category/${categoryId}`)
+  }
+
   /**
    * Add Categories
    */
@@ -85,6 +97,23 @@ class ProductService {
    */
   async deleteProduct(id: string): Promise<ProductServiceResponse<ProductItemResponse>> {
     return await AxiosService.delete<ProductItemResponse>(`/product/${id}`)
+  }
+
+  /**
+   * Save products under a specific flag (new, featured, trending)
+   */
+  async saveProductsByFlag(
+    flag: ProductFlag,
+    { ids }: UpdateFlagPayload
+  ): Promise<ProductServiceResponse<ProductListResponse>> {
+    return await AxiosService.patch<ProductListResponse>(`/products/update/${flag}`, { ids })
+  }
+
+  /**
+   * Get products by flag
+   */
+  async getProductsByFlag(flag: ProductFlag): Promise<ProductServiceResponse<ProductListResponse>> {
+    return await AxiosService.get<ProductListResponse>(`/product/flag/${flag}`)
   }
 }
 
