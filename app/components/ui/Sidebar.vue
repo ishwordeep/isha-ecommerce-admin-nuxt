@@ -1,93 +1,134 @@
+<template>
+  <nav
+    class="h-screen border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
+    :class="className"
+  >
+    <div class="border-b-default flex items-center gap-2 border-b p-4">
+      <img :src="Logo" class="h-14 w-auto shrink-0" />
+      <p v-if="settingStore.setting?.name" class="line-clamp-1 text-lg font-bold">
+        {{ settingStore.setting?.name }}
+      </p>
+    </div>
+
+    <div class="flex flex-col gap-4 overflow-y-auto p-4">
+      <div v-for="(item, index) in menuItems" :key="index">
+        <!-- Items with children (collapsible) -->
+        <template v-if="item.children">
+          <UAccordion
+            :key="item.value"
+            :items="[
+              {
+                label: item.label,
+                icon: item.icon,
+                defaultOpen: item.defaultOpen,
+                slot: `content-${index}`,
+              },
+            ]"
+            v-model="active"
+            :ui="{
+              trigger:
+                'group flex-1 flex items-center gap-1.5 font-medium text-sm focus-visible:outline-primary min-w-0 px-3 py-2 hover:bg-primary hover:text-white rounded-md text-md data-[state=open]:text-white data-[state=open]:bg-primary',
+              leadingIcon: 'mr-1',
+            }"
+          >
+            <template #[`content-${index}`]>
+              <div class="space-y-1 py-2 pl-4">
+                <ULink
+                  v-for="(child, childIndex) in item.children"
+                  :key="childIndex"
+                  :to="child.to"
+                  active-class="bg-primary text-white"
+                  inactive-class="text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white"
+                  class="block rounded-md px-3 py-2 text-sm transition-colors hover:text-white"
+                  @click="emit('navigate')"
+                >
+                  {{ child.label }}
+                </ULink>
+              </div>
+            </template>
+          </UAccordion>
+        </template>
+
+        <!-- Simple items without children -->
+        <template v-else>
+          <ULink
+            :to="item.to"
+            active-class="bg-primary text-white"
+            inactive-class="text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white"
+            class="flex items-center gap-3 rounded-md px-3 py-2 transition-colors hover:text-white"
+            @click="emit('navigate')"
+          >
+            <UIcon :name="item.icon" class="h-5 w-5" />
+            <span>{{ item.label }}</span>
+          </ULink>
+        </template>
+      </div>
+    </div>
+  </nav>
+</template>
+
 <script setup lang="ts">
-import type { NavigationMenuItem } from '@nuxt/ui'
+import Logo from '~/assets/images/logo.jpg'
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+
+defineProps({
+  className: String,
+})
+
+const emit = defineEmits(['navigate'])
+
+const active = ref('')
 
 const route = useRoute()
+const settingStore = useSettingStore()
 
-const items: NavigationMenuItem[][] = [
-  [
-    {
-      label: 'Home',
-      icon: 'i-lucide-house',
-      to: '/',
-    },
-    {
-      label: 'Sliders',
-      icon: 'i-lucide-images',
-      to: '/sliders',
-    },
-    {
-      label: 'Category',
-      icon: 'i-lucide-grid-2x2',
-      to: '/category',
-    },
+// Reactive check for /products routes
+const isProductsRoute = computed(() => route.path.startsWith('/products'))
 
-    {
-      label: 'Products',
-      icon: 'i-lucide-shopping-cart',
-      get defaultOpen() {
-        return isProducts.value
-      },
-      children: [
-        {
-          label: 'Information',
-          to: '/products',
-        },
-        {
-          label: 'New Arrivals',
-          to: '/products/new-arrivals',
-        },
-        {
-          label: 'Trending',
-          to: '/products/trending',
-        },
-        {
-          label: 'Featured',
-          to: '/products/featured',
-        },
-      ],
-    },
-  ],
+// Define menu item types properly
+interface MenuItemBase {
+  label: string
+  icon: string
+  to?: string
+  defaultOpen?: boolean
+  children?: { label: string; to: string }[]
+}
+
+const menuItems: MenuItemBase[] = [
+  {
+    label: 'Home',
+    icon: 'i-lucide-house',
+    to: '/',
+  },
+  {
+    label: 'Sliders',
+    icon: 'i-lucide-images',
+    to: '/slider',
+  },
+  {
+    label: 'Category',
+    icon: 'i-lucide-grid-2x2',
+    to: '/category',
+  },
+  {
+    label: 'Products',
+    icon: 'i-lucide-shopping-cart',
+    value: '/products',
+    defaultOpen: isProductsRoute.value, // Reactively open if on /products
+    children: [
+      { label: 'Information', to: '/products' },
+      { label: 'New Arrivals', to: '/products/new-arrivals' },
+      { label: 'Trending', to: '/products/trending' },
+      { label: 'Featured', to: '/products/featured' },
+    ],
+  },
+  {
+    label: 'Orders',
+    icon: 'i-lucide-shopping-cart',
+    to: '/orders',
+  },
 ]
 
-const isProducts = computed(() => {
-  return route.path.startsWith('/products')
-})
+watch()
 </script>
-
-<template>
-  <UDashboardGroup class="top-0 lg:sticky lg:h-[100dvh] lg:max-w-[250px] lg:min-w-[250px]">
-    <UDashboardSidebar style="width: 100%" :ui="{ footer: 'border-t border-default' }">
-      <template #default="{ collapsed }">
-        <UNavigationMenu
-          :key="route.path"
-          :collapsed="collapsed"
-          :items="items[0]"
-          orientation="vertical"
-          :ui="{
-            link: 'hover:bg-primary hover:text-white p-2.5 rounded-md my-2 data-active:bg-primary data-active:text-white',
-            childList: 'border-none',
-            linkLeadingIcon: 'group-hover:text-white group-data-active:text-white',
-          }"
-        />
-      </template>
-
-      <template #footer="{ collapsed }">
-        <UButton
-          :avatar="{
-            src: 'https://github.com/benjamincanac.png',
-          }"
-          :label="collapsed ? undefined : 'Benjamin'"
-          color="neutral"
-          variant="ghost"
-          class="w-full"
-          :block="collapsed"
-        />
-      </template>
-    </UDashboardSidebar>
-    <UDashboardPanel>
-      <template #header>
-        <UDashboardNavbar class="border-b-0 pt-4" />
-      </template>
-    </UDashboardPanel>
-  </UDashboardGroup>
-</template>

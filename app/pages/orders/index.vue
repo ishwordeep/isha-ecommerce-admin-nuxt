@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col gap-4">A</div>
+  <div>Orders</div>
 </template>
 
 <script setup lang="ts">
@@ -12,12 +12,11 @@ definePageMeta({
 const headerStore = useHeaderStore()
 
 onBeforeMount(() => {
-  headerStore.setHeaders('Sliders', 'Manage your sliders here')
+  headerStore.setHeaders('Orders', 'Manage your orders here')
 })
-
 useSeoMeta({
-  title: 'Sliders',
-  description: 'Manage your sliders here',
-  ogTitle: 'Sliders',
+  title: 'Orders',
+  description: 'Manage your orders here',
+  ogTitle: 'Orders',
 })
 </script>

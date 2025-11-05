@@ -3,6 +3,7 @@ export default defineAppConfig({
     formField: {
       slots: {
         container: 'mt-1 relative w-full',
+        labelWrapper: 'mb-1',
       },
     },
     input: {
@@ -10,7 +11,7 @@ export default defineAppConfig({
         size: 'lg',
       },
       slots: {
-        root: 'mt-1 relative w-full',
+        root: 'relative w-full',
       },
       variants: {
         size: {
@@ -25,7 +26,7 @@ export default defineAppConfig({
         size: 'xl',
       },
       slots: {
-        base: 'mt-1 relative w-full',
+        base: 'relative w-full',
       },
       variants: {
         size: {
@@ -40,7 +41,7 @@ export default defineAppConfig({
         size: 'xl',
       },
       slots: {
-        base: 'mt-1 relative w-full',
+        base: 'relative w-full',
       },
       variants: {
         size: {
@@ -55,7 +56,7 @@ export default defineAppConfig({
         size: 'xl',
       },
       slots: {
-        root: 'mt-1 relative w-full',
+        root: 'relative w-full',
       },
       variants: {
         size: {
@@ -69,13 +70,20 @@ export default defineAppConfig({
       defaultVariants: {
         size: 'xl',
       },
+      variants: {
+        size: {
+          xl: {
+            base: 'py-2.5',
+          },
+        },
+      },
     },
     inputNumber: {
       defaultVariants: {
         size: 'xl',
       },
       slots: {
-        root: 'mt-1 relative w-full',
+        root: 'relative w-full',
       },
       variants: {
         size: {
@@ -89,6 +97,11 @@ export default defineAppConfig({
       },
     },
     modal: {
+      slots: {
+        overlay: 'bg-black/60',
+      },
+    },
+    drawer: {
       slots: {
         overlay: 'bg-black/60',
       },

@@ -17,11 +17,13 @@
   </UApp>
 </template>
 <script setup lang="ts">
-const isInitializing = ref(true)
+import { useAuthStore } from '~/stores/auth.store'
+import { useSettingStore } from '~/stores/settings.store'
 
+const isInitializing = ref(true)
+const authStore = useAuthStore()
+const settingStore = useSettingStore()
 onMounted(async () => {
-  const authStore = useAuthStore()
-  const settingStore = useSettingStore()
   authStore.initAuth()
   if (!settingStore.setting && authStore.isAuthenticated) {
     await settingStore.fetchSetting()
@@ -31,4 +33,13 @@ onMounted(async () => {
 
   isInitializing.value = false
 })
+
+watch(
+  () => authStore.isAuthenticated,
+  async () => {
+    if (!settingStore.setting && authStore.isAuthenticated) {
+      await settingStore.fetchSetting()
+    }
+  }
+)
 </script>

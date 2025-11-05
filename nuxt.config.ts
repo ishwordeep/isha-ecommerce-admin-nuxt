@@ -1,13 +1,15 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
-import tailwindcss from '@tailwindcss/vite'
 import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
-  compatibilityDate: '2025-07-15',
+  compatibilityDate: '2024-11-01',
+
   devServer: {
-    port: 6001,
+    port: 4001,
+    host: 'localhost',
   },
+
   srcDir: 'app',
+
   app: {
     head: {
       title: 'Ecommerce | Admin',
@@ -20,24 +22,21 @@ export default defineNuxtConfig({
       link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
   },
+
   devtools: { enabled: true },
+
   runtimeConfig: {
     public: {
       apiUrl: '',
       secureCookies: process.env.NODE_ENV === 'production',
     },
   },
+
   modules: ['@nuxt/eslint', '@nuxt/image', '@nuxt/ui', '@nuxt/fonts', '@pinia/nuxt'],
+
   ui: {
     colorMode: false,
-    theme: {
-      defaultVariants: {
-        color: 'primary',
-      },
-    },
   },
+
   css: ['~/assets/css/main.css'],
-  vite: {
-    plugins: [tailwindcss()],
-  },
 })
