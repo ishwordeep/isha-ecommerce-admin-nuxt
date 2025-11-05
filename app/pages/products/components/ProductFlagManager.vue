@@ -2,7 +2,7 @@
 <template>
   <div class="flex flex-col gap-6">
     <div class="flex justify-end">
-      <UButton label="Save" @click="handleSave" />
+      <UButton label="Save" @click="handleSave" :loading="isSubmitting" />
     </div>
 
     <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
@@ -121,6 +121,7 @@ const props = defineProps<{
   icon: string
 }>()
 
+const toast = useToast()
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
 const selectedCategoryId = ref('')
@@ -134,6 +135,8 @@ const availableProducts = computed(() => {
 
 // Load data
 onBeforeMount(async () => {
+  productStore.productByCategory = null
+
   if (!collectionProducts.value?.length) {
     await productStore.fetchByFlag(props.flag)
   }
@@ -143,8 +146,8 @@ onBeforeMount(async () => {
   }
 })
 
-watch(selectedCategoryId, async (newVal) => {
-  if (newVal) {
+watch(selectedCategoryId, async (newVal, oldVal) => {
+  if (newVal !== oldVal) {
     await productStore.fetchProductsByCategory(newVal)
   }
 })
@@ -171,8 +174,26 @@ const handleSave = async () => {
   if (ids.length) {
     const response = await productStore.saveByFlag({ flag: props.flag, ids })
     if (response.data?.success) {
+      toast.add({
+        color: 'success',
+        title: 'Success',
+        description: `${props.title} updated successfully`,
+      })
+    } else {
+      toast.add({
+        color: 'error',
+        title: 'Error',
+        description: 'Something went wrong',
+      })
     }
+  } else {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'Select atlesat 1 product',
+    })
   }
+  isSubmitting.value = false
 }
 
 const formatPrice = (price?: number) => (price ? `$${price}` : '—')

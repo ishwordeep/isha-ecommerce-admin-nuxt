@@ -1,6 +1,7 @@
 <template>
   <ProductFlagManager
     flag="trending"
+    key="trending"
     :title="meta.title"
     description="Products currently in this collection"
     icon="i-lucide-clock"
