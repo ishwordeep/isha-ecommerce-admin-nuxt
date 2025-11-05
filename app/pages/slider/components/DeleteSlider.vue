@@ -5,11 +5,11 @@
       :close-on-esc="!isDeleting"
       :close-on-backdrop-click="!isDeleting"
       @update:open="onOpenUpdate"
-      title="Delete Category"
+      title="Delete Slider"
     >
       <template #body>
         <p class="text-sm text-gray-500">
-          Are you sure you want to delete this category? This action cannot be undone.
+          Are you sure you want to delete this slider? This action cannot be undone.
         </p>
       </template>
       <template #footer>
@@ -32,7 +32,7 @@ const props = defineProps({
   },
 })
 const isDeleting = ref(false)
-const categoryStore = useCategoryStore()
+const sliderStore = useSliderStore()
 
 const emit = defineEmits(['update:open'])
 
@@ -46,20 +46,20 @@ const onOpenUpdate = (val: boolean) => {
 
 const onSubmit = async () => {
   if (isDeleting.value) return
-  const id = categoryStore.selectedCategory?._id
+  const id = sliderStore.selectedSlider?._id
   if (!id) {
-    // No selected category; just close
+    // No selected slider; just close
     emit('update:open', false)
     return
   }
   try {
     isDeleting.value = true
-    const res = await categoryStore.deleteCategory(id)
+    const res = await sliderStore.deleteSlider(id)
     if (!res?.error) {
       emit('update:open', false)
     }
   } catch (e) {
-    console.error('Failed to delete category:', e)
+    console.error('Failed to delete slider:', e)
   } finally {
     isDeleting.value = false
   }
