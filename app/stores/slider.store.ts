@@ -11,6 +11,7 @@ export interface SliderForm {
   isActive: boolean
   image: string
   displayOrder: number
+  isButtonEnabled: boolean
   button: {
     title: string
     textColor: string
@@ -26,6 +27,7 @@ const mapProductToForm = (slider: SliderInterface | null): SliderForm => {
     isActive: slider.isActive ?? true,
     image: slider.image ?? '',
     displayOrder: slider.displayOrder ?? 0,
+    isButtonEnabled: slider.isButtonEnabled ?? false,
     button: {
       title: slider.button?.title ?? 'Shop Now',
       textColor: slider.button?.textColor ?? '#FFFFFF',
@@ -39,6 +41,7 @@ const emptyForm = (): SliderForm => ({
   isActive: true,
   image: '',
   displayOrder: 0,
+  isButtonEnabled: false,
   button: {
     title: 'Shop Now',
     textColor: '#FFFFFF',
@@ -81,20 +84,6 @@ export const useSliderStore = defineStore('slider', () => {
       Object.assign(formInputs, mapProductToForm(selectedSlider.value))
     } else {
       initializeForAdd()
-    }
-  }
-
-  const fetchListOnly = async () => {
-    isLoading.value = true
-    try {
-      const response = await SliderService.fetchSliderList()
-      if (response.data?.data) {
-        list.value = response.data.data
-      }
-    } catch (error) {
-      console.error('Failed to fetch sliders:', error)
-    } finally {
-      isLoading.value = false
     }
   }
 
@@ -219,7 +208,6 @@ export const useSliderStore = defineStore('slider', () => {
     formInputs,
     isAddMode,
     isEditMode,
-    fetchListOnly,
     fetchSliders,
     addSlider,
     updateSlider,

@@ -43,7 +43,8 @@
           <FileDropzone
             v-model="categoryStore.formInputs.image"
             upload-url="/upload/single"
-            containerClass="w-[150px] aspect-square max-h-[150px]"
+            containerClass="w-[150px] aspect-square srink-0"
+            helpText="'The ratio of 1:1 would be best."
           />
         </UFormField>
 
@@ -56,7 +57,7 @@
             orientation="horizontal"
             :items="[
               { label: 'Active', value: true },
-              { label: 'InActive', value: false },
+              { label: 'Inactive', value: false },
             ]"
             :ui="{ item: 'border-2' }"
           />

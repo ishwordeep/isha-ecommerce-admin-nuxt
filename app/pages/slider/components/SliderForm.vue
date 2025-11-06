@@ -8,6 +8,9 @@
       }
     "
     :dismissible="false"
+    :ui="{
+      content: 'max-w-2xl',
+    }"
   >
     <div v-show="fetching" class="flex h-full w-full items-center justify-center">
       <div
@@ -35,41 +38,53 @@
           />
         </UFormField>
 
-        <UFormField label="Button Text" name="buttonText">
-          <UInput v-model="sliderStore.formInputs.button.title" />
-        </UFormField>
+        <UCheckbox
+          size="xl"
+          label="Enable Button"
+          v-model="sliderStore.formInputs.isButtonEnabled"
+          :ui="{
+            root: 'flex items-center',
+            label: 'text-sm',
+          }"
+        />
 
-        <UFormField label="Button Text Color" name="buttonTextColor">
-          <UInput v-model="sliderStore.formInputs.button.textColor" :ui="{ trailing: 'pe-3' }">
-            <template #trailing>
-              <UPopover>
-                <span :style="textColor" class="border-default size-6 rounded-sm border-2" />
+        <template v-if="sliderStore.formInputs.isButtonEnabled">
+          <UFormField label="Button Text" name="buttonText">
+            <UInput v-model="sliderStore.formInputs.button.title" />
+          </UFormField>
 
-                <template #content>
-                  <UColorPicker v-model="sliderStore.formInputs.button.textColor" class="p-2" />
-                </template> </UPopover
-            ></template>
-          </UInput>
-        </UFormField>
+          <UFormField label="Button Text Color" name="buttonTextColor">
+            <UInput v-model="sliderStore.formInputs.button.textColor" :ui="{ trailing: 'pe-3' }">
+              <template #trailing>
+                <UPopover>
+                  <span :style="textColor" class="border-default size-6 rounded-sm border-2" />
 
-        <UFormField label="Button Background Color" name="buttonBackgroundColor">
-          <UInput v-model="sliderStore.formInputs.button.bgColor" :ui="{ trailing: 'pe-3' }">
-            <template #trailing>
-              <UPopover>
-                <span :style="bgColor" class="border-default size-6 rounded-sm border-2" />
+                  <template #content>
+                    <UColorPicker v-model="sliderStore.formInputs.button.textColor" class="p-2" />
+                  </template> </UPopover
+              ></template>
+            </UInput>
+          </UFormField>
 
-                <template #content>
-                  <UColorPicker v-model="sliderStore.formInputs.button.bgColor" class="p-2" />
-                </template> </UPopover
-            ></template>
-          </UInput>
-        </UFormField>
+          <UFormField label="Button Background Color" name="buttonBackgroundColor">
+            <UInput v-model="sliderStore.formInputs.button.bgColor" :ui="{ trailing: 'pe-3' }">
+              <template #trailing>
+                <UPopover>
+                  <span :style="bgColor" class="border-default size-6 rounded-sm border-2" />
 
+                  <template #content>
+                    <UColorPicker v-model="sliderStore.formInputs.button.bgColor" class="p-2" />
+                  </template> </UPopover
+              ></template>
+            </UInput>
+          </UFormField>
+        </template>
         <UFormField label="Image" name="image" required>
           <FileDropzone
             v-model="sliderStore.formInputs.image"
             upload-url="/upload/single"
             containerClass="w-full aspect-video"
+            helpText="The ration of 16:9 would be best"
           />
         </UFormField>
 
@@ -82,7 +97,7 @@
             orientation="horizontal"
             :items="[
               { label: 'Active', value: true },
-              { label: 'InActive', value: false },
+              { label: 'Inactive', value: false },
             ]"
             :ui="{ item: 'border-2' }"
           />

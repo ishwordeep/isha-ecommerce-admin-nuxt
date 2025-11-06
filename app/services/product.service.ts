@@ -53,9 +53,11 @@ class ProductService {
     page,
     limit,
     search,
+    category,
   }: QueryInterface): Promise<ProductServiceResponse<ProductListResponse>> {
     const params = new URLSearchParams({ page: String(page), limit: String(limit) })
     if (search) params.append('search', search)
+    if (category) params.append('category', category)
     const url = `/product?${params.toString()}`
     return await AxiosService.get<ProductListResponse>(url)
   }
@@ -68,9 +70,12 @@ class ProductService {
   }
 
   async getProductsByCategory(
-    categoryId: string
+    categoryId: string,
+    search: string
   ): Promise<ProductServiceResponse<ProductListResponse>> {
-    return await AxiosService.get<ProductListResponse>(`/product/category/${categoryId}`)
+    let url = `/product/category/${categoryId}`
+    if (search) url += `?search=${search}`
+    return await AxiosService.get<ProductListResponse>(url)
   }
 
   /**

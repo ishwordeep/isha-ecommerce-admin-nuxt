@@ -22,7 +22,7 @@ const mapProductToForm = (category: CategoryInterface | null): CategoryForm => {
     description: category.description ?? '',
     isActive: category.isActive ?? true,
     image: category.image ?? '',
-    displayOrder: category.displayOrder ?? 0,
+    displayOrder: category.displayOrder ?? 1,
   }
 }
 
@@ -31,7 +31,7 @@ const emptyForm = (): CategoryForm => ({
   description: '',
   isActive: true,
   image: '',
-  displayOrder: 0,
+  displayOrder: 1,
 })
 
 export const useCategoryStore = defineStore('category', () => {

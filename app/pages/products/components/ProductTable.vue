@@ -13,9 +13,11 @@ const openDelete = ref(false)
 const props = withDefaults(
   defineProps<{
     search?: string
+    category?: string
   }>(),
   {
     search: '',
+    category: '',
   }
 )
 
@@ -25,12 +27,13 @@ const pagination = reactive({
 })
 
 watch(
-  () => [pagination.page, pagination.limit, props.search],
+  () => [pagination.page, pagination.limit, props.search, props.category],
   async () => {
     states.fetching = true
     await productStore.fetchProducts({
       ...pagination,
       search: props.search,
+      category: props.category,
     })
     states.fetching = false
   }
@@ -70,6 +73,7 @@ const columns: TableColumn<ProductInterface>[] = [
   {
     accessorKey: 'discount',
     header: 'Discount',
+    id: 'discount',
   },
   {
     accessorKey: 'isActive',
@@ -122,8 +126,19 @@ const handleDelete = async (row: ProductInterface) => {
       :loading="states.fetching"
     >
       <template #image-cell="{ row }">
-        <NuxtImg :src="row.original.image" class="aspect-square w-24 min-w-16 object-fill" />
+        <NuxtImg
+          v-if="row.original.image"
+          :src="row.original.image"
+          class="aspect-square w-24 min-w-16 object-fill"
+        />
+        <div v-else class="border-default aspect-square w-24 min-w-16 border object-fill"></div>
       </template>
+
+      <template #discount-cell="{ row }">
+        <span v-if="row.original.discount || 0 > 0"> {{ row.original.discount }}% </span>
+        <span v-else> - </span>
+      </template>
+
       <template #actions-cell="{ row }">
         <div class="flex gap-2">
           <UButton

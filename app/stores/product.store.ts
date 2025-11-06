@@ -67,7 +67,7 @@ export const useProductStore = defineStore('product', () => {
   const isLoading = ref(false)
   const isSubmitting = ref(false)
   const selectedProduct = ref<ProductInterface | null>(null)
-  const productByCategory = ref<ProductInterface[]>([])
+  const productByCategory = ref<ProductInterface[] | null>(null)
   const newArrivals = ref<ProductInterface[]>([])
   const list = ref<ProductInterface[]>([])
   const products = ref<ProductInterface[]>([])
@@ -110,14 +110,15 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const fetchProducts = async ({ page = 1, limit = 2, search = '' }) => {
+  const fetchProducts = async ({ page = 1, limit = 2, search = '', category = '' }) => {
     isLoading.value = true
-
+    console.log(category)
     try {
       const response = await ProductService.fetchProducts({
         page,
         limit,
         search,
+        category,
       })
       if (response.data?.data) {
         products.value = response.data.data
@@ -130,11 +131,11 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const fetchProductsByCategory = async (id: string) => {
+  const fetchProductsByCategory = async (id: string, search: string) => {
     isLoading.value = true
 
     try {
-      const response = await ProductService.getProductsByCategory(id)
+      const response = await ProductService.getProductsByCategory(id, search)
       if (response.data?.data) {
         productByCategory.value = response.data.data
       }

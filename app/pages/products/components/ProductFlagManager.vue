@@ -11,7 +11,7 @@
         <div class="border-b border-gray-200 p-4">
           <h2 class="mb-3 text-lg font-semibold text-gray-900">Add Products</h2>
           <div class="flex items-center justify-between gap-4">
-            <UiSearchInput />
+            <UiSearchInput :delay="500" :loading="true" @search="handleSearch" />
             <USelect
               class="max-w-[250px]"
               v-model="selectedCategoryId"
@@ -82,11 +82,16 @@
               class="flex items-center justify-between rounded-lg border border-gray-200 bg-gray-50 p-3"
             >
               <div class="flex items-center gap-3">
-                <img
+                <NuxtImg
+                  v-if="product.image"
                   :src="product.image"
                   :alt="product._id"
                   class="aspect-square max-w-[50px] min-w-[50px] object-cover"
                 />
+                <div
+                  v-else
+                  class="border-default aspect-square max-w-[50px] min-w-[50px] border"
+                ></div>
                 <div>
                   <div class="font-medium text-gray-900">{{ product.name }}</div>
                   <div class="text-sm text-gray-500">
@@ -126,6 +131,8 @@ const productStore = useProductStore()
 const categoryStore = useCategoryStore()
 const selectedCategoryId = ref('')
 const isSubmitting = ref(false)
+const searchQuery = ref('')
+
 // Dynamic state based on flag
 const collectionProducts = computed(() => productStore.flagCollections[props.flag])
 const availableProducts = computed(() => {
@@ -146,11 +153,12 @@ onBeforeMount(async () => {
   }
 })
 
-watch(selectedCategoryId, async (newVal, oldVal) => {
-  if (newVal !== oldVal) {
-    await productStore.fetchProductsByCategory(newVal)
+watch(
+  () => [selectedCategoryId.value, searchQuery.value],
+  async () => {
+    await productStore.fetchProductsByCategory(selectedCategoryId.value, searchQuery.value)
   }
-})
+)
 
 const categoryList = computed(
   () =>
@@ -197,4 +205,8 @@ const handleSave = async () => {
 }
 
 const formatPrice = (price?: number) => (price ? `$${price}` : '—')
+
+const handleSearch = (value: string) => {
+  searchQuery.value = value
+}
 </script>

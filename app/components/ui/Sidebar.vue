@@ -90,6 +90,7 @@ const isProductsRoute = computed(() => route.path.startsWith('/products'))
 interface MenuItemBase {
   label: string
   icon: string
+  value?: string
   to?: string
   defaultOpen?: boolean
   children?: { label: string; to: string }[]

@@ -33,7 +33,7 @@
               />
             </UFormField>
 
-            <UFormField label="Price" name="price" required>
+            <UFormField label="Price (in $)" name="price" required>
               <UInputNumber
                 :min="1"
                 v-model="productStore.formInputs.price"
@@ -81,7 +81,13 @@
             </UFormField>
 
             <UFormField label="Tags" name="tags" required>
-              <UInputTags v-model="productStore.formInputs.tags" placeholder="Add tags" />
+              <UInputTags
+                v-model="productStore.formInputs.tags"
+                placeholder="Add tags"
+                addOnBlur
+                addOnPaste
+                addOnTab
+              />
             </UFormField>
 
             <UFormField label="Is New?" name="isNew">
@@ -116,6 +122,7 @@
                 v-model="productStore.formInputs.image"
                 upload-url="/upload/single"
                 containerClass="w-[150px] aspect-square max-h-[150px]"
+                helpText="'The ratio of 1:1 would be best."
               />
             </UFormField>
 
@@ -142,6 +149,7 @@
               upload-url="/upload/multiple"
               fieldName="images"
               containerClass="min-h-48"
+              helpText="'The ratio of 1:1 would be best."
             />
           </UFormField>
         </template>

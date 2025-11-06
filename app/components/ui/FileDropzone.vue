@@ -84,6 +84,7 @@
         <p class="mt-2 text-sm text-white">Uploading...</p>
       </div>
     </div>
+    <span class="text-muted text-xs italic" v-if="helpText"> {{ helpText }} </span>
 
     <!-- Multiple Image Previews -->
     <div v-if="isMultiple && multipleImageUrls.length" class="mt-4 flex flex-wrap gap-3">
@@ -116,6 +117,7 @@ interface Props {
   containerClass?: string
   message?: string
   showMessage?: boolean
+  helpText?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {

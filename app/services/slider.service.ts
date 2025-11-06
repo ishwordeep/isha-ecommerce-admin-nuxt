@@ -4,14 +4,14 @@ import type { SliderForm } from '~/stores/slider.store'
 
 export interface SliderInterface {
   _id: string
-  name?: string
   slug?: string
-  description?: string
   isActive?: boolean
   image?: string
   displayOrder?: number
   createdAt?: string
   updatedAt?: string
+  link?: string
+  isButtonEnabled?: boolean
   button?: {
     title: string
     textColor: string
