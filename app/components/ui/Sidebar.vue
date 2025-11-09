@@ -4,7 +4,8 @@
     :class="className"
   >
     <div class="border-b-default flex items-center gap-2 border-b p-4">
-      <img :src="Logo" class="h-14 w-auto shrink-0" />
+      <!-- <NuxtImg :src="settingStore.setting?.logoUrl" class="h-14 w-auto shrink-0" /> -->
+      <UIcon name="i-lucide-frame" class="h-8 w-8 shrink-0" />
       <p v-if="settingStore.setting?.name" class="line-clamp-1 text-lg font-bold">
         {{ settingStore.setting?.name }}
       </p>
@@ -16,15 +17,14 @@
         <template v-if="item.children">
           <UAccordion
             :key="item.value"
+            v-model:open="accordionState[index]"
             :items="[
               {
                 label: item.label,
                 icon: item.icon,
-                defaultOpen: item.defaultOpen,
                 slot: `content-${index}`,
               },
             ]"
-            v-model="active"
             :ui="{
               trigger:
                 'group flex-1 flex items-center gap-1.5 font-medium text-sm focus-visible:outline-primary min-w-0 px-3 py-2 hover:bg-primary hover:text-white rounded-md text-md data-[state=open]:text-white data-[state=open]:bg-primary',
@@ -70,7 +70,7 @@
 <script setup lang="ts">
 import Logo from '~/assets/images/logo.jpg'
 import { useRoute } from 'vue-router'
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 
 defineProps({
   className: String,
@@ -78,25 +78,16 @@ defineProps({
 
 const emit = defineEmits(['navigate'])
 
-const active = ref('')
-
 const route = useRoute()
 const settingStore = useSettingStore()
 
 // Reactive check for /products routes
 const isProductsRoute = computed(() => route.path.startsWith('/products'))
 
-// Define menu item types properly
-interface MenuItemBase {
-  label: string
-  icon: string
-  value?: string
-  to?: string
-  defaultOpen?: boolean
-  children?: { label: string; to: string }[]
-}
+// Track accordion open state
+const accordionState = ref<Record<number, boolean>>({})
 
-const menuItems: MenuItemBase[] = [
+const menuItems = ref([
   {
     label: 'Home',
     icon: 'i-lucide-house',
@@ -116,7 +107,6 @@ const menuItems: MenuItemBase[] = [
     label: 'Products',
     icon: 'i-lucide-shopping-cart',
     value: '/products',
-    defaultOpen: isProductsRoute.value, // Reactively open if on /products
     children: [
       { label: 'Information', to: '/products' },
       { label: 'New Arrivals', to: '/products/new-arrivals' },
@@ -129,5 +119,23 @@ const menuItems: MenuItemBase[] = [
     icon: 'i-lucide-shopping-cart',
     to: '/orders',
   },
-]
+])
+
+// Initialize accordion state based on current route
+onMounted(() => {
+  menuItems.value.forEach((item, index) => {
+    if (item.children && item.value === '/products') {
+      accordionState.value[index] = isProductsRoute.value
+    }
+  })
+})
+
+// Watch route changes to update accordion state
+watch(isProductsRoute, (newValue) => {
+  menuItems.value.forEach((item, index) => {
+    if (item.children && item.value === '/products') {
+      accordionState.value[index] = newValue
+    }
+  })
+})
 </script>

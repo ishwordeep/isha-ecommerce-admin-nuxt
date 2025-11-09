@@ -24,7 +24,6 @@ const isInitializing = ref(true)
 const authStore = useAuthStore()
 const settingStore = useSettingStore()
 onMounted(async () => {
-  authStore.initAuth()
   if (!settingStore.setting && authStore.isAuthenticated) {
     await settingStore.fetchSetting()
   }
