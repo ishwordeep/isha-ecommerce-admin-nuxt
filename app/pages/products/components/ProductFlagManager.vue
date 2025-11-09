@@ -1,10 +1,6 @@
 <!-- components/admin/ProductFlagManager.vue -->
 <template>
   <div class="flex flex-col gap-6">
-    <div class="flex justify-end">
-      <UButton label="Save" @click="handleSave" :loading="isSubmitting" />
-    </div>
-
     <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
       <!-- Available Products -->
       <div class="rounded-lg border border-gray-200 bg-white shadow-sm">
@@ -111,6 +107,7 @@
         </div>
       </div>
     </div>
+    <UButton class="w-max" label="Save" @click="handleSave" :loading="isSubmitting" />
   </div>
 </template>
 

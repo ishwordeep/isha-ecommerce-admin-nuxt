@@ -164,7 +164,6 @@ onMounted(() => {
         accordionState.value[index] = isProductsRoute.value
       } else {
         // fall back to provided defaultOpen or false
-        // @ts-expect-error: defaultOpen may not exist on all items
         accordionState.value[index] = Boolean(item.defaultOpen)
       }
     }
