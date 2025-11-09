@@ -130,6 +130,4 @@ const menuItems: MenuItemBase[] = [
     to: '/orders',
   },
 ]
-
-watch()
 </script>
