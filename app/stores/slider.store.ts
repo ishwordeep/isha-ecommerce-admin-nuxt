@@ -7,12 +7,12 @@ import type { PaginationInterface } from '~/services/index.interface'
 type Mode = 'add' | 'edit'
 
 export interface SliderForm {
-  link: string
   isActive: boolean
   image: string
   displayOrder: number
   isButtonEnabled: boolean
   button: {
+    link: string
     title: string
     textColor: string
     bgColor: string
@@ -23,12 +23,12 @@ const mapProductToForm = (slider: SliderInterface | null): SliderForm => {
   if (!slider) return emptyForm()
 
   return {
-    link: slider.link ?? '',
     isActive: slider.isActive ?? true,
     image: slider.image ?? '',
     displayOrder: slider.displayOrder ?? 0,
     isButtonEnabled: slider.isButtonEnabled ?? false,
     button: {
+      link: slider.button?.link ?? '',
       title: slider.button?.title ?? 'Shop Now',
       textColor: slider.button?.textColor ?? '#FFFFFF',
       bgColor: slider.button?.bgColor ?? '#000000',
@@ -37,12 +37,12 @@ const mapProductToForm = (slider: SliderInterface | null): SliderForm => {
 }
 
 const emptyForm = (): SliderForm => ({
-  link: '',
   isActive: true,
   image: '',
   displayOrder: 0,
   isButtonEnabled: false,
   button: {
+    link: '',
     title: 'Shop Now',
     textColor: '#FFFFFF',
     bgColor: '#000000',

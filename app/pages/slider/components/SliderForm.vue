@@ -26,10 +26,6 @@
         id="slider-form"
         @submit="onSubmit"
       >
-        <UFormField label="Link" name="link">
-          <UInput v-model="sliderStore.formInputs.link" />
-        </UFormField>
-
         <UFormField label="Display Order" name="displayOrder">
           <UInputNumber
             :min="1"
@@ -49,6 +45,10 @@
         />
 
         <template v-if="sliderStore.formInputs.isButtonEnabled">
+          <UFormField label="Link" name="link">
+            <UInput v-model="sliderStore.formInputs.button.link" />
+          </UFormField>
+
           <UFormField label="Button Text" name="buttonText">
             <UInput v-model="sliderStore.formInputs.button.title" />
           </UFormField>

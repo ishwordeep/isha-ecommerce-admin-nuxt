@@ -10,9 +10,9 @@ export interface SliderInterface {
   displayOrder?: number
   createdAt?: string
   updatedAt?: string
-  link?: string
   isButtonEnabled?: boolean
   button?: {
+    link: string
     title: string
     textColor: string
     bgColor: string

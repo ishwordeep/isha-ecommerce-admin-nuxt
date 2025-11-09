@@ -1,5 +1,6 @@
 <template>
   <nav
+    ref="sidebarRef"
     class="h-screen border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
     :class="className"
   >
@@ -15,7 +16,7 @@
       <div v-for="(item, index) in menuItems" :key="index">
         <!-- Items with children (collapsible) -->
         <template v-if="item.children">
-          <UAccordion
+          <UCollapsible
             :key="item.value"
             v-model:open="accordionState[index]"
             :items="[
@@ -25,13 +26,24 @@
                 slot: `content-${index}`,
               },
             ]"
-            :ui="{
-              trigger:
-                'group flex-1 flex items-center gap-1.5 font-medium text-sm focus-visible:outline-primary min-w-0 px-3 py-2 hover:bg-primary hover:text-white rounded-md text-md data-[state=open]:text-white data-[state=open]:bg-primary',
-              leadingIcon: 'mr-1',
-            }"
+            :defaultOpen="item.defaultOpen"
           >
-            <template #[`content-${index}`]>
+            <ULink
+              :to="item.to"
+              class="group hover:bg-primary flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 transition-colors hover:text-white"
+              :class="accordionState[index] ? 'bg-primary text-white' : ''"
+              @click="emit('navigate')"
+            >
+              <div class="flex items-center gap-3">
+                <UIcon :name="item.icon" class="h-5 w-5" />
+                <span>{{ item.label }}</span>
+              </div>
+              <UIcon
+                name="i-lucide-chevron-down"
+                class="h-5 w-5 transition-transform duration-200 group-data-[state=open]:rotate-180"
+              />
+            </ULink>
+            <template #content>
               <div class="space-y-1 py-2 pl-4">
                 <ULink
                   v-for="(child, childIndex) in item.children"
@@ -46,7 +58,7 @@
                 </ULink>
               </div>
             </template>
-          </UAccordion>
+          </UCollapsible>
         </template>
 
         <!-- Simple items without children -->
@@ -70,7 +82,7 @@
 <script setup lang="ts">
 import Logo from '~/assets/images/logo.jpg'
 import { useRoute } from 'vue-router'
-import { computed, watch } from 'vue'
+import { computed, watch, ref, onMounted, onBeforeUnmount } from 'vue'
 
 defineProps({
   className: String,
@@ -86,6 +98,9 @@ const isProductsRoute = computed(() => route.path.startsWith('/products'))
 
 // Track accordion open state
 const accordionState = ref<Record<number, boolean>>({})
+
+// Ref for the sidebar (collapsible container)
+const sidebarRef = ref<HTMLElement | null>(null)
 
 const menuItems = ref([
   {
@@ -107,6 +122,7 @@ const menuItems = ref([
     label: 'Products',
     icon: 'i-lucide-shopping-cart',
     value: '/products',
+    defaultOpen: isProductsRoute.value,
     children: [
       { label: 'Information', to: '/products' },
       { label: 'New Arrivals', to: '/products/new-arrivals' },
@@ -116,18 +132,49 @@ const menuItems = ref([
   },
   {
     label: 'Orders',
-    icon: 'i-lucide-shopping-cart',
+    icon: 'i-lucide-package',
     to: '/orders',
   },
 ])
 
-// Initialize accordion state based on current route
+// Initialize accordion state based on current route and add outside-click handler
+// Outside click handler to close non-default-open collapsibles
+const handleDocumentClick = (e: MouseEvent) => {
+  const target = e.target as Node | null
+  const inside = target && sidebarRef.value ? sidebarRef.value.contains(target) : false
+
+  if (!inside) {
+    menuItems.value.forEach((item, index) => {
+      if (item.children) {
+        const isDefaultOpen =
+          item.value === '/products' ? isProductsRoute.value : Boolean((item as any).defaultOpen)
+        if (!isDefaultOpen) {
+          accordionState.value[index] = false
+        }
+      }
+    })
+  }
+}
+
 onMounted(() => {
+  // Initialize open state for all collapsibles
   menuItems.value.forEach((item, index) => {
-    if (item.children && item.value === '/products') {
-      accordionState.value[index] = isProductsRoute.value
+    if (item.children) {
+      if (item.value === '/products') {
+        accordionState.value[index] = isProductsRoute.value
+      } else {
+        // fall back to provided defaultOpen or false
+        // @ts-expect-error: defaultOpen may not exist on all items
+        accordionState.value[index] = Boolean(item.defaultOpen)
+      }
     }
   })
+
+  document.addEventListener('click', handleDocumentClick)
+})
+
+onBeforeUnmount(() => {
+  document.removeEventListener('click', handleDocumentClick)
 })
 
 // Watch route changes to update accordion state

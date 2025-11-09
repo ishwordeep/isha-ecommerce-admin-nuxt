@@ -84,7 +84,9 @@
         <p class="mt-2 text-sm text-white">Uploading...</p>
       </div>
     </div>
-    <span class="text-muted text-xs italic" v-if="helpText"> {{ helpText }} </span>
+    <span class="text-muted mb-1 text-xs italic" v-if="helpText"> {{ helpText }} </span>
+
+    <span class="block text-xs text-red-500 italic" v-if="error"> {{ error }} </span>
 
     <!-- Multiple Image Previews -->
     <div v-if="isMultiple && multipleImageUrls.length" class="mt-4 flex flex-wrap gap-3">
@@ -131,7 +133,7 @@ const fileInput = ref<HTMLInputElement | null>(null)
 const isDragging = ref(false)
 const isUploading = ref(false)
 const config = useRuntimeConfig()
-
+const error = ref<string | null>(null)
 // Determine if it's multiple or single
 const isMultiple = computed(() => Array.isArray(props.modelValue))
 
@@ -161,7 +163,7 @@ const handleDrop = (e: DragEvent) => {
 const uploadFiles = async (files: File[]) => {
   if (!files.length) return
   isUploading.value = true
-
+  error.value = null
   try {
     const formData = new FormData()
 
@@ -187,6 +189,7 @@ const uploadFiles = async (files: File[]) => {
     // Handle the response format: { success: true, data: "url" } or { success: true, data: ["url1", "url2"] }
     if (!response.success) {
       throw new Error(response.message || 'Upload failed')
+      error.value = response?.message
     }
 
     const uploadedData = response.data
