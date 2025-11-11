@@ -17,7 +17,6 @@ export interface SliderInterface {
     textColor: string
     bgColor: string
   }
-
   __v?: number
 }
 
@@ -64,7 +63,14 @@ class SliderService {
    * Add Sliders
    */
   async addSlider(payload: SliderForm): Promise<SliderServiceResponse<SliderItemResponse>> {
-    return await AxiosService.post('/slider', payload)
+    const { isButtonEnabled, button, ...rest } = payload
+    const formattedPayload = {
+      ...rest,
+      isButtonEnabled,
+      ...(isButtonEnabled && { button }),
+    }
+
+    return await AxiosService.post('/slider', formattedPayload)
   }
 
   /**
