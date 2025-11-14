@@ -25,24 +25,6 @@ export const useAuth = () => {
   }
 
   /**
-   * Register user
-   */
-  const register = async (credentials: RegisterCredentials) => {
-    authStore.setLoading(true)
-
-    const { data, error } = await AuthService.register(credentials)
-
-    authStore.setLoading(false)
-
-    if (data) {
-      authStore.setAuth(data.user, data.accessToken, data.xAccessToken)
-      return { success: true, data }
-    }
-
-    return { success: false, error }
-  }
-
-  /**
    * Logout user
    */
   const logout = async () => {
@@ -77,7 +59,6 @@ export const useAuth = () => {
 
     // Actions
     login,
-    register,
     logout,
     fetchCurrentUser,
   }

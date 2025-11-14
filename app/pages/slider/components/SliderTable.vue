@@ -4,6 +4,7 @@ import type { TableColumn } from '@nuxt/ui'
 import DeleteSlider from '~/pages/slider/components/DeleteSlider.vue'
 import SliderForm from '~/pages/slider/components/SliderForm.vue'
 import type { ProductInterface } from '~/services/product.service'
+import type { SliderInterface } from '~/services/slider.service'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
@@ -54,13 +55,7 @@ const columns: TableColumn<any>[] = [
     header: 'S.N',
     cell: ({ row }) => `${row.index + 1}`,
   },
-  {
-    accessorKey: 'name',
-    header: 'Name',
-    cell: ({ row }) => {
-      return h('div', { class: 'font-medium' }, `${row.getValue('name')}`)
-    },
-  },
+
   {
     accessorKey: 'image',
     header: 'Image',
@@ -69,9 +64,9 @@ const columns: TableColumn<any>[] = [
         ? h('img', {
             src: row.getValue('image'),
             alt: row.original.title,
-            class: 'rounded-xs object-cover w-[50px] aspect-square',
+            class: 'rounded-xs object-cover w-[100px] aspect-video',
           })
-        : h('div', { class: 'w-[50px] aspect-square border border-default' })
+        : h('div', { class: 'w-[100px] aspect-video border border-default' })
     },
   },
   {
@@ -101,12 +96,12 @@ const columns: TableColumn<any>[] = [
   },
 ]
 
-const handleDelete = async (row: ProductInterface) => {
+const handleDelete = async (row: SliderInterface) => {
   sliderStore.selectedSlider = row
   openDelete.value = true
 }
 
-const handleEdit = (row: ProductInterface) => {
+const handleEdit = (row: SliderInterface) => {
   sliderStore.selectedSlider = row
   openEdit.value = true
 }

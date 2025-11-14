@@ -23,8 +23,11 @@ import { useSettingStore } from '~/stores/settings.store'
 const isInitializing = ref(true)
 const authStore = useAuthStore()
 const settingStore = useSettingStore()
+
+const isAuthenticated = computed(() => authStore.isAuthenticated)
+
 onMounted(async () => {
-  if (!settingStore.setting && authStore.isAuthenticated) {
+  if (!settingStore.setting && isAuthenticated) {
     await settingStore.fetchSetting()
   }
   // Small delay to prevent flash

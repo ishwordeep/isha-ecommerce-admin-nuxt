@@ -2,8 +2,8 @@
   <div>
     <!-- Dropzone Area -->
     <div
-      class="relative flex cursor-pointer items-center justify-center rounded-xl border-gray-300 text-center transition hover:bg-gray-50 dark:hover:bg-gray-800"
-      :class="[containerClass, isMultiple || !singleImageUrl ? 'border-2 border-dashed' : '']"
+      class="border-default relative flex cursor-pointer items-center justify-center rounded-xl text-center transition hover:bg-gray-50 dark:hover:bg-gray-800"
+      :class="[containerClass, isMultiple || !singleImageUrl ? 'border' : '']"
       @dragover.prevent="isDragging = true"
       @dragleave.prevent="isDragging = false"
       @drop.prevent="handleDrop"
@@ -59,7 +59,7 @@
       <!-- Uploading Overlay -->
       <div
         v-if="isUploading"
-        class="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-black/30"
+        class="absolute inset-0 flex flex-col items-center justify-center rounded-xl bg-black/10"
       >
         <svg
           class="h-8 w-8 animate-spin text-white"
@@ -174,8 +174,12 @@ const uploadFiles = async (files: File[]) => {
         formData.append(props.fieldName, file)
       }
     } else {
-      // For single file, just append one
-      formData.append(props.fieldName, files[0])
+      // For single file, just append one (ensure it's defined)
+      const file = files[0]
+      if (!file) {
+        throw new Error('No file provided for upload')
+      }
+      formData.append(props.fieldName, file)
     }
 
     const { data: response } = await axios.post(
