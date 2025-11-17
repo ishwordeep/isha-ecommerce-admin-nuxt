@@ -23,7 +23,7 @@ export default defineAppConfig({
     },
     select: {
       defaultVariants: {
-        size: 'xl',
+        size: 'lg',
       },
       slots: {
         base: 'relative w-full',
@@ -38,7 +38,7 @@ export default defineAppConfig({
     },
     inputTags: {
       defaultVariants: {
-        size: 'xl',
+        size: 'lg',
       },
       slots: {
         base: 'relative w-full',
@@ -53,7 +53,7 @@ export default defineAppConfig({
     },
     textarea: {
       defaultVariants: {
-        size: 'xl',
+        size: 'lg',
       },
       slots: {
         root: 'relative w-full',
@@ -68,7 +68,7 @@ export default defineAppConfig({
     },
     button: {
       defaultVariants: {
-        size: 'xl',
+        size: 'lg',
       },
       variants: {
         size: {
@@ -80,7 +80,7 @@ export default defineAppConfig({
     },
     inputNumber: {
       defaultVariants: {
-        size: 'xl',
+        size: 'lg',
       },
       slots: {
         root: 'relative w-full',
@@ -94,6 +94,7 @@ export default defineAppConfig({
     table: {
       slots: {
         tr: 'hover:bg-gray-100',
+        th: 'text-nowrap',
       },
     },
     modal: {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { h, resolveComponent, watch } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
+import { h, resolveComponent, watch } from 'vue'
 
 import DeleteProduct from '~/pages/products/components/DeleteProduct.vue'
 import type { ProductInterface } from '~/services/product.service'
@@ -121,9 +121,10 @@ const handleDelete = async (row: ProductInterface) => {
     <UTable
       :data="productStore.products || []"
       :columns="columns"
-      class="flex-1"
+      class="flex-1 lg:max-h-[70dvh]"
       :ui="{ thead: 'bg-gray-100' }"
       :loading="states.fetching"
+      sticky
     >
       <template #image-cell="{ row }">
         <NuxtImg

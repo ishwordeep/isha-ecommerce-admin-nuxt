@@ -1,10 +1,10 @@
 <template>
   <div class="flex flex-col gap-4">
     <div class="flex flex-wrap items-center justify-between gap-2">
-      <div class="flex flex-1 flex-wrap items-center gap-2">
+      <div class="flex flex-1 flex-wrap items-start gap-2 md:items-center">
         <UiSearchInput :delay="500" :loading="true" @search="handleSearch" />
         <USelect
-          class="max-w-[250px]"
+          class="max-w-[200px] min-w-[100px] sm:max-w-[250px] sm:min-w-[250px]"
           v-model="selectedCategory"
           :items="categoryList"
           placeholder="Filter by category"
@@ -17,9 +17,9 @@
 </template>
 
 <script setup lang="ts">
-import { useHeaderStore } from '~/stores/header.store'
 import ProductTable from '~/pages/products/components/ProductTable.vue'
 import { useCategoryStore } from '~/stores/category.store'
+import { useHeaderStore } from '~/stores/header.store'
 
 definePageMeta({
   layout: 'admin',

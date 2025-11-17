@@ -9,7 +9,7 @@ interface UpdateFlagPayload {
 }
 
 export interface ProductInterface {
-  _id?: string
+  _id: string
   name?: string
   category?: string
   description?: string

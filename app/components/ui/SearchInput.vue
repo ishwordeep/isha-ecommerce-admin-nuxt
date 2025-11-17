@@ -6,8 +6,7 @@
     placeholder="Search..."
     :loading="isPending"
     @blur="onBlur"
-    class="max-w-[250px] min-w-[250px]"
-    size="xl"
+    class="max-w-[200px] min-w-[100px] sm:max-w-[250px] sm:min-w-[250px]"
   />
 </template>
 
