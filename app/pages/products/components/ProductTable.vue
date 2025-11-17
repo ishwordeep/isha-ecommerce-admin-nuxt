@@ -147,7 +147,7 @@ const handleDelete = async (row: ProductInterface) => {
             size="md"
             icon="i-lucide-pencil"
             color="info"
-            :to="`/products/${row.original._id}/edit`"
+            :to="`/products/${row.original._id}/edit?tab=general`"
           />
           <UButton
             variant="outline"

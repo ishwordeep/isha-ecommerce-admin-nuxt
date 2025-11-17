@@ -1,10 +1,9 @@
 // stores/product.store.ts
 import { defineStore } from 'pinia'
-import { ref, reactive, computed } from 'vue'
-import ProductService, { type ProductFlag } from '~/services/product.service'
-import type { ProductInterface } from '~/services/product.service'
-import { useCategoryStore } from './category.store'
+import { computed, reactive, ref } from 'vue'
 import type { PaginationInterface } from '~/services/index.interface'
+import type { ProductInterface } from '~/services/product.service'
+import ProductService, { type ProductFlag } from '~/services/product.service'
 
 type Mode = 'add' | 'edit'
 
@@ -23,6 +22,11 @@ export interface ProductForm {
   images: string[]
   colors: string[]
   sizes: string[]
+}
+
+export interface ProductFaqForm {
+  question: string
+  answer: string
 }
 
 const mapProductToForm = (product: ProductInterface | null): ProductForm => {
@@ -45,6 +49,19 @@ const mapProductToForm = (product: ProductInterface | null): ProductForm => {
     sizes: Array.isArray(product.sizes) ? product.sizes : [],
   }
 }
+
+const mapFaqsToForm = (faqs: ProductFaqForm[] | null) => {
+  if (!faqs?.length) return emptyFaqForm()
+
+  return {
+    faqs: Array.isArray(faqs) ? faqs : [],
+  }
+}
+
+const emptyFaqForm = (): ProductFaqForm => ({
+  question: '',
+  answer: '',
+})
 
 const emptyForm = (): ProductForm => ({
   name: '',
@@ -71,9 +88,11 @@ export const useProductStore = defineStore('product', () => {
   const newArrivals = ref<ProductInterface[]>([])
   const list = ref<ProductInterface[]>([])
   const products = ref<ProductInterface[]>([])
+  const faqs = ref<ProductFaqForm[]>([])
   const pagination = ref<PaginationInterface | null>(null)
   const mode = ref<Mode>('add')
   const formInputs = reactive<ProductForm>(emptyForm())
+  const faqsFormInputs = reactive<ProductFaqForm>(emptyFaqForm())
 
   const isAddMode = computed(() => mode.value === 'add')
   const isEditMode = computed(() => mode.value === 'edit')
@@ -108,6 +127,10 @@ export const useProductStore = defineStore('product', () => {
     } else {
       initializeForAdd()
     }
+  }
+
+  const initializeFaqs = (faqs: { question: string; answer: string }[] | null) => {
+    Object.assign(faqsFormInputs, mapFaqsToForm(faqs))
   }
 
   const fetchProducts = async ({ page = 1, limit = 2, search = '', category = '' }) => {
@@ -149,13 +172,17 @@ export const useProductStore = defineStore('product', () => {
   const fetchProductById = async (id: string) => {
     isLoading.value = true
     try {
-      return await ProductService.getProduct(id)
+      const response = await ProductService.getProduct(id)
+      if (response.data?.success) {
+        selectedProduct.value = response.data?.data ?? null
+      }
+      return response
     } finally {
       isLoading.value = false
     }
   }
 
-  const addProduct = async (payload: Partial<ProductInterface>) => {
+  const addProduct = async (payload: ProductForm) => {
     isSubmitting.value = true
     try {
       const res = await ProductService.addProduct(payload)
@@ -167,7 +194,7 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const updateProduct = async (id: string, payload: Partial<ProductInterface>) => {
+  const updateProduct = async (id: string, payload: ProductForm) => {
     isSubmitting.value = true
     try {
       const res = await ProductService.updateProduct(id, payload)
@@ -253,6 +280,33 @@ export const useProductStore = defineStore('product', () => {
     selectedProduct.value = null
   }
 
+  const updateProductFaq = async (productId: string, payload: ProductFaqForm[]) => {
+    isSubmitting.value = true
+    try {
+      const res = await ProductService.updateProductFaqs(productId, payload)
+      if (res?.data?.success) {
+        faqs.value = payload
+      }
+      return res
+    } finally {
+      isSubmitting.value = false
+    }
+  }
+
+  const getProductFaq = async (productId: string) => {
+    isLoading.value = true
+    try {
+      console.log(productId)
+      const res = await ProductService.getProductFaqs(productId)
+      if (res?.data?.success) {
+        faqs.value = res.data.data as ProductFaqForm[]
+      }
+      return res
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     isLoading: readonly(isLoading),
     isSubmitting: readonly(isSubmitting),
@@ -282,5 +336,9 @@ export const useProductStore = defineStore('product', () => {
     fetchByFlag,
     addToFlagCollection,
     removeFromFlagCollection,
+    updateProductFaq,
+    faqs,
+    faqsFormInputs,
+    getProductFaq,
   }
 })

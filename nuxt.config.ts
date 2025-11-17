@@ -2,7 +2,7 @@ import { defineNuxtConfig } from 'nuxt/config'
 
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
-
+  ssr: true,
   devServer: {
     port: 6001,
     host: 'localhost',

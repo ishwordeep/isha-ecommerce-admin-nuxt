@@ -1,6 +1,6 @@
 <template>
   <div class="relative flex min-h-screen">
-    <Sidebar :className="'max-lg:hidden sticky top-0 w-64 '" />
+    <Sidebar :className="'max-lg:hidden sticky top-0 w-48 xl:w-64 '" />
     <div class="relative flex flex-1 flex-col overflow-x-hidden">
       <div class="flex items-center justify-between gap-2 border-b border-gray-200 bg-white p-4">
         <UDrawer

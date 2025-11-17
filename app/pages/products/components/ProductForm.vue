@@ -4,163 +4,167 @@
     :schema="schema"
     :state="productStore.formInputs"
     @submit="handleSubmit"
-    class="flex flex-col gap-4"
+    class="grid grid-cols-1 gap-4 min-[920px]:grid-cols-3"
   >
-    <UPageCard title="Basic Information">
-      <UFormField label="Name" name="name" required>
-        <UInput v-model="productStore.formInputs.name" />
-      </UFormField>
-
-      <UFormField label="Description" name="description">
-        <UTextarea v-model="productStore.formInputs.description" :maxrows="5" autoresize />
-      </UFormField>
-
-      <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <UFormField label="Select Category" name="category" required>
-          <USelect
-            v-model="productStore.formInputs.category"
-            :items="categoryList"
-            placeholder="Choose category"
-          />
-        </UFormField>
-        <UFormField label="Price (in $)" name="price" required>
-          <UInputNumber :min="1" v-model="productStore.formInputs.price" orientation="vertical" />
+    <div class="col-span-2 flex flex-col gap-4">
+      <UPageCard title="Basic Information">
+        <UFormField label="Name" name="name" required>
+          <UInput v-model="productStore.formInputs.name" />
         </UFormField>
 
-        <UFormField label="Discount %" name="discount">
-          <UInputNumber
-            :min="0"
-            :max="100"
-            v-model="productStore.formInputs.discount"
-            orientation="vertical"
-          />
+        <UFormField label="Description" name="description">
+          <UTextarea v-model="productStore.formInputs.description" :rows="5" autoresize />
         </UFormField>
 
-        <UFormField label="Status" name="isActive">
-          <URadioGroup
-            indicator="hidden"
-            v-model="productStore.formInputs.isActive"
-            variant="card"
-            :default-value="true"
-            orientation="horizontal"
-            :items="[
-              { label: 'Active', value: true },
-              { label: 'Inactive', value: false },
-            ]"
-            :ui="{ item: 'border-2' }"
-          />
-        </UFormField>
-      </div>
-
-      <UFormField label="Tags" name="tags">
-        <UInputTags
-          v-model="productStore.formInputs.tags"
-          placeholder="Add tags"
-          addOnBlur
-          addOnPaste
-          addOnTab
-        />
-      </UFormField>
-    </UPageCard>
-
-    <UPageCard title="Add Colors">
-      <div class="flex items-end gap-2">
-        <UFormField label="Select Color" name="color" size="xl" class="w-full max-w-[500px]">
-          <UInput v-model="colorValue" :ui="{ trailing: 'pe-3' }">
-            <template #trailing>
-              <UPopover>
-                <span :style="selectedColor" class="border-default size-6 rounded-sm border-2" />
-
-                <template #content>
-                  <UColorPicker v-model="colorValue" class="p-2" />
-                </template> </UPopover
-            ></template>
-          </UInput>
-        </UFormField>
-
-        <UButton leadingIcon="i-lucide-plus" label="Add" @click="addColor" />
-      </div>
-
-      <div class="mt-4 flex flex-col gap-2">
-        <span class="font-semibold" v-if="productStore.formInputs.colors.length">
-          Selected Colors ({{ productStore.formInputs.colors.length || 0 }})
-        </span>
-        <div class="flex items-center gap-2">
-          <div
-            class="border-default flex items-center rounded-md border bg-gray-50 px-3 py-1"
-            v-for="color in productStore.formInputs.colors"
-          >
-            <div class="aspect-square w-[20px] shrink-0" :style="{ background: color }"></div>
-            <UButton
-              size="md"
-              variant="link"
-              class="ml-2"
-              icon="i-lucide-x"
-              @click="removeColor(color)"
+        <div class="grid grid-cols-1 gap-4 min-[920px]:grid-cols-2">
+          <UFormField label="Select Category" name="category" required>
+            <USelect
+              v-model="productStore.formInputs.category"
+              :items="categoryList"
+              placeholder="Choose category"
             />
-          </div>
+          </UFormField>
+          <UFormField label="Price (in $)" name="price" required>
+            <UInputNumber :min="1" v-model="productStore.formInputs.price" orientation="vertical" />
+          </UFormField>
+
+          <UFormField label="Discount %" name="discount">
+            <UInputNumber
+              :min="0"
+              :max="100"
+              v-model="productStore.formInputs.discount"
+              orientation="vertical"
+            />
+          </UFormField>
+
+          <UFormField label="Status" name="isActive">
+            <URadioGroup
+              indicator="hidden"
+              v-model="productStore.formInputs.isActive"
+              variant="card"
+              :default-value="true"
+              orientation="horizontal"
+              :items="[
+                { label: 'Active', value: true },
+                { label: 'Inactive', value: false },
+              ]"
+              :ui="{ item: 'border-2' }"
+            />
+          </UFormField>
         </div>
-      </div>
-    </UPageCard>
 
-    <UPageCard title="Available Sizes">
-      <div class="flex items-center gap-2">
-        <UButton
-          v-for="size in availableSizes"
-          :label="size"
-          @click="toggleSize(size)"
-          :variant="productStore.formInputs.sizes.includes(size) ? 'solid' : 'outline'"
-          :ui="{
-            base: 'px-6 py-3',
-            label: 'text-center m-auto',
-          }"
-        />
-      </div>
-    </UPageCard>
+        <UFormField label="Tags" name="tags">
+          <UInputTags
+            v-model="productStore.formInputs.tags"
+            placeholder="Add tags"
+            addOnBlur
+            addOnPaste
+            addOnTab
+          />
+        </UFormField>
+      </UPageCard>
 
-    <UPageCard title="Add To Collection">
-      <UCheckbox
-        v-model="productStore.formInputs.isNew"
-        variant="card"
-        label="New Arrivals"
-        class="max-w-[500px]"
-      />
-      <UCheckbox
-        v-model="productStore.formInputs.isFeatured"
-        variant="card"
-        label="Trending"
-        class="max-w-[500px]"
-      />
-      <UCheckbox
-        v-model="productStore.formInputs.isTrending"
-        variant="card"
-        label="Featured"
-        class="max-w-[500px]"
-      />
-    </UPageCard>
-
-    <UPageCard title="Add Images">
-      <UFormField label="Main Image" name="image">
-        <!-- Main Image -->
-        <FileDropzone
-          v-model="productStore.formInputs.image"
-          upload-url="/upload/single"
-          containerClass="w-[150px] aspect-square max-h-[150px]"
-          helpText="'The ratio of 1:1 would be best."
-        />
-
-        <!-- Gallery Images -->
-        <UFormField label="Gallery Images" name="images" class="my-4">
+      <UPageCard title="Add Images">
+        <UFormField label="Main Image" name="image">
+          <!-- Main Image -->
           <FileDropzone
-            v-model="productStore.formInputs.images"
-            upload-url="/upload/multiple"
-            fieldName="images"
-            containerClass="min-h-48"
+            v-model="productStore.formInputs.image"
+            upload-url="/upload/single"
+            containerClass="w-[150px] aspect-square max-h-[150px]"
             helpText="'The ratio of 1:1 would be best."
           />
+
+          <!-- Gallery Images -->
+          <UFormField label="Gallery Images" name="images" class="my-4">
+            <FileDropzone
+              v-model="productStore.formInputs.images"
+              upload-url="/upload/multiple"
+              fieldName="images"
+              containerClass="min-h-48"
+              helpText="'The ratio of 1:1 would be best."
+            />
+          </UFormField>
         </UFormField>
-      </UFormField>
-    </UPageCard>
+      </UPageCard>
+    </div>
+
+    <div class="col-span-2 flex flex-col gap-4 min-[920px]:col-span-1">
+      <UPageCard title="Add Colors">
+        <div class="flex items-end gap-2">
+          <UFormField label="Select Color" name="color" class="w-full max-w-[500px]">
+            <UInput v-model="colorValue" :ui="{ trailing: 'pe-3' }">
+              <template #trailing>
+                <UPopover>
+                  <span :style="selectedColor" class="border-default size-6 rounded-sm border-2" />
+
+                  <template #content>
+                    <UColorPicker v-model="colorValue" class="p-2" />
+                  </template> </UPopover
+              ></template>
+            </UInput>
+          </UFormField>
+
+          <UButton leadingIcon="i-lucide-plus" label="Add" @click="addColor" />
+        </div>
+
+        <div class="mt-4 flex flex-col gap-2">
+          <span class="font-semibold" v-if="productStore.formInputs.colors.length">
+            Selected Colors ({{ productStore.formInputs.colors.length || 0 }})
+          </span>
+          <div class="flex flex-wrap items-center gap-2">
+            <div
+              class="border-default flex items-center rounded-md border bg-gray-50 px-3 py-1"
+              v-for="color in productStore.formInputs.colors"
+            >
+              <div class="aspect-square w-[20px] shrink-0" :style="{ background: color }"></div>
+              <UButton
+                size="md"
+                variant="link"
+                class="ml-2"
+                icon="i-lucide-x"
+                @click="removeColor(color)"
+              />
+            </div>
+          </div>
+        </div>
+      </UPageCard>
+
+      <UPageCard title="Available Sizes">
+        <div class="flex flex-wrap items-center gap-2">
+          <UButton
+            v-for="size in availableSizes"
+            :label="size"
+            @click="toggleSize(size)"
+            :variant="productStore.formInputs.sizes.includes(size) ? 'solid' : 'outline'"
+            :ui="{
+              base: 'px-6 py-3',
+              label: 'text-center m-auto',
+            }"
+          />
+        </div>
+      </UPageCard>
+
+      <UPageCard title="Add To Collection">
+        <UCheckbox
+          v-model="productStore.formInputs.isNew"
+          variant="card"
+          label="New Arrivals"
+          class="max-w-[500px]"
+        />
+        <UCheckbox
+          v-model="productStore.formInputs.isFeatured"
+          variant="card"
+          label="Trending"
+          class="max-w-[500px]"
+        />
+        <UCheckbox
+          v-model="productStore.formInputs.isTrending"
+          variant="card"
+          label="Featured"
+          class="max-w-[500px]"
+        />
+      </UPageCard>
+    </div>
 
     <!-- Submit & Reset Buttons -->
     <div class="flex space-x-2">
@@ -183,10 +187,10 @@
 </template>
 
 <script setup lang="ts">
+import { useCategoryStore } from '@/stores/category.store'
+import { useProductStore } from '@/stores/product.store'
 import * as z from 'zod'
 import FileDropzone from '~/components/ui/FileDropzone.vue'
-import { useProductStore } from '@/stores/product.store'
-import { useCategoryStore } from '@/stores/category.store'
 
 const props = withDefaults(
   defineProps<{
@@ -278,7 +282,7 @@ const handleSubmit = async () => {
       title: 'Success',
       description: `Product ${isAdd ? 'added' : 'updated'} successfully`,
     })
-    navigateTo('/products')
+    navigateTo(`/products/${response.data?.data?._id}/edit?tab=story`)
     productStore.reset()
   } else {
     toast.add({

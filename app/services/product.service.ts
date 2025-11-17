@@ -1,11 +1,22 @@
-import AxiosService from './axios.service'
-import type { PaginationInterface, QueryInterface } from '~/services/index.interface'
 import type { CategoryInterface } from '~/services/category.service'
+import type { PaginationInterface, QueryInterface } from '~/services/index.interface'
+import AxiosService from './axios.service'
 
 export type ProductFlag = 'new' | 'featured' | 'trending'
 
 interface UpdateFlagPayload {
   ids: string[]
+}
+
+interface ProductFaqInterface {
+  question: string
+  answer: string
+}
+
+export interface ProductFaqResponse {
+  data?: ProductFaqInterface[] | null
+  message: string
+  success: boolean
 }
 
 export interface ProductInterface {
@@ -81,9 +92,7 @@ class ProductService {
   /**
    * Add Categories
    */
-  async addProduct(
-    product: ProductInterface
-  ): Promise<ProductServiceResponse<ProductItemResponse>> {
+  async addProduct(product: ProductForm): Promise<ProductServiceResponse<ProductItemResponse>> {
     return await AxiosService.post('/product', product)
   }
 
@@ -92,7 +101,7 @@ class ProductService {
    */
   async updateProduct(
     id: string,
-    payload: ProductInterface
+    payload: ProductForm
   ): Promise<ProductServiceResponse<ProductItemResponse>> {
     return await AxiosService.put(`/product/${id}`, payload)
   }
@@ -119,6 +128,25 @@ class ProductService {
    */
   async getProductsByFlag(flag: ProductFlag): Promise<ProductServiceResponse<ProductListResponse>> {
     return await AxiosService.get<ProductListResponse>(`/product/flag/${flag}`)
+  }
+
+  /**
+   * Update product FAQs
+   */
+
+  async updateProductFaqs(
+    id: string,
+    payload: ProductFaqInterface[]
+  ): Promise<ProductServiceResponse<ProductItemResponse>> {
+    return await AxiosService.post(`/product/${id}/faqs`, { faqs: payload })
+  }
+
+  /**
+   * Get product FAQs
+   */
+  async getProductFaqs(id: string): Promise<ProductServiceResponse<ProductFaqResponse>> {
+    console.log({ id })
+    return await AxiosService.get<ProductFaqResponse>(`/product/${id}/faqs`)
   }
 }
 

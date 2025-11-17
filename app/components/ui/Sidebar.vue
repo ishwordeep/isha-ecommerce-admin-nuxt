@@ -30,8 +30,8 @@
           >
             <ULink
               :to="item.to"
-              class="group hover:bg-primary flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 transition-colors hover:text-white"
-              :class="accordionState[index] ? 'bg-primary text-white' : ''"
+              class="group hover:bg-primary/50 flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 font-bold text-black transition-colors hover:text-black"
+              :class="accordionState[index] ? 'bg-primary/50' : ''"
               @click="emit('navigate')"
             >
               <div class="flex items-center gap-3">
@@ -44,14 +44,14 @@
               />
             </ULink>
             <template #content>
-              <div class="space-y-1 py-2 pl-4">
+              <div class="space-y-2 py-2 pl-4">
                 <ULink
                   v-for="(child, childIndex) in item.children"
                   :key="childIndex"
                   :to="child.to"
-                  active-class="bg-primary text-white"
-                  inactive-class="text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white"
-                  class="block rounded-md px-3 py-2 text-sm transition-colors hover:text-white"
+                  active-class="bg-primary/50 text-black"
+                  inactive-class="text-gray-700 dark:text-gray-300 hover:bg-primary/50 hover:text-black"
+                  class="block rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-black"
                   @click="emit('navigate')"
                 >
                   {{ child.label }}
@@ -65,9 +65,9 @@
         <template v-else>
           <ULink
             :to="item.to"
-            active-class="bg-primary text-white"
-            inactive-class="text-gray-700 dark:text-gray-300 hover:bg-primary hover:text-white"
-            class="flex items-center gap-3 rounded-md px-3 py-2 transition-colors hover:text-white"
+            active-class="bg-primary/50 text-black"
+            inactive-class="text-gray-700 dark:text-gray-300 hover:bg-primary/50 hover:text-black"
+            class="flex items-center gap-3 rounded-md px-3 py-2 font-bold transition-colors hover:text-black"
             @click="emit('navigate')"
           >
             <UIcon :name="item.icon" class="h-5 w-5" />
@@ -80,9 +80,8 @@
 </template>
 
 <script setup lang="ts">
-import Logo from '~/assets/images/logo.jpg'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { computed, watch, ref, onMounted, onBeforeUnmount } from 'vue'
 
 defineProps({
   className: String,
