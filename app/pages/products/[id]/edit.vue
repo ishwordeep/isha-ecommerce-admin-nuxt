@@ -55,7 +55,7 @@ const items = ref<TabsItem[]>([
 
 const active = computed({
   get() {
-    return (route.query.tab as string) || 'account'
+    return (route.query.tab as string) || 'general'
   },
   set(tab) {
     // Hash is specified here to prevent the page from scrolling to the top

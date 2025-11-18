@@ -1,7 +1,3 @@
-<template>
-  <div class="flex flex-col gap-4">A</div>
-</template>
-
 <script setup lang="ts">
 import { useHeaderStore } from '~/stores/header.store'
 
@@ -21,3 +17,6 @@ useSeoMeta({
   ogTitle: 'Product',
 })
 </script>
+<template>
+  <div class="flex flex-col gap-4">A</div>
+</template>

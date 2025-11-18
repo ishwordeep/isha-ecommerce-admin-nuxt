@@ -108,13 +108,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
 import { UIcon } from '#components'
 import axios from 'axios'
+import { computed, ref } from 'vue'
 
 interface Props {
   modelValue: string[] | string
-  uploadUrl: string
+  uploadUrl?: string
   fieldName?: string
   containerClass?: string
   message?: string
@@ -125,6 +125,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   fieldName: 'image',
   showMessage: false,
+  uploadUrl: '/upload/single',
 })
 
 const emit = defineEmits(['update:modelValue'])

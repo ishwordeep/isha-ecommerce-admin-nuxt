@@ -12,7 +12,7 @@
       </p>
     </div>
 
-    <div class="flex flex-col gap-4 overflow-y-auto p-4">
+    <div class="flex flex-col gap-4 overflow-y-auto p-2">
       <div v-for="(item, index) in menuItems" :key="index">
         <!-- Items with children (collapsible) -->
         <template v-if="item.children">
@@ -94,6 +94,7 @@ const settingStore = useSettingStore()
 
 // Reactive check for /products routes
 const isProductsRoute = computed(() => route.path.startsWith('/products'))
+const isPagesRoute = computed(() => route.path.startsWith('/front-pages'))
 
 // Track accordion open state
 const accordionState = ref<Record<number, boolean>>({})
@@ -134,6 +135,16 @@ const menuItems = ref([
     icon: 'i-lucide-package',
     to: '/orders',
   },
+  {
+    label: 'Pages',
+    icon: 'i-lucide-file-text',
+    defaultOpen: isPagesRoute.value,
+    children: [
+      { label: 'About Us', to: '/front-pages/about-us' },
+      { label: 'Terms of Service', to: '/front-pages/terms-of-service' },
+      { label: 'Privacy Policy', to: '/front-pages/privacy-policy' },
+    ],
+  },
 ])
 
 // Initialize accordion state based on current route and add outside-click handler
@@ -146,7 +157,11 @@ const handleDocumentClick = (e: MouseEvent) => {
     menuItems.value.forEach((item, index) => {
       if (item.children) {
         const isDefaultOpen =
-          item.value === '/products' ? isProductsRoute.value : Boolean((item as any).defaultOpen)
+          item.value === '/products'
+            ? isProductsRoute.value
+            : item.value === '/front-pages'
+              ? isPagesRoute.value
+              : Boolean((item as any).defaultOpen)
         if (!isDefaultOpen) {
           accordionState.value[index] = false
         }
@@ -161,6 +176,8 @@ onMounted(() => {
     if (item.children) {
       if (item.value === '/products') {
         accordionState.value[index] = isProductsRoute.value
+      } else if (item.value === '/front-pages') {
+        accordionState.value[index] = isPagesRoute.value
       } else {
         // fall back to provided defaultOpen or false
         accordionState.value[index] = Boolean(item.defaultOpen)
@@ -180,6 +197,8 @@ watch(isProductsRoute, (newValue) => {
   menuItems.value.forEach((item, index) => {
     if (item.children && item.value === '/products') {
       accordionState.value[index] = newValue
+    } else if (item.children && item.value === '/front-pages') {
+      accordionState.value[index] = isPagesRoute.value
     }
   })
 })
