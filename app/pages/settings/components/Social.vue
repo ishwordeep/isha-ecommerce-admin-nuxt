@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import * as z from 'zod'
-import type { FormSubmitEvent } from '@nuxt/ui'
 const settingStore = useSettingStore()
 const schema = z.object({
   facebook: z.string().url('Invalid URL').optional().or(z.literal('')),

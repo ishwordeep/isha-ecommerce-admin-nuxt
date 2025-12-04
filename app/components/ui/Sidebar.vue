@@ -5,8 +5,12 @@
     :class="className"
   >
     <div class="border-b-default flex items-center gap-2 border-b p-4">
-      <!-- <NuxtImg :src="settingStore.setting?.logoUrl" class="h-14 w-auto shrink-0" /> -->
-      <UIcon name="i-lucide-frame" class="h-8 w-8 shrink-0" />
+      <NuxtImg
+        v-if="settingStore.setting?.logoUrl"
+        :src="settingStore.setting?.logoUrl"
+        class="h-8 w-8 shrink-0"
+      />
+      <UIcon v-else name="i-lucide-frame" class="h-8 w-8 shrink-0" />
       <p v-if="settingStore.setting?.name" class="line-clamp-1 text-lg font-bold">
         {{ settingStore.setting?.name }}
       </p>

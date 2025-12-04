@@ -1,12 +1,10 @@
 <template>
   <UTabs
     :items="tabHeaders"
-    variant="link"
+    class="w-full"
     :ui="{
-      list: 'w-full max-w-max mr-auto !border-b-2 overflow-x-auto overflow-y-hidden',
-      indicator: 'border-2',
+      list: 'w-max mr-auto',
     }"
-    class="w-full gap-4"
   >
     <template #general>
       <General />
@@ -18,10 +16,10 @@
 </template>
 
 <script setup lang="ts">
-import { useHeaderStore } from '~/stores/header.store'
-import type { TabsItem } from '#ui/components/Tabs.vue'
+import type { TabsItem } from '@nuxt/ui'
 import General from '~/pages/settings/components/General.vue'
 import Social from '~/pages/settings/components/Social.vue'
+import { useHeaderStore } from '~/stores/header.store'
 
 definePageMeta({
   layout: 'admin',

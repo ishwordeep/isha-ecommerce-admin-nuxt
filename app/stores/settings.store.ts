@@ -2,8 +2,8 @@
 // FILE: stores/auth.ts
 // ============================================
 import { defineStore } from 'pinia'
-import SettingService from '~/services/setting.service'
 import type { SettingInterface } from '~/services/setting.service'
+import SettingService from '~/services/setting.service'
 
 export interface SettingState {
   setting: SettingInterface | null
@@ -36,11 +36,12 @@ export const useSettingStore = defineStore('setting', {
       }
     },
 
-    async updateSetting(payload: SettingInterface) {
+    async updateSetting(payload: Partial<SettingInterface>) {
       this.loading = true
+      const { _id, createdAt, updatedAt, __v, ...data } = payload
       try {
         // Simulate an API call to fetch settings
-        const response = await SettingService.updateSetting(payload)
+        const response = await SettingService.updateSetting(this.setting?._id || '', data)
         if (response.data) {
           this.setting = response.data.data
         }

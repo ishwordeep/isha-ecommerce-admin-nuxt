@@ -1,20 +1,23 @@
 import AxiosService from './axios.service'
-import type { LoginCredentials, RegisterCredentials, User } from '~/stores/auth.store'
 
 export interface SettingInterface {
-  name?: string
-  email?: string
-  phone?: string
-  address?: string
-  city?: string
-  state?: string
-  country?: string
-  postalCode?: string
-  logoUrl?: string
-  faviconUrl?: string
-  facebook?: string
-  instagram?: string
-  tiktok?: string
+  _id: string
+  name: string
+  email: string
+  phone: string
+  address: string
+  city: string
+  state: string
+  country: string
+  postalCode: string
+  logoUrl: string
+  faviconUrl: string
+  facebook: string
+  instagram: string
+  tiktok: string
+  createdAt: string
+  updatedAt: string
+  __v: number
 }
 
 interface SettingResponse {
@@ -36,8 +39,11 @@ class SettingService {
     return await AxiosService.get<SettingResponse>('/setting')
   }
 
-  async updateSetting(payload: SettingInterface): Promise<SettingServiceResponse<SettingResponse>> {
-    return await AxiosService.patch('/setting', payload)
+  async updateSetting(
+    id: string,
+    payload: Partial<SettingInterface>
+  ): Promise<SettingServiceResponse<SettingResponse>> {
+    return await AxiosService.patch(`/setting/${id}`, payload)
   }
 }
 
