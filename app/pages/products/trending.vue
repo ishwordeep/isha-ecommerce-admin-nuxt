@@ -10,7 +10,7 @@
   />
 </template>
 <script setup lang="ts">
-import ProductFlagManager from './components/ProductFlagManager.vue'
+import ProductFlagManager from '~/views/products/components/ProductFlagManager.vue'
 
 const headerStore = useHeaderStore()
 

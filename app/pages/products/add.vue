@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import ProductForm from './components/ProductForm.vue'
 import { useProductStore } from '~/stores/product.store'
+import ProductForm from '~/views/products/components/ProductForm.vue'
 
 const productStore = useProductStore()
 const headerStore = useHeaderStore()

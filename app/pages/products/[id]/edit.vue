@@ -2,9 +2,9 @@
 import type { TabsItem } from '@nuxt/ui'
 import { useRoute } from 'vue-router'
 import { useProductStore } from '~/stores/product.store'
-import ProductForm from '../components/ProductForm.vue'
-import FAQs from './components/FAQs.vue'
-import Story from './components/Story.vue'
+import FAQs from '~/views/products/components/FAQs.vue'
+import ProductForm from '~/views/products/components/ProductForm.vue'
+import Story from '~/views/products/components/Story.vue'
 
 const route = useRoute()
 const router = useRouter()

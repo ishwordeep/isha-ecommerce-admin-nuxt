@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { h, resolveComponent, watch } from 'vue'
 import type { TableColumn } from '@nuxt/ui'
-import DeleteSlider from '~/pages/slider/components/DeleteSlider.vue'
-import SliderForm from '~/pages/slider/components/SliderForm.vue'
+import { h, resolveComponent, watch } from 'vue'
 import type { ProductInterface } from '~/services/product.service'
-import type { SliderInterface } from '~/services/slider.service'
+import CategoryForm from './CategoryForm.vue'
+import DeleteCategory from './DeleteCategory.vue'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
-const sliderStore = useSliderStore()
+const categoryStore = useCategoryStore()
 const openDelete = ref(false)
 const openEdit = ref(false)
 const props = withDefaults(
@@ -29,8 +28,8 @@ const pagination = reactive({
 })
 
 onBeforeMount(() => {
-  if (!sliderStore.sliders?.length) {
-    sliderStore.fetchSliders({
+  if (!categoryStore.categories?.length) {
+    categoryStore.fetchCategories({
       ...pagination,
       search: props.search,
     })
@@ -41,7 +40,7 @@ watch(
   () => [pagination.page, pagination.limit, props.search],
   async () => {
     states.fetching = true
-    await sliderStore.fetchSliders({
+    await categoryStore.fetchCategories({
       ...pagination,
       search: props.search,
     })
@@ -55,7 +54,13 @@ const columns: TableColumn<any>[] = [
     header: 'S.N',
     cell: ({ row }) => `${row.index + 1}`,
   },
-
+  {
+    accessorKey: 'name',
+    header: 'Name',
+    cell: ({ row }) => {
+      return h('div', { class: 'font-medium' }, `${row.getValue('name')}`)
+    },
+  },
   {
     accessorKey: 'image',
     header: 'Image',
@@ -64,9 +69,9 @@ const columns: TableColumn<any>[] = [
         ? h('img', {
             src: row.getValue('image'),
             alt: row.original.title,
-            class: 'rounded-xs object-cover w-[100px] aspect-video',
+            class: 'rounded-xs object-cover w-[50px] aspect-square',
           })
-        : h('div', { class: 'w-[100px] aspect-video border border-default' })
+        : h('div', { class: 'w-[50px] aspect-square border border-default' })
     },
   },
   {
@@ -96,13 +101,13 @@ const columns: TableColumn<any>[] = [
   },
 ]
 
-const handleDelete = async (row: SliderInterface) => {
-  sliderStore.selectedSlider = row
+const handleDelete = async (row: ProductInterface) => {
+  categoryStore.selectedCategory = row
   openDelete.value = true
 }
 
-const handleEdit = (row: SliderInterface) => {
-  sliderStore.selectedSlider = row
+const handleEdit = (row: ProductInterface) => {
+  categoryStore.selectedCategory = row
   openEdit.value = true
 }
 </script>
@@ -110,7 +115,7 @@ const handleEdit = (row: SliderInterface) => {
 <template>
   <div class="border-default rounded-lg border bg-white">
     <UTable
-      :data="sliderStore.sliders || []"
+      :data="categoryStore.categories || []"
       :columns="columns"
       class="flex-1"
       :ui="{ thead: 'bg-gray-100' }"
@@ -139,18 +144,18 @@ const handleEdit = (row: SliderInterface) => {
     <UPagination
       v-model:page="pagination.page"
       :items-per-page="pagination.limit"
-      :total="sliderStore.pagination?.total || 0"
+      :total="categoryStore.pagination?.total || 0"
     />
   </div>
-  <DeleteSlider
+  <DeleteCategory
     :open="openDelete"
     @update:open="
       () => {
-        sliderStore.selectedSlider = null
+        categoryStore.selectedCategory = null
         openDelete = false
       }
     "
   />
 
-  <SliderForm mode="edit" v-model:open="openEdit" />
+  <CategoryForm mode="edit" v-model:open="openEdit" />
 </template>

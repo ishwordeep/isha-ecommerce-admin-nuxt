@@ -2,8 +2,8 @@
 import type { TableColumn } from '@nuxt/ui'
 import { h, resolveComponent, watch } from 'vue'
 
-import DeleteProduct from '~/pages/products/components/DeleteProduct.vue'
 import type { ProductInterface } from '~/services/product.service'
+import DeleteProduct from './DeleteProduct.vue'
 
 const UButton = resolveComponent('UButton')
 const UBadge = resolveComponent('UBadge')
