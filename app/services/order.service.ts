@@ -70,10 +70,19 @@ class OrderService {
     page,
     limit,
     search,
+    status,
   }: QueryInterface): Promise<OrderServiceResponse<OrderListResponse>> {
-    const params = new URLSearchParams({ page: String(page), limit: String(limit) })
+    const params = new URLSearchParams({
+      page: String(page),
+      limit: String(limit),
+      status: status || '',
+    })
     if (search) params.append('search', search)
     // const url = `/order/admin?${params.toString()}`
+    if (status) {
+      const url = `/order/admin?status=${status}`
+      return await AxiosService.get<OrderListResponse>(url)
+    }
     const url = `/order/admin`
     return await AxiosService.get<OrderListResponse>(url)
   }

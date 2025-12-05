@@ -10,10 +10,15 @@ export const useOrderStore = defineStore('order', () => {
   const orders = ref<OrderInterface[] | null>(null)
   const pagination = ref<PaginationInterface | null>(null)
 
-  const fetchOrders = async ({ page = 1, limit = 10, search = '' }: QueryInterface) => {
+  const fetchOrders = async ({
+    page = 1,
+    limit = 10,
+    search = '',
+    status = '',
+  }: QueryInterface) => {
     isLoading.value = true
     try {
-      const response = await OrderService.fetchOrders({ page, limit, search })
+      const response = await OrderService.fetchOrders({ page, limit, search, status })
       if (response.data?.success) {
         orders.value = response.data?.data as OrderInterface[]
       }

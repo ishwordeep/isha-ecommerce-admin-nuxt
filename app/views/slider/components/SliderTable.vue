@@ -107,7 +107,12 @@ const handleEdit = (row: SliderInterface) => {
 </script>
 
 <template>
-  <div class="border-default rounded-lg border bg-white">
+  <UCard
+    class="rounded-lg"
+    :ui="{
+      body: '!p-0',
+    }"
+  >
     <UTable
       :data="sliderStore.sliders || []"
       :columns="columns"
@@ -133,14 +138,22 @@ const handleEdit = (row: SliderInterface) => {
         </div>
       </template>
     </UTable>
-  </div>
-  <div class="border-default flex justify-end pt-4">
-    <UPagination
-      v-model:page="pagination.page"
-      :items-per-page="pagination.limit"
-      :total="sliderStore.pagination?.total || 0"
-    />
-  </div>
+    <!-- Pagination -->
+    <template #footer>
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-600">
+          Showing {{ sliderStore.sliders?.length || 0 }} of
+          {{ sliderStore.pagination?.total || sliderStore.sliders?.length || 0 }} sliders
+        </p>
+        <UPagination
+          v-model="pagination.page"
+          :page-count="Math.ceil(sliderStore.pagination?.total || 0 / pagination.limit)"
+          :total="sliderStore.pagination?.total"
+        />
+      </div>
+    </template>
+  </UCard>
+
   <DeleteSlider
     :open="openDelete"
     @update:open="

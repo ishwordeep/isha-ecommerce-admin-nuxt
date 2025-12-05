@@ -113,7 +113,12 @@ const handleEdit = (row: ProductInterface) => {
 </script>
 
 <template>
-  <div class="border-default rounded-lg border bg-white">
+  <UCard
+    class="rounded-lg"
+    :ui="{
+      body: '!p-0',
+    }"
+  >
     <UTable
       :data="categoryStore.categories || []"
       :columns="columns"
@@ -139,14 +144,22 @@ const handleEdit = (row: ProductInterface) => {
         </div>
       </template>
     </UTable>
-  </div>
-  <div class="border-default flex justify-end pt-4">
-    <UPagination
-      v-model:page="pagination.page"
-      :items-per-page="pagination.limit"
-      :total="categoryStore.pagination?.total || 0"
-    />
-  </div>
+
+    <!-- Pagination -->
+    <template #footer>
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-600">
+          Showing {{ categoryStore.categories?.length || 0 }} of
+          {{ categoryStore.pagination?.total || categoryStore.categories?.length || 0 }} categories
+        </p>
+        <UPagination
+          v-model="pagination.page"
+          :page-count="Math.ceil((categoryStore.pagination?.total || 0) / pagination.limit)"
+          :total="categoryStore.pagination?.total || categoryStore.categories?.length || 0"
+        />
+      </div>
+    </template>
+  </UCard>
   <DeleteCategory
     :open="openDelete"
     @update:open="

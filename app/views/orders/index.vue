@@ -11,7 +11,6 @@ import OrderTable from './components/OrderTable.vue'
 
 const headerStore = useHeaderStore()
 const categoryStore = useCategoryStore()
-const selectedCategory = ref('')
 
 onBeforeMount(async () => {
   headerStore.setHeaders('Orders', 'Manage your orders here')

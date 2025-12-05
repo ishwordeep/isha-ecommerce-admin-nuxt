@@ -14,6 +14,7 @@ const { formatDate } = useFormatDate()
 // Filters & Search
 const searchTerm = ref('')
 const selectedStatus = ref<'all' | string>('all')
+const isFetching = ref(false)
 
 // Pagination
 const pagination = reactive({
@@ -22,14 +23,36 @@ const pagination = reactive({
   total: computed(() => orderStore.pagination?.total || 0),
 })
 
+const getSelectedStatus = computed(() => {
+  return selectedStatus.value === 'pending'
+    ? 'PENDING_PAYMENT'
+    : selectedStatus.value === 'paid'
+      ? 'PAID'
+      : selectedStatus.value === 'shipped'
+        ? 'SHIPPED'
+        : selectedStatus.value === 'completed'
+          ? 'COMPLETED'
+          : selectedStatus.value === 'cancelled'
+            ? 'CANCELLED'
+            : ''
+})
+
 // Fetch orders
 const fetchOrders = async () => {
+  isFetching.value = true
+
   await orderStore.fetchOrders({
     page: pagination.page,
     limit: pagination.limit,
     search: searchTerm.value,
+    status: getSelectedStatus.value,
   })
+  isFetching.value = false
 }
+
+watch([() => pagination.page, () => pagination.limit, searchTerm, selectedStatus], fetchOrders, {
+  immediate: true,
+})
 
 onMounted(fetchOrders)
 const handleSearch = (value: string) => {
@@ -39,7 +62,7 @@ const handleSearch = (value: string) => {
 // Status tabs with counts
 const statusCounts = computed(() => {
   const all = orderStore.orders?.length || 0
-  const map = { all, Pending: 0, Processing: 0, Shipped: 0, Delivered: 0, Cancelled: 0 }
+  const map = { all, pending: 0, paid: 0, shipped: 0, completed: 0, cancelled: 0 }
 
   orderStore.orders?.forEach((o: OrderInterface) => {
     if (map[o.status as keyof typeof map] !== undefined) {
@@ -52,11 +75,11 @@ const statusCounts = computed(() => {
 
 const statusOptions = [
   { value: 'all', label: 'All Orders', icon: 'i-lucide-package' },
-  { value: 'Pending', label: 'Pending', icon: 'i-lucide-clock' },
-  { value: 'Processing', label: 'Processing', icon: 'i-lucide-package' },
-  { value: 'Shipped', label: 'Shipped', icon: 'i-lucide-truck' },
-  { value: 'Delivered', label: 'Delivered', icon: 'i-lucide-check-circle' },
-  { value: 'Cancelled', label: 'Cancelled', icon: 'i-lucide-x-circle' },
+  { value: 'pending', label: 'Pending', icon: 'i-lucide-clock' },
+  { value: 'paid', label: 'Paid', icon: 'i-lucide-package' },
+  { value: 'shipped', label: 'Shipped', icon: 'i-lucide-truck' },
+  { value: 'completed', label: 'Completed', icon: 'i-lucide-check-circle' },
+  { value: 'cancelled', label: 'Cancelled', icon: 'i-lucide-x-circle' },
 ]
 
 const viewOrder = (order: OrderInterface) => {
@@ -107,7 +130,7 @@ const viewOrder = (order: OrderInterface) => {
     >
       <UTable
         :data="orderStore.orders || []"
-        :loading="orderStore.isLoading"
+        :loading="isFetching"
         :columns="[
           { accessorKey: 'orderNumber', header: 'Order ID' },
           { accessorKey: 'name', header: 'Customer' },
@@ -115,7 +138,15 @@ const viewOrder = (order: OrderInterface) => {
           { accessorKey: 'total', header: 'Total' },
           { accessorKey: 'status', header: 'Status' },
           { accessorKey: 'createdAt', header: 'Date' },
-          { accessorKey: 'actions', header: 'Actions' },
+          {
+            accessorKey: 'actions',
+            header: 'Actions',
+            meta: {
+              class: {
+                th: 'text-right',
+              },
+            },
+          },
         ]"
         :ui="{
           th: 'bg-gray-100 font-semibold text-black',
@@ -174,7 +205,7 @@ const viewOrder = (order: OrderInterface) => {
 
         <!-- Actions -->
         <template #actions-cell="{ row }">
-          <div class="flex justify-end gap-2">
+          <div class="flex w-full justify-end gap-2">
             <UButton
               size="xs"
               color="info"
