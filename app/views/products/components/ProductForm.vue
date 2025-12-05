@@ -13,7 +13,7 @@
         </UFormField>
 
         <UFormField label="Description" name="description">
-          <UTextarea v-model="productStore.formInputs.description" :rows="5" autoresize />
+          <TiptapEditor v-model="productStore.formInputs.description" />
         </UFormField>
 
         <div class="grid grid-cols-1 gap-4 min-[920px]:grid-cols-2">

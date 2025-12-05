@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import TiptapEditor from '~/components/TiptapEditor.vue'
 import { useHeaderStore } from '~/stores/header.store'
 
 definePageMeta({
@@ -25,11 +26,7 @@ const input = reactive({
   <UForm class="flex flex-col gap-4">
     <UCard>
       <UFormField label="Privacy Policy">
-        <UTextarea
-          v-model="input.policy"
-          :rows="15"
-          placeholder="Enter your privacy policy here..."
-        />
+        <TiptapEditor v-model="input.policy" />
       </UFormField>
     </UCard>
     <UButton class="w-max" type="submit" form="privacy-policy-form" color="primary">Save </UButton>

@@ -25,11 +25,7 @@ useSeoMeta({
   <UForm class="flex flex-col gap-4">
     <UCard>
       <UFormField label="Terms of Service">
-        <UTextarea
-          v-model="input.terms"
-          :rows="15"
-          placeholder="Enter your terms of service here..."
-        />
+        <TiptapEditor v-model="input.terms" />
       </UFormField>
     </UCard>
     <UButton class="w-max" type="submit" form="terms-of-service-form" color="primary"
