@@ -1,19 +1,13 @@
 <template>
-  <div>Orders</div>
+  <Orders />
 </template>
 
 <script setup lang="ts">
-import { useHeaderStore } from '~/stores/header.store'
-
+import Orders from '~/views/orders/index.vue'
 definePageMeta({
   layout: 'admin',
 })
 
-const headerStore = useHeaderStore()
-
-onBeforeMount(() => {
-  headerStore.setHeaders('Orders', 'Manage your orders here')
-})
 useSeoMeta({
   title: 'Orders',
   description: 'Manage your orders here',

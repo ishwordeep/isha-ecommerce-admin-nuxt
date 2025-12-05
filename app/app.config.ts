@@ -95,6 +95,7 @@ export default defineAppConfig({
       slots: {
         tr: 'hover:bg-gray-100',
         th: 'text-nowrap',
+        td: 'text-black',
       },
     },
     modal: {

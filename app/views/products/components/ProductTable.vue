@@ -117,7 +117,11 @@ const handleDelete = async (row: ProductInterface) => {
 </script>
 
 <template>
-  <div class="border-default rounded-lg border bg-white">
+  <UCard
+    :ui="{
+      body: '!p-0',
+    }"
+  >
     <UTable
       :data="productStore.products || []"
       :columns="columns"
@@ -130,9 +134,12 @@ const handleDelete = async (row: ProductInterface) => {
         <NuxtImg
           v-if="row.original.image"
           :src="row.original.image"
-          class="aspect-square w-24 min-w-16 object-fill"
+          class="aspect-square w-16 min-w-16 rounded-md object-cover"
         />
-        <div v-else class="border-default aspect-square w-24 min-w-16 border object-fill"></div>
+        <div
+          v-else
+          class="border-default aspect-square w-16 min-w-16 rounded-md border object-cover"
+        ></div>
       </template>
 
       <template #discount-cell="{ row }">
@@ -159,14 +166,22 @@ const handleDelete = async (row: ProductInterface) => {
         </div>
       </template>
     </UTable>
-  </div>
-  <div class="border-default flex justify-end pt-4">
-    <UPagination
-      v-model:page="pagination.page"
-      :items-per-page="pagination.limit"
-      :total="productStore.pagination?.total || 0"
-    />
-  </div>
+    <!-- Pagination -->
+    <template #footer>
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-600">
+          Showing {{ productStore.products?.length || 0 }} of
+          {{ productStore.pagination?.total || productStore.products?.length || 0 }} products
+        </p>
+        <UPagination
+          v-model:page="pagination.page"
+          :items-per-page="pagination.limit"
+          :total="productStore.pagination?.total || 0"
+        />
+      </div>
+    </template>
+  </UCard>
+
   <DeleteProduct
     :open="openDelete"
     @update:open="
