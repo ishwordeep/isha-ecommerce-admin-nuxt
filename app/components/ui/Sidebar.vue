@@ -140,6 +140,11 @@ const menuItems = ref([
     to: '/orders',
   },
   {
+    label: 'Messages',
+    icon: 'i-lucide-message-circle',
+    to: '/messages',
+  },
+  {
     label: 'Pages',
     icon: 'i-lucide-file-text',
     defaultOpen: isPagesRoute.value,
