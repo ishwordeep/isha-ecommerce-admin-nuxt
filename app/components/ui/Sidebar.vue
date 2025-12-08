@@ -1,7 +1,7 @@
 <template>
   <nav
     ref="sidebarRef"
-    class="h-screen border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
+    class="flex h-screen flex-col border-r border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
     :class="className"
   >
     <div class="border-b-default flex items-center gap-2 border-b p-4">
@@ -16,7 +16,7 @@
       </p>
     </div>
 
-    <div class="flex flex-col gap-4 overflow-y-auto p-2">
+    <div class="flex flex-1 flex-col gap-4 overflow-y-auto p-2">
       <div v-for="(item, index) in menuItems" :key="index">
         <!-- Items with children (collapsible) -->
         <template v-if="item.children">
@@ -80,6 +80,17 @@
         </template>
       </div>
     </div>
+
+    <div class="border-t border-gray-200 p-4 dark:border-gray-800">
+      <UButton
+        label="Sign Out"
+        leading-icon="i-lucide-log-out"
+        variant="ghost"
+        color="error"
+        class="w-full"
+        @click="authStore.clearAuth()"
+      />
+    </div>
   </nav>
 </template>
 
@@ -95,6 +106,7 @@ const emit = defineEmits(['navigate'])
 
 const route = useRoute()
 const settingStore = useSettingStore()
+const authStore = useAuthStore()
 
 // Reactive check for /products routes
 const isProductsRoute = computed(() => route.path.startsWith('/products'))
@@ -153,6 +165,11 @@ const menuItems = ref([
       { label: 'Terms of Service', to: '/front-pages/terms-of-service' },
       { label: 'Privacy Policy', to: '/front-pages/privacy-policy' },
     ],
+  },
+  {
+    label: 'Settings',
+    icon: 'i-lucide-settings',
+    to: '/settings',
   },
 ])
 

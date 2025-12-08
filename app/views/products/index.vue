@@ -3,15 +3,35 @@
     <div class="flex flex-wrap items-center justify-between gap-2">
       <div class="flex flex-1 flex-wrap items-start gap-2 md:items-center">
         <UiSearchInput :delay="500" :loading="true" @search="handleSearch" />
-        <USelect
+        <USelectMenu
           class="max-w-[200px] min-w-[100px] sm:max-w-[250px] sm:min-w-[250px]"
           v-model="selectedCategory"
           :items="categoryList"
+          value-key="value"
           placeholder="Filter by category"
         />
       </div>
       <UButton as="a" href="/products/add" label="Add Product" />
     </div>
+
+    <div class="flex flex-wrap">
+      <UBadge
+        v-if="selectedCategory"
+        class="rounded-full"
+        color="neutral"
+        :label="categoryList.find((cat) => cat.value === selectedCategory)?.label ?? ''"
+        variant="subtle"
+      >
+        <template #trailing>
+          <UIcon
+            name="i-lucide-x"
+            class="h-4 w-4 cursor-pointer text-red-500 hover:text-red-700"
+            @click="selectedCategory = ''"
+          />
+        </template>
+      </UBadge>
+    </div>
+
     <ProductTable :search="searchQuery" :category="selectedCategory" />
   </div>
 </template>

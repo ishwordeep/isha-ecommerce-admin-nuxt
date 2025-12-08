@@ -6,6 +6,19 @@
   --color-secondary: #571a18;
   --color-primary: #b08a3a;
   --color-tertiary: #f6f3e8;
+
+  --color-red-50: #fdf2f2;
+  --color-red-100: #fde8e8;
+  --color-red-200: #fcd3d3;
+  --color-red-300: #f9b3b3;
+  --color-red-400: #f37f7f;
+  --color-red-500: #e54d4d;
+  --color-red-600: #c91e2c;
+  --color-red-700: #a11623;
+  --color-red-800: #82141d;
+  --color-red-900: #68141a;
+  --color-red-950: #3d070c;
+
   /* breakpoints */
   --breakpoint-xs: 480px;
   --breakpoint-sm: 640px;

@@ -1,5 +1,8 @@
 export default defineAppConfig({
   ui: {
+    colors: {
+      neutral: 'gray',
+    },
     formField: {
       slots: {
         container: 'mt-1 relative w-full',
@@ -22,6 +25,21 @@ export default defineAppConfig({
       },
     },
     select: {
+      defaultVariants: {
+        size: 'lg',
+      },
+      slots: {
+        base: 'relative w-full',
+      },
+      variants: {
+        size: {
+          xl: {
+            base: 'py-2.5  text-base',
+          },
+        },
+      },
+    },
+    selectMenu: {
       defaultVariants: {
         size: 'lg',
       },

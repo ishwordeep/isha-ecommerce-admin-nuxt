@@ -21,14 +21,7 @@
         <div class="flex flex-col max-lg:items-center">
           <h1 class="text-2xl font-bold">{{ headerStore.title }}</h1>
         </div>
-        <UDropdownMenu
-          size="lg"
-          :content="{ align: 'end' }"
-          :items="items"
-          :ui="{ content: 'w-40' }"
-        >
-          <UAvatar src="https://github.com/benjamincanac.png" />
-        </UDropdownMenu>
+        <div></div>
       </div>
       <main class="flex-1 bg-gray-50 p-2 sm:p-6">
         <slot />
@@ -43,22 +36,6 @@ import Sidebar from '~/components/ui/Sidebar.vue'
 import { useHeaderStore } from '~/stores/header.store'
 
 const headerStore = useHeaderStore()
-const authStore = useAuthStore()
 
 const isDrawerOpen = ref(false)
-
-const items = ref([
-  {
-    label: 'Settings',
-    icon: 'i-lucide-settings',
-    to: '/settings',
-  },
-  {
-    label: 'Logout',
-    icon: 'i-lucide-log-out',
-    onSelect: () => {
-      authStore.clearAuth()
-    },
-  },
-])
 </script>
