@@ -17,6 +17,7 @@ export interface SettingInterface {
   tiktok: string
   createdAt: string
   updatedAt: string
+  sizeGuides: string
   __v: number
 }
 

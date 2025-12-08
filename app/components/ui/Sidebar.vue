@@ -162,7 +162,7 @@ const menuItems = ref([
     defaultOpen: isPagesRoute.value,
     children: [
       { label: 'About Us', to: '/front-pages/about-us' },
-      { label: 'Terms of Service', to: '/front-pages/terms-of-service' },
+      { label: 'Size Guides', to: '/front-pages/size-guides' },
       { label: 'Privacy Policy', to: '/front-pages/privacy-policy' },
     ],
   },
