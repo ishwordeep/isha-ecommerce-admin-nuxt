@@ -6,9 +6,9 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Products',
+  title: 'Products | Admin',
   description: 'Manage your products here',
-  ogTitle: 'Products',
+  ogTitle: 'Products | Admin',
 })
 </script>
 

@@ -6,9 +6,9 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Shipping Information',
+  title: 'Shipping Information | Admin',
   description: 'Manage your shipping information here',
-  ogTitle: 'Shipping Information',
+  ogTitle: 'Shipping Information | Admin',
 })
 </script>
 <template>

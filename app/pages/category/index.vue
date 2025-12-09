@@ -6,7 +6,7 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Categories',
+  title: 'Categories | Admin',
   description: 'Manage your categories here.',
 })
 </script>

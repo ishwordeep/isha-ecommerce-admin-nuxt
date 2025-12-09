@@ -12,14 +12,11 @@ export default defineNuxtConfig({
 
   app: {
     head: {
-      title: 'Ecommerce | Admin',
       meta: [
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
         { charset: 'utf-8' },
-        { name: 'description', content: 'Ecommerce | Admin' },
         { name: 'format-detection', content: 'telephone=no' },
       ],
-      link: [{ rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }],
     },
   },
 

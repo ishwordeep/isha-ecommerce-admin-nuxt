@@ -15,7 +15,7 @@ import ProductFlagManager from '~/views/products/components/ProductFlagManager.v
 const headerStore = useHeaderStore()
 
 const meta = ref({
-  title: 'Featured Products',
+  title: 'Featured Products | Admin',
   description: 'Manage your featured products here',
 })
 

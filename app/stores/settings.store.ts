@@ -22,11 +22,8 @@ export const useSettingStore = defineStore('setting', {
 
   actions: {
     async fetchSetting() {
-      const authStore = useAuthStore()
-      if (!authStore.isAuthenticated) return
       this.loading = true
       try {
-        // Simulate an API call to fetch settings
         const response = await SettingService.fetchSetting()
         if (response.data) {
           this.setting = response.data.data

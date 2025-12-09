@@ -9,8 +9,8 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Messages',
+  title: 'Messages | Admin',
   description: 'Manage your messages here',
-  ogTitle: 'Messages',
+  ogTitle: 'Messages | Admin',
 })
 </script>

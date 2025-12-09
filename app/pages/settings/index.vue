@@ -7,11 +7,10 @@ import Settings from '~/views/settings/index.vue'
 
 definePageMeta({
   layout: 'admin',
-  name: 'Settings',
 })
 
 useSeoMeta({
-  title: 'Settings',
+  title: 'Settings | Admin',
   description: 'Manage your settings here.',
 })
 </script>

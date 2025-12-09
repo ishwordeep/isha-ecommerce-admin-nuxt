@@ -23,12 +23,6 @@ import Social from './components/Social.vue'
 
 definePageMeta({
   layout: 'admin',
-  name: 'Settings',
-})
-
-useSeoMeta({
-  title: 'Settings',
-  description: 'Manage your settings here.',
 })
 
 const headerStore = useHeaderStore()

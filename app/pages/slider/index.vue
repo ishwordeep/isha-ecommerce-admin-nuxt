@@ -5,7 +5,7 @@ definePageMeta({
   layout: 'admin',
 })
 useSeoMeta({
-  title: 'Sliders',
+  title: 'Sliders | Admin',
   description: 'Manage your sliders here.',
 })
 </script>

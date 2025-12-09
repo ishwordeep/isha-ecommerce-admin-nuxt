@@ -8,9 +8,9 @@ const headerStore = useHeaderStore()
 definePageMeta({ layout: 'admin' })
 
 useSeoMeta({
-  title: 'Add Product',
+  title: 'Add Product | Admin',
   description: 'Add your product',
-  ogTitle: 'Add Product',
+  ogTitle: 'Add Product | Admin',
 })
 
 onBeforeMount(() => {

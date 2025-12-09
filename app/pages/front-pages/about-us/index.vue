@@ -5,8 +5,8 @@ definePageMeta({
   layout: 'admin',
 })
 useSeoMeta({
-  title: 'About Us',
-  ogTitle: 'About Us',
+  title: 'About Us | Admin',
+  ogTitle: 'About Us | Admin',
 })
 </script>
 

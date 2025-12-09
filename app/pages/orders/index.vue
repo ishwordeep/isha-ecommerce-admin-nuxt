@@ -9,8 +9,8 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Orders',
+  title: 'Orders | Admin',
   description: 'Manage your orders here',
-  ogTitle: 'Orders',
+  ogTitle: 'Orders | Admin',
 })
 </script>

@@ -15,7 +15,7 @@ import ProductFlagManager from '~/views/products/components/ProductFlagManager.v
 const headerStore = useHeaderStore()
 
 const meta = ref({
-  title: 'Trending Products',
+  title: 'Trending Products | Admin',
   description: 'Manage your trending products here',
 })
 

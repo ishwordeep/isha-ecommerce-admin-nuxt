@@ -12,10 +12,9 @@ export function useSettingSeo(setting: Ref<SettingInterface | null | undefined>)
   })
 
   useSeoMeta({
-    title: () => (setting.value?.name ? `${setting.value?.name}` : 'Parish Jat Leo'),
     description: () => setting.value?.description || 'Welcome to Parish Jat Leo official website.',
     ogUrl: appUrl,
-    ogTitle: () => setting.value?.name || 'Parish Jat Leo',
+    ogTitle: () => setting.value?.name || 'Parish Jat Leo | Admin',
     ogDescription: () =>
       setting.value?.description || 'Welcome to Parish Jat Leo official website.',
     ogImage: () => image.value,
@@ -26,4 +25,22 @@ export function useSettingSeo(setting: Ref<SettingInterface | null | undefined>)
       setting.value?.description || 'Welcome to Parish Jat Leo official website.',
     twitterImage: () => image.value,
   })
+
+  useHead(() => ({
+    link: [
+      {
+        rel: 'icon',
+        type: 'image/png',
+        href: setting.value?.faviconUrl
+          ? `${setting.value.faviconUrl}?v=${Date.now()}`
+          : '/favicon.ico',
+      },
+      {
+        rel: 'apple-touch-icon',
+        href: setting.value?.faviconUrl
+          ? `${setting.value.faviconUrl}?v=${Date.now()}`
+          : '/favicon.ico',
+      },
+    ],
+  }))
 }

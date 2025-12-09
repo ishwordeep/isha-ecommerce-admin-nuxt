@@ -153,6 +153,12 @@ const headerStore = useHeaderStore()
 onBeforeMount(() => {
   headerStore.setHeaders('Dashboard', 'This is admin dashboard page')
 })
+
+useSeoMeta({
+  title: 'Dashboard | Admin',
+  description: 'Overview of your admin dashboard',
+})
+
 // Stats Data
 const stats = [
   {

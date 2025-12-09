@@ -6,9 +6,9 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Return and Exchange',
+  title: 'Return and Exchange | Admin',
   description: 'Manage your return and exchange here',
-  ogTitle: 'Return and Exchange',
+  ogTitle: 'Return and Exchange | Admin',
 })
 </script>
 <template>

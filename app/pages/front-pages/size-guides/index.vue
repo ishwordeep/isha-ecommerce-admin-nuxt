@@ -6,9 +6,9 @@ definePageMeta({
 })
 
 useSeoMeta({
-  title: 'Size Guides',
+  title: 'Size Guides | Admin',
   description: 'Manage your size guides here',
-  ogTitle: 'Size Guides',
+  ogTitle: 'Size Guides | Admin',
 })
 </script>
 <template>

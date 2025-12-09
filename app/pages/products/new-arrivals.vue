@@ -15,7 +15,7 @@ import ProductFlagManager from '~/views/products/components/ProductFlagManager.v
 const headerStore = useHeaderStore()
 
 const meta = ref({
-  title: 'New Arrivals',
+  title: 'New Arrivals | Admin',
   description: 'Manage your new arrivals here',
 })
 
