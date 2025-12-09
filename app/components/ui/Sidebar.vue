@@ -163,7 +163,8 @@ const menuItems = ref([
     children: [
       { label: 'About Us', to: '/front-pages/about-us' },
       { label: 'Size Guides', to: '/front-pages/size-guides' },
-      { label: 'Privacy Policy', to: '/front-pages/privacy-policy' },
+      { label: 'Return and Exchange', to: '/front-pages/return-and-exchange' },
+      { label: 'Shipping Information', to: '/front-pages/shipping-information' },
     ],
   },
   {

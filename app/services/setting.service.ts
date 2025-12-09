@@ -18,6 +18,8 @@ export interface SettingInterface {
   createdAt: string
   updatedAt: string
   sizeGuides: string
+  returnAndExchanges: string
+  shippingInformations: string
   __v: number
 }
 

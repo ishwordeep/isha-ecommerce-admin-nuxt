@@ -306,6 +306,156 @@
           />
         </UTooltip>
       </div>
+
+      <USeparator orientation="vertical" class="h-6" />
+
+      <!-- Table Controls -->
+      <div class="flex items-center gap-1">
+        <UTooltip
+          text="Insert Table"
+          :content="{
+            align: 'center',
+            side: 'top',
+          }"
+          :delay-duration="0"
+        >
+          <UButton
+            @click="
+              editor?.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()
+            "
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-table"
+            size="sm"
+          />
+        </UTooltip>
+
+        <UTooltip
+          text="Add Column Before"
+          :content="{
+            align: 'center',
+            side: 'top',
+          }"
+          :delay-duration="0"
+        >
+          <UButton
+            @click="editor?.chain().focus().addColumnBefore().run()"
+            :disabled="!editor?.can().addColumnBefore()"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-table-columns-split"
+            size="sm"
+          />
+        </UTooltip>
+
+        <UTooltip
+          text="Add Column After"
+          :content="{
+            align: 'center',
+            side: 'top',
+          }"
+          :delay-duration="0"
+        >
+          <UButton
+            @click="editor?.chain().focus().addColumnAfter().run()"
+            :disabled="!editor?.can().addColumnAfter()"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-table-columns-split"
+            size="sm"
+          />
+        </UTooltip>
+
+        <UTooltip
+          text="Delete Column"
+          :content="{
+            align: 'center',
+            side: 'top',
+          }"
+          :delay-duration="0"
+        >
+          <UButton
+            @click="editor?.chain().focus().deleteColumn().run()"
+            :disabled="!editor?.can().deleteColumn()"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-trash-2"
+            size="sm"
+          />
+        </UTooltip>
+
+        <UTooltip
+          text="Add Row Before"
+          :content="{
+            align: 'center',
+            side: 'top',
+          }"
+          :delay-duration="0"
+        >
+          <UButton
+            @click="editor?.chain().focus().addRowBefore().run()"
+            :disabled="!editor?.can().addRowBefore()"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-table-rows-split"
+            size="sm"
+          />
+        </UTooltip>
+
+        <UTooltip
+          text="Add Row After"
+          :content="{
+            align: 'center',
+            side: 'top',
+          }"
+          :delay-duration="0"
+        >
+          <UButton
+            @click="editor?.chain().focus().addRowAfter().run()"
+            :disabled="!editor?.can().addRowAfter()"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-table-rows-split"
+            size="sm"
+          />
+        </UTooltip>
+
+        <UTooltip
+          text="Delete Row"
+          :content="{
+            align: 'center',
+            side: 'top',
+          }"
+          :delay-duration="0"
+        >
+          <UButton
+            @click="editor?.chain().focus().deleteRow().run()"
+            :disabled="!editor?.can().deleteRow()"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-trash-2"
+            size="sm"
+          />
+        </UTooltip>
+
+        <UTooltip
+          text="Delete Table"
+          :content="{
+            align: 'center',
+            side: 'top',
+          }"
+          :delay-duration="0"
+        >
+          <UButton
+            @click="editor?.chain().focus().deleteTable().run()"
+            :disabled="!editor?.can().deleteTable()"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-trash"
+            size="sm"
+          />
+        </UTooltip>
+      </div>
     </div>
 
     <USeparator class="w-full" />
@@ -318,6 +468,7 @@
 import { Extension } from '@tiptap/core'
 import Highlight from '@tiptap/extension-highlight'
 import Link from '@tiptap/extension-link'
+import { Table, TableCell, TableHeader, TableRow } from '@tiptap/extension-table'
 import TextAlign from '@tiptap/extension-text-align'
 import { TextStyle } from '@tiptap/extension-text-style'
 import Underline from '@tiptap/extension-underline'
@@ -393,6 +544,12 @@ const editor = useEditor({
     TextAlign.configure({
       types: ['heading', 'paragraph'],
     }),
+    Table.configure({
+      resizable: true,
+    }),
+    TableRow,
+    TableHeader,
+    TableCell,
   ],
   editorProps: {
     attributes: {
@@ -481,41 +638,89 @@ onBeforeUnmount(() => {
   pointer-events: none;
 }
 
+/* ====== Paragraphs ====== */
+:deep(.ProseMirror p) {
+  @apply mb-3; /* equivalent to margin-bottom: 0.75rem */
+  line-height: 1.6;
+  min-height: 0.75rem;
+}
+
+/* ====== Headings ====== */
+:deep(.ProseMirror h1) {
+  @apply my-6 text-2xl font-bold; /* margin-top:1.5rem, margin-bottom:1rem approximated */
+}
+
+:deep(.ProseMirror h2) {
+  @apply my-5 text-xl font-semibold; /* margin-top:1.25rem, margin-bottom:0.75rem */
+}
+
+:deep(.ProseMirror h3) {
+  @apply my-4 text-lg font-semibold; /* margin-top:1rem, margin-bottom:0.5rem */
+}
+
+/* ====== Lists ====== */
 :deep(.ProseMirror ul) {
-  @apply ml-6 list-disc;
+  @apply mb-3 ml-5 list-disc; /* margin-left:1.25rem, margin-bottom:0.75rem */
 }
 
 :deep(.ProseMirror ol) {
-  @apply ml-6 list-decimal;
+  @apply mb-3 ml-5 list-decimal;
 }
 
 :deep(.ProseMirror li) {
+  @apply mb-1; /* margin:0.25rem 0 */
+  line-height: 1.5;
   display: list-item;
 }
 
-:deep(.ProseMirror h1) {
-  @apply text-3xl font-bold;
-}
-:deep(.ProseMirror h2) {
-  @apply text-2xl font-bold;
-}
-:deep(.ProseMirror h3) {
-  @apply text-xl font-bold;
+/* ====== Line breaks ====== */
+:deep(.ProseMirror br) {
+  line-height: 1.2;
 }
 
-:deep(.ProseMirror h4) {
-  @apply text-lg font-bold;
+/* ====== Images ====== */
+:deep(.ProseMirror img) {
+  @apply my-4 block w-full; /* max-width:100%, margin-top/bottom:1rem */
+  height: auto;
 }
 
-:deep(.ProseMirror h5) {
-  @apply text-base font-bold;
+/* ====== Tables ====== */
+:deep(.ProseMirror table) {
+  @apply my-4 w-full border-collapse;
+  table-layout: fixed;
+  display: table;
+  overflow: hidden;
 }
 
-:deep(.ProseMirror h6) {
-  @apply text-sm font-bold;
+:deep(.ProseMirror th),
+:deep(.ProseMirror td) {
+  @apply border px-3 py-2 align-top; /* padding:0.5rem 0.75rem */
+  min-width: 1em;
+  position: relative;
+  box-sizing: border-box;
 }
 
-:deep(.ProseMirror a) {
-  @apply text-blue-600 underline;
+:deep(.ProseMirror th) {
+  @apply bg-gray-100 text-left font-bold; /* for light mode */
+}
+
+/* Dark mode tables */
+:deep(.ProseMirror table th),
+:deep(.ProseMirror table td) {
+  border-color: #d1d5db;
+}
+
+.dark :deep(.ProseMirror table th) {
+  background-color: #374151;
+}
+
+.dark :deep(.ProseMirror table th),
+.dark :deep(.ProseMirror table td) {
+  border-color: #4b5563;
+}
+
+/* Table paragraphs */
+:deep(.ProseMirror table p) {
+  margin: 0;
 }
 </style>

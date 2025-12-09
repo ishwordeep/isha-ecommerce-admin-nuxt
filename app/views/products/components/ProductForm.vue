@@ -129,18 +129,42 @@
         </div>
       </UPageCard>
 
-      <UPageCard title="Available Sizes">
-        <div class="flex flex-wrap items-center gap-2">
+      <UPageCard title="Add Sizes">
+        <!-- Input for adding new size -->
+        <div class="flex items-end gap-2">
+          <UFormField label="Enter Size" name="size" class="w-full max-w-[300px]">
+            <UInput v-model="sizeValue" placeholder="e.g., XL" />
+          </UFormField>
+
           <UButton
-            v-for="size in availableSizes"
-            :label="size"
-            @click="toggleSize(size)"
-            :variant="productStore.formInputs.sizes.includes(size) ? 'solid' : 'outline'"
-            :ui="{
-              base: 'px-6 py-3',
-              label: 'text-center m-auto',
-            }"
+            leadingIcon="i-lucide-plus"
+            label="Add"
+            @click="addSize"
+            :disabled="!sizeValue"
           />
+        </div>
+
+        <!-- Display selected sizes -->
+        <div class="mt-4 flex flex-col gap-2">
+          <span class="font-semibold" v-if="productStore.formInputs.sizes.length">
+            Selected Sizes ({{ productStore.formInputs.sizes.length || 0 }})
+          </span>
+          <div class="flex flex-wrap items-center gap-2">
+            <div
+              class="border-default flex items-center rounded-md border bg-gray-50 px-3 py-1"
+              v-for="size in productStore.formInputs.sizes"
+              :key="size"
+            >
+              <span class="text-sm font-medium">{{ size }}</span>
+              <UButton
+                size="md"
+                variant="link"
+                class="ml-2"
+                icon="i-lucide-x"
+                @click="removeSize(size)"
+              />
+            </div>
+          </div>
         </div>
       </UPageCard>
 
@@ -206,8 +230,8 @@ const props = withDefaults(
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
 const toast = useToast()
-const availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXl', 'XXXl']
 const colorValue = ref('#000')
+const sizeValue = ref('')
 const selectedColor = computed(() => ({ backgroundColor: colorValue.value }))
 
 const addColor = () => {
@@ -216,17 +240,18 @@ const addColor = () => {
 }
 
 const removeColor = (color: string) => {
-  productStore.formInputs.colors.filter((color) => color !== color)
+  productStore.formInputs.colors.filter((c) => c !== color)
 }
 
-const toggleSize = (size: string) => {
-  const exists = productStore.formInputs.sizes.includes(size)
+const addSize = () => {
+  if (!sizeValue.value) return
+  if (sizeValue.value.includes(sizeValue.value)) return
+  productStore.formInputs.sizes.push(sizeValue.value)
+  sizeValue.value = ''
+}
 
-  if (exists) {
-    productStore.formInputs.sizes = productStore.formInputs.sizes.filter((s) => s !== size)
-  } else {
-    productStore.formInputs.sizes.push(size)
-  }
+const removeSize = (size: string) => {
+  productStore.formInputs.sizes.filter((s) => s !== size)
 }
 
 // Ensure categories are loaded
@@ -236,8 +261,6 @@ onBeforeMount(async () => {
   }
 })
 
-// Dynamic labels
-const title = computed(() => (props.mode === 'edit' ? 'Edit Product' : 'Add New Product'))
 const submitLabel = computed(() => (props.mode === 'edit' ? 'Update Product' : 'Create Product'))
 
 // Category dropdown items

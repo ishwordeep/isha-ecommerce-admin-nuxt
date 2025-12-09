@@ -7,23 +7,20 @@ definePageMeta({
 
 const headerStore = useHeaderStore()
 const settingStore = useSettingStore()
-const isSubmitting = ref(false)
 onBeforeMount(() => {
-  headerStore.setHeaders('Size Guides', 'Manage your size guides here')
+  headerStore.setHeaders('Shipping Information', 'Manage your shipping Information here')
 })
 
 const input = reactive({
-  sizeGuides: '',
+  shippingInformations: '',
 })
 
 const saveData = async () => {
-  isSubmitting.value = true
-  await settingStore.updateSetting({ sizeGuides: input.sizeGuides })
-  isSubmitting.value = false
+  await settingStore.updateSetting({ shippingInformations: input.shippingInformations })
   useToast().add({
     color: 'success',
     title: 'Success',
-    description: 'Size Guides Updated Successfully',
+    description: 'Shipping Information Updated Successfully',
   })
 }
 
@@ -33,7 +30,7 @@ onMounted(() => {
       await settingStore.fetchSetting()
     }
     if (settingStore.setting) {
-      input.sizeGuides = settingStore.setting.sizeGuides || ''
+      input.shippingInformations = settingStore.setting.shippingInformations || ''
     }
   }, 1000)
 })
@@ -41,8 +38,11 @@ onMounted(() => {
 <template>
   <UForm class="flex flex-col gap-4">
     <UCard>
-      <UFormField label="Size Guides">
-        <TiptapEditor v-model="input.sizeGuides" root-class="!min-h-[50dvh] !max-h-[60dvh]" />
+      <UFormField label="Shipping Information">
+        <TiptapEditor
+          v-model="input.shippingInformations"
+          root-class="!min-h-[50dvh] !max-h-[60dvh]"
+        />
       </UFormField>
     </UCard>
     <UButton
@@ -51,7 +51,6 @@ onMounted(() => {
       type="submit"
       form="terms-of-service-form"
       color="primary"
-      :loading="isSubmitting"
       >Save
     </UButton>
   </UForm>
