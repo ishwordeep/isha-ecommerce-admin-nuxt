@@ -83,11 +83,15 @@ const active = computed({
     </template>
 
     <template #story>
-      <Story />
+      <ClientOnly>
+        <Story />
+      </ClientOnly>
     </template>
 
     <template #faqs>
-      <FAQs />
+      <ClientOnly>
+        <FAQs />
+      </ClientOnly>
     </template>
   </UTabs>
 </template>
