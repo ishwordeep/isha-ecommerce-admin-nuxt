@@ -77,7 +77,9 @@ const active = computed({
     v-model="active"
   >
     <template #general>
-      <ProductForm mode="edit" />
+      <ClientOnly>
+        <ProductForm mode="edit" />
+      </ClientOnly>
     </template>
 
     <template #story>

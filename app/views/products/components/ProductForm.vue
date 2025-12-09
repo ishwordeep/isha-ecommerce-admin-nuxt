@@ -115,6 +115,7 @@
             <div
               class="border-default flex items-center rounded-md border bg-gray-50 px-3 py-1"
               v-for="color in productStore.formInputs.colors"
+              :key="color"
             >
               <div class="aspect-square w-[20px] shrink-0" :style="{ background: color }"></div>
               <UButton
@@ -129,18 +130,36 @@
         </div>
       </UPageCard>
 
-      <UPageCard title="Available Sizes">
-        <div class="flex flex-wrap items-center gap-2">
-          <UButton
-            v-for="size in availableSizes"
-            :label="size"
-            @click="toggleSize(size)"
-            :variant="productStore.formInputs.sizes.includes(size) ? 'solid' : 'outline'"
-            :ui="{
-              base: 'px-6 py-3',
-              label: 'text-center m-auto',
-            }"
-          />
+      <UPageCard title="Add Sizes">
+        <div class="flex items-end gap-2">
+          <UFormField label="Select Color" name="color" class="w-full max-w-[500px]">
+            <UInput v-model="sizeValue" />
+          </UFormField>
+          <UButton leadingIcon="i-lucide-plus" label="Add" @click="addSize" />
+        </div>
+
+        <div class="mt-4 flex flex-col gap-2">
+          <span class="font-semibold" v-if="productStore.formInputs.sizes.length">
+            Selected Sizes ({{ productStore.formInputs.sizes.length || 0 }})
+          </span>
+          <div class="flex flex-wrap items-center gap-2">
+            <div
+              class="border-default flex items-center rounded-md border bg-gray-50 px-2 py-0.5"
+              v-for="size in productStore.formInputs.sizes"
+              :key="size"
+            >
+              <span class="text-sm" :style="{ background: size }">
+                {{ size }}
+              </span>
+              <UButton
+                size="md"
+                variant="link"
+                class="ml-1"
+                icon="i-lucide-x"
+                @click="removeSize(size)"
+              />
+            </div>
+          </div>
         </div>
       </UPageCard>
 
@@ -208,6 +227,7 @@ const categoryStore = useCategoryStore()
 const toast = useToast()
 const availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXl', 'XXXl']
 const colorValue = ref('#000')
+const sizeValue = ref('')
 const selectedColor = computed(() => ({ backgroundColor: colorValue.value }))
 
 const addColor = () => {
@@ -215,8 +235,23 @@ const addColor = () => {
   colorValue.value = '#000'
 }
 
-const removeColor = (color: string) => {
-  productStore.formInputs.colors.filter((color) => color !== color)
+const removeColor = (colorToRemove: string) => {
+  productStore.formInputs.colors = productStore.formInputs.colors.filter(
+    (color) => color !== colorToRemove
+  )
+}
+
+const addSize = () => {
+  if (!sizeValue.value) return
+  if (productStore.formInputs.sizes.includes(sizeValue.value)) return
+  productStore.formInputs.sizes.push(sizeValue.value)
+  sizeValue.value = ''
+}
+
+const removeSize = (sizeToRemove: string) => {
+  productStore.formInputs.sizes = productStore.formInputs.sizes.filter(
+    (size) => size !== sizeToRemove
+  )
 }
 
 const toggleSize = (size: string) => {
@@ -230,12 +265,14 @@ const toggleSize = (size: string) => {
 }
 
 // Ensure categories are loaded
-onBeforeMount(async () => {
+onMounted(async () => {
   if (!categoryStore.list?.length) {
     await categoryStore.fetchListOnly()
   }
 })
 
+// Dynamic labels
+const title = computed(() => (props.mode === 'edit' ? 'Edit Product' : 'Add New Product'))
 const submitLabel = computed(() => (props.mode === 'edit' ? 'Update Product' : 'Create Product'))
 
 // Category dropdown items
@@ -250,16 +287,16 @@ const categoryList = computed(
 // Zod Schema
 const schema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100),
-  description: z.string().optional(),
+  description: z.string(),
   price: z.number().min(1, 'Price must be at least 1'),
-  discount: z.number().min(0).max(100).optional().default(0),
+  discount: z.number().min(0).max(100).default(0),
   category: z.string().min(1, 'Category is required'),
   isActive: z.boolean(),
   isNew: z.boolean(),
   isFeatured: z.boolean(),
   isTrending: z.boolean(),
   tags: z.array(z.string()),
-  image: z.string().optional(),
+  image: z.string(),
   images: z.array(z.string()),
   colors: z.array(z.string()),
   sizes: z.array(z.string()),
@@ -280,8 +317,8 @@ const handleSubmit = async () => {
       title: 'Success',
       description: `Product ${isAdd ? 'added' : 'updated'} successfully`,
     })
-    navigateTo(`/products/${response.data?.data?._id}/edit?tab=story`)
     productStore.reset()
+    navigateTo(`/products/${response.data?.data?._id}/edit?tab=story`)
   } else {
     toast.add({
       color: 'error',

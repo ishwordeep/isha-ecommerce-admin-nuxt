@@ -8,9 +8,9 @@ const headerStore = useHeaderStore()
 definePageMeta({ layout: 'admin' })
 
 useSeoMeta({
-  title: 'Edit Product',
-  description: 'Edit your product',
-  ogTitle: 'Edit Product',
+  title: 'Add Product',
+  description: 'Add your product',
+  ogTitle: 'Add Product',
 })
 
 onBeforeMount(() => {
@@ -23,5 +23,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <ProductForm mode="add" />
+  <ClientOnly>
+    <ProductForm mode="add" />
+  </ClientOnly>
 </template>
