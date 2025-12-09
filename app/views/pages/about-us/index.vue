@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TabsItem } from '@nuxt/ui'
+import { useAboutStore } from '~/stores/about.store'
 import { useHeaderStore } from '~/stores/header.store'
 import BrandPhilosophy from './components/BrandPhilosophy.vue'
 import CoreValues from './components/CoreValues.vue'
@@ -8,9 +9,13 @@ import Journey from './components/Journey.vue'
 import Teams from './components/Teams.vue'
 
 const headerStore = useHeaderStore()
-
+const aboutStore = useAboutStore()
 onBeforeMount(() => {
   headerStore.setHeaders('About Us', 'Manage your about us page here')
+})
+
+onMounted(async () => {
+  await aboutStore.initializeForm()
 })
 
 const route = useRoute()
@@ -25,6 +30,7 @@ const active = computed({
     router.push({
       path: `/front-pages/about-us`,
       query: { tab },
+      hash: '#',
     })
   },
 })

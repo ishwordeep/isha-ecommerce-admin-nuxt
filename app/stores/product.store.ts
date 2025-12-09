@@ -22,6 +22,8 @@ export interface ProductForm {
   images: string[]
   colors: string[]
   sizes: string[]
+  faqs: ProductFaqForm[]
+  story: string
 }
 
 export interface ProductFaqForm {
@@ -47,6 +49,8 @@ const mapProductToForm = (product: ProductInterface | null): ProductForm => {
     images: Array.isArray(product.images) ? product.images : [],
     colors: Array.isArray(product.colors) ? product.colors : [],
     sizes: Array.isArray(product.sizes) ? product.sizes : [],
+    faqs: Array.isArray(product.faqs) ? product.faqs : [],
+    story: product.story ?? '',
   }
 }
 
@@ -78,6 +82,8 @@ const emptyForm = (): ProductForm => ({
   images: [],
   colors: [],
   sizes: [],
+  faqs: [],
+  story: '',
 })
 
 export const useProductStore = defineStore('product', () => {
@@ -182,7 +188,7 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const addProduct = async (payload: ProductForm) => {
+  const addProduct = async (payload: Partial<ProductForm>) => {
     isSubmitting.value = true
     try {
       const res = await ProductService.addProduct(payload)
@@ -194,7 +200,7 @@ export const useProductStore = defineStore('product', () => {
     }
   }
 
-  const updateProduct = async (id: string, payload: ProductForm) => {
+  const updateProduct = async (id: string, payload: Partial<ProductForm>) => {
     isSubmitting.value = true
     try {
       const res = await ProductService.updateProduct(id, payload)
@@ -315,7 +321,6 @@ export const useProductStore = defineStore('product', () => {
     productByCategory,
     pagination,
     list: readonly(list),
-
     formInputs,
     mode: readonly(mode),
     isAddMode,

@@ -5,6 +5,7 @@ export interface SettingInterface {
   name: string
   email: string
   phone: string
+  description: string
   address: string
   city: string
   state: string

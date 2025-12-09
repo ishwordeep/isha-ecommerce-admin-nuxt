@@ -36,6 +36,8 @@ export interface ProductInterface {
   isNew?: boolean
   isTrending?: boolean
   categoryDetails?: CategoryInterface | null
+  faqs?: ProductFaqInterface[] | null
+  story?: string
 }
 
 interface ProductListResponse {
@@ -92,7 +94,9 @@ class ProductService {
   /**
    * Add Categories
    */
-  async addProduct(product: ProductForm): Promise<ProductServiceResponse<ProductItemResponse>> {
+  async addProduct(
+    product: Partial<ProductForm>
+  ): Promise<ProductServiceResponse<ProductItemResponse>> {
     return await AxiosService.post('/product', product)
   }
 
@@ -101,7 +105,7 @@ class ProductService {
    */
   async updateProduct(
     id: string,
-    payload: ProductForm
+    payload: Partial<ProductForm>
   ): Promise<ProductServiceResponse<ProductItemResponse>> {
     return await AxiosService.put(`/product/${id}`, payload)
   }

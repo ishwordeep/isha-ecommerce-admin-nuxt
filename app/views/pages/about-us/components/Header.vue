@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useAboutStore } from '~/stores/about.store'
+
 interface Stat {
   number: string
   label: string
@@ -27,15 +29,39 @@ const about = ref<AboutHero>({
   ],
 })
 
+const aboutStore = useAboutStore()
+const toast = useToast()
 // Add / Remove Stat
 const addStat = () => {
-  about.value.stats.push({ number: '', label: '' })
+  aboutStore.formInputs.hero.stats.push({ number: '', label: '' })
 }
-const removeStat = (index: number) => about.value.stats.splice(index, 1)
+const removeStat = (index: number) => aboutStore.formInputs.hero.stats.splice(index, 1)
 
 // Submit
-const onSubmit = () => {
-  console.log('About Hero saved →', about.value)
+const onSubmit = async () => {
+  console.log('About Hero saved →', aboutStore.formInputs.hero)
+  try {
+    const res = await aboutStore.updateAbout({ hero: aboutStore.formInputs.hero })
+    if (res?.data?.success) {
+      toast.add({
+        color: 'success',
+        title: 'Success',
+        description: 'About Hero section updated successfully.',
+      })
+    } else {
+      toast.add({
+        color: 'error',
+        title: 'Error',
+        description: 'Failed to update About Hero section.',
+      })
+    }
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'Failed to update About Hero section.',
+    })
+  }
 }
 </script>
 
@@ -52,7 +78,7 @@ const onSubmit = () => {
         <!-- Title -->
         <UFormField label="Main Title" required>
           <UInput
-            v-model="about.title"
+            v-model="aboutStore.formInputs.hero.mainTitle"
             placeholder="About Fashion Store"
             size="xl"
             class="text-4xl font-bold"
@@ -62,7 +88,7 @@ const onSubmit = () => {
         <!-- Subtitle -->
         <UFormField label="Subtitle">
           <UTextarea
-            v-model="about.subtitle"
+            v-model="aboutStore.formInputs.hero.subtitle"
             placeholder="We’re not just a fashion retailer..."
             autoresize
             :rows="4"
@@ -71,14 +97,12 @@ const onSubmit = () => {
         </UFormField>
 
         <!-- Button -->
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <UFormField label="Button Text">
-            <UInput v-model="about.buttonText" placeholder="Our Story" />
-          </UFormField>
-          <UFormField label="Button Link">
-            <UInput v-model="about.buttonLink" placeholder="/about" />
-          </UFormField>
-        </div>
+        <UFormField label="Button Text">
+          <UInput v-model="aboutStore.formInputs.hero.buttonText" placeholder="Our Story" />
+        </UFormField>
+        <!-- <UFormField label="Button Link">
+            <UInput v-model="aboutStore.formInputs.hero." placeholder="/about" />
+          </UFormField> -->
 
         <!-- Stats -->
         <div>
@@ -88,7 +112,11 @@ const onSubmit = () => {
           </div>
 
           <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-            <UCard v-for="(stat, index) in about.stats" :key="index" class="relative p-5">
+            <UCard
+              v-for="(stat, index) in aboutStore.formInputs.hero.stats"
+              :key="index"
+              class="relative p-5"
+            >
               <UButton
                 icon="i-heroicons-x-mark"
                 size="xs"
@@ -114,14 +142,15 @@ const onSubmit = () => {
       <!-- Debug -->
       <details class="mt-10 text-xs text-gray-500">
         <summary>Debug: Current data</summary>
-        <pre>{{ about }}</pre>
+        <pre>{{ aboutStore.formInputs.hero }}</pre>
       </details>
     </UPageCard>
 
     <!-- Action Buttons -->
     <div class="mt-10 flex gap-4">
-      <UButton variant="outline">Skip</UButton>
-      <UButton type="submit" form="about-hero-form"> Save & Next </UButton>
+      <UButton type="submit" form="about-hero-form" :loading="aboutStore.states.isUpdating">
+        Update Header
+      </UButton>
     </div>
   </UForm>
 </template>

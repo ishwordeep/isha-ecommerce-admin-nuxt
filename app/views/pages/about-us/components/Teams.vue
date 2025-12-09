@@ -9,7 +9,7 @@ interface TeamMember {
 }
 
 const team = ref<TeamMember[]>([])
-
+const aboutStore = useAboutStore()
 const addMember = () => {
   team.value.push({
     name: '',
@@ -20,7 +20,7 @@ const addMember = () => {
 }
 
 const removeMember = (index: number) => {
-  team.value.splice(index, 1)
+  aboutStore.formInputs.team.splice(index, 1)
 }
 
 // schema must match { team: TeamMember[] }
@@ -35,8 +35,31 @@ const schema = z.object({
   ),
 })
 
-const onSubmit = () => {
-  console.log('Team saved:', team.value)
+const onSubmit = async () => {
+  const toast = useToast()
+
+  try {
+    const res = await aboutStore.updateAbout({ team: aboutStore.formInputs.team })
+    if (res?.data?.success) {
+      toast.add({
+        color: 'success',
+        title: 'Success',
+        description: 'Team section updated successfully.',
+      })
+    } else {
+      toast.add({
+        color: 'error',
+        title: 'Error',
+        description: 'Failed to update Team section.',
+      })
+    }
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'An unexpected error occurred while updating Team section.',
+    })
+  }
 }
 </script>
 
@@ -48,7 +71,11 @@ const onSubmit = () => {
       </template>
 
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <UCard v-for="(member, index) in team" :key="index" class="relative overflow-hidden">
+        <UCard
+          v-for="(member, index) in aboutStore.formInputs.team"
+          :key="index"
+          class="relative overflow-hidden"
+        >
           <!-- Remove -->
           <UButton
             icon="i-heroicons-x-mark-20-solid"
@@ -66,19 +93,19 @@ const onSubmit = () => {
             </UFormField>
 
             <!-- Title -->
-            <UFormField :name="`team.${index}.title`" label="Title / Role" required>
-              <UInput v-model="member.title" />
+            <UFormField :name="`team.${index}.titleRole`" label="Title / Role" required>
+              <UInput v-model="member.titleRole" />
             </UFormField>
 
             <!-- Description -->
-            <UFormField :name="`team.${index}.description`" label="Short Bio">
-              <UTextarea v-model="member.description" autoresize :rows="3" />
+            <UFormField :name="`team.${index}.shortBio`" label="Short Bio">
+              <UTextarea v-model="member.shortBio" autoresize :rows="3" />
             </UFormField>
 
             <!-- Image -->
-            <UFormField :name="`team.${index}.image`" label="Image">
+            <UFormField :name="`team.${index}.imageUrl`" label="Image">
               <UiFileDropzone
-                v-model="member.image"
+                v-model="member.imageUrl"
                 container-class="aspect-square max-w-[200px]"
               />
             </UFormField>
@@ -90,7 +117,7 @@ const onSubmit = () => {
 
       <!-- Empty State -->
       <div
-        v-if="team.length === 0"
+        v-if="aboutStore.formInputs.team.length === 0"
         class="rounded-xl border-2 border-dashed border-gray-300 py-20 text-center"
       >
         <UIcon name="i-heroicons-users" class="mx-auto mb-4 h-16 w-16 text-gray-400" />
@@ -99,7 +126,7 @@ const onSubmit = () => {
       </div>
 
       <!-- Add Member -->
-      <div v-if="team.length > 0" class="mt-8 text-center">
+      <div v-if="aboutStore.formInputs.team.length > 0" class="mt-8 text-center">
         <UButton
           size="lg"
           color="neutral"
@@ -115,8 +142,7 @@ const onSubmit = () => {
 
     <!-- Actions -->
     <div class="mt-10 flex gap-4">
-      <UButton variant="outline">Skip</UButton>
-      <UButton type="submit" form="team-member-form">Save & Next</UButton>
+      <UButton type="submit" form="team-member-form">Update Teams</UButton>
     </div>
   </UForm>
 </template>

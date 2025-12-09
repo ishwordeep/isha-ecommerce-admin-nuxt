@@ -28,6 +28,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: '',
+      appUrl: '',
       secureCookies: process.env.NODE_ENV === 'production',
     },
   },

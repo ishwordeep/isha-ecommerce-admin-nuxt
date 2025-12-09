@@ -6,25 +6,47 @@ interface StoryItem {
 }
 
 const stories = ref<StoryItem[]>([])
-
+const aboutStore = useAboutStore()
 // Add new empty story block
 const addStory = () => {
-  stories.value.push({
-    year: new Date().getFullYear().toString(),
-    milestone: '',
+  aboutStore.formInputs.productStory.push({
+    year: '',
+    milestoneTitle: '',
     description: '',
   })
 }
 
 // Remove story
 const removeStory = (index: number) => {
-  stories.value.splice(index, 1)
+  aboutStore.formInputs.productStory.splice(index, 1)
 }
 
 // Submit handler (you can send this array to API)
-const onSubmit = () => {
-  console.log('Product Story saved:', stories.value)
-  // await $fetch('/api/product/story', { method: 'POST', body: stories.value })
+const onSubmit = async () => {
+  console.log('Product Story saved:', aboutStore.formInputs)
+  const toast = useToast()
+  try {
+    const res = await aboutStore.updateAbout({ productStory: aboutStore.formInputs.productStory })
+    if (res?.data?.success) {
+      toast.add({
+        color: 'success',
+        title: 'Success',
+        description: 'Product Story section updated successfully.',
+      })
+    } else {
+      toast.add({
+        color: 'error',
+        title: 'Error',
+        description: 'Failed to update Product Story section.',
+      })
+    }
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'An unexpected error occurred while updating Product Story section.',
+    })
+  }
 }
 </script>
 
@@ -34,7 +56,11 @@ const onSubmit = () => {
 
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
       <!-- Story Blocks -->
-      <UCard v-for="(story, index) in stories" :key="index" class="relative">
+      <UCard
+        v-for="(story, index) in aboutStore.formInputs.productStory"
+        :key="index"
+        class="relative"
+      >
         <!-- Remove Button -->
         <UButton
           icon="i-heroicons-x-mark-20-solid"
@@ -58,7 +84,7 @@ const onSubmit = () => {
           <!-- Milestone Title -->
           <UFormField label="Milestone / Title" required class="md:col-span-2">
             <UInput
-              v-model="story.milestone"
+              v-model="story.milestoneTitle"
               placeholder="e.g. Launched First Product, Raised Series A, Hit 1M Users"
             />
           </UFormField>
@@ -79,7 +105,7 @@ const onSubmit = () => {
     </div>
     <!-- Empty State -->
     <div
-      v-if="stories.length === 0"
+      v-if="aboutStore.formInputs.productStory.length === 0"
       class="rounded-xl border-2 border-dashed border-gray-300 py-16 text-center"
     >
       <UIcon name="i-heroicons-flag" class="mx-auto mb-4 h-16 w-16 text-gray-400" />
@@ -91,7 +117,7 @@ const onSubmit = () => {
     </div>
 
     <!-- Add Button (when already have some) -->
-    <div v-if="stories.length > 0" class="mt-6 text-center">
+    <div v-if="aboutStore.formInputs.productStory.length > 0" class="mt-6 text-center">
       <UButton
         size="lg"
         color="neutral"
@@ -107,13 +133,12 @@ const onSubmit = () => {
     <!-- Debug (remove in production) -->
     <details class="mt-8 text-xs text-gray-500">
       <summary>Debug: Current stories array</summary>
-      <pre>{{ stories }}</pre>
+      <pre>{{ aboutStore.formInputs.productStory }}</pre>
     </details>
   </UPageCard>
 
   <!-- Action Buttons -->
   <div class="mt-10 flex gap-3">
-    <UButton variant="outline"> Skip </UButton>
-    <UButton @click="onSubmit"> Save & Next </UButton>
+    <UButton @click="onSubmit">Update Milestone </UButton>
   </div>
 </template>

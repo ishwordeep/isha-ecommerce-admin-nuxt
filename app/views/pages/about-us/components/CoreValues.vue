@@ -34,24 +34,41 @@ const gradients = [
   { label: 'Indigo', value: 'from-indigo-500 to-indigo-600' },
 ]
 
+const aboutStore = useAboutStore()
+
 // Add new value block
 const addValue = () => {
-  values.value.push({
+  aboutStore.formInputs.coreValues.push({
     icon: 'i-heroicons-heart',
     title: '',
     description: '',
-    gradient: 'from-pink-500 to-pink-600',
+    color: 'from-pink-500 to-pink-600',
   })
 }
 
 // Remove
 const removeValue = (index: number) => {
-  values.value.splice(index, 1)
+  aboutStore.formInputs.coreValues.splice(index, 1)
 }
 
 // Submit
 const onSubmit = () => {
-  console.log('Core Values saved →', values.value)
+  const toast = useToast()
+
+  try {
+    aboutStore.updateAbout({ coreValues: aboutStore.formInputs.coreValues })
+    toast.add({
+      color: 'success',
+      title: 'Success',
+      description: 'Core Values updated successfully.',
+    })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'An error occurred while updating Core Values.',
+    })
+  }
 }
 </script>
 
@@ -65,7 +82,11 @@ const onSubmit = () => {
 
       <!-- Values Grid -->
       <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <UCard v-for="(value, index) in values" :key="index" class="relative overflow-hidden">
+        <UCard
+          v-for="(value, index) in aboutStore.formInputs.coreValues"
+          :key="index"
+          class="relative overflow-hidden"
+        >
           <!-- Remove Button -->
           <UButton
             icon="i-heroicons-x-mark-20-solid"
@@ -79,7 +100,7 @@ const onSubmit = () => {
           <!-- Icon + Gradient Preview -->
           <div class="mb-5 flex justify-center">
             <div
-              :class="`flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${value.gradient} shadow-lg`"
+              :class="`flex h-20 w-20 items-center justify-center rounded-2xl bg-gradient-to-br ${value.color} shadow-lg`"
             >
               <UIcon :name="value.icon" class="h-10 w-10 text-white" />
             </div>
@@ -104,7 +125,7 @@ const onSubmit = () => {
           <!-- Gradient Selector -->
           <UFormField label="Color Gradient" required class="mb-4">
             <USelectMenu
-              v-model="value.gradient"
+              v-model="value.color"
               :items="gradients"
               searchable
               class="w-full"
@@ -139,7 +160,7 @@ const onSubmit = () => {
 
       <!-- Empty State -->
       <div
-        v-if="values.length === 0"
+        v-if="aboutStore.formInputs.coreValues.length === 0"
         class="rounded-xl border-2 border-dashed border-gray-300 py-20 text-center"
       >
         <UIcon name="i-heroicons-heart" class="mx-auto mb-4 h-16 w-16 text-gray-400" />
@@ -150,7 +171,7 @@ const onSubmit = () => {
       </div>
 
       <!-- Add Another -->
-      <div v-if="values.length > 0" class="mt-8 text-center">
+      <div v-if="aboutStore.formInputs.coreValues.length > 0" class="mt-8 text-center">
         <UButton
           size="lg"
           color="neutral"
@@ -171,8 +192,7 @@ const onSubmit = () => {
     </UPageCard>
     <!-- Action Buttons -->
     <div class="mt-10 flex gap-4">
-      <UButton variant="outline">Skip</UButton>
-      <UButton @click="onSubmit"> Finish </UButton>
+      <UButton @click="onSubmit"> Update Core Values </UButton>
     </div>
   </UForm>
 </template>

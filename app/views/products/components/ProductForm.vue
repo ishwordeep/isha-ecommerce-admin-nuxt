@@ -225,7 +225,6 @@ const props = withDefaults(
 const productStore = useProductStore()
 const categoryStore = useCategoryStore()
 const toast = useToast()
-const availableSizes = ['XS', 'S', 'M', 'L', 'XL', 'XXl', 'XXXl']
 const colorValue = ref('#000')
 const sizeValue = ref('')
 const selectedColor = computed(() => ({ backgroundColor: colorValue.value }))
@@ -254,16 +253,6 @@ const removeSize = (sizeToRemove: string) => {
   )
 }
 
-const toggleSize = (size: string) => {
-  const exists = productStore.formInputs.sizes.includes(size)
-
-  if (exists) {
-    productStore.formInputs.sizes = productStore.formInputs.sizes.filter((s) => s !== size)
-  } else {
-    productStore.formInputs.sizes.push(size)
-  }
-}
-
 // Ensure categories are loaded
 onMounted(async () => {
   if (!categoryStore.list?.length) {
@@ -272,7 +261,6 @@ onMounted(async () => {
 })
 
 // Dynamic labels
-const title = computed(() => (props.mode === 'edit' ? 'Edit Product' : 'Add New Product'))
 const submitLabel = computed(() => (props.mode === 'edit' ? 'Update Product' : 'Create Product'))
 
 // Category dropdown items
@@ -305,9 +293,12 @@ const schema = z.object({
 // Submit handler
 const handleSubmit = async () => {
   const isAdd = props.mode === 'add'
+
+  const { faqs, story, ...general } = productStore.formInputs
+
   const action = isAdd
-    ? () => productStore.addProduct(productStore.formInputs)
-    : () => productStore.updateProduct(productStore.selectedProduct?._id!, productStore.formInputs)
+    ? () => productStore.addProduct(general)
+    : () => productStore.updateProduct(productStore.selectedProduct?._id!, general)
 
   const response = await action()
 

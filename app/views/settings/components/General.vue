@@ -15,6 +15,7 @@
     >
       <UInput v-model="inputs[field.name]" />
     </UFormField>
+
     <UFormField label="Logo" name="logoUrl" required>
       <FileDropzone
         v-model="inputs.logoUrl"
@@ -38,6 +39,7 @@ const schema = z.object({
     .email('Invalid email address')
     .max(100, 'Email must be less than 100 characters'),
   phone: z.string(),
+  description: z.string(),
   address: z.string().min(1, 'Address is required'),
   city: z.string().min(1, 'City is required'),
   state: z.string().min(1, 'State is required'),
@@ -52,6 +54,7 @@ const inputs = reactive<InputFields>({
   name: '',
   email: '',
   phone: '',
+  description: '',
   address: '',
   city: '',
   state: '',
@@ -63,6 +66,7 @@ const inputs = reactive<InputFields>({
 const fields: { label: string; name: keyof InputFields; type: string; required?: boolean }[] = [
   { label: 'Name', name: 'name', type: 'text', required: true },
   { label: 'Email', name: 'email', type: 'email', required: true },
+  { label: 'Description', name: 'description', type: 'text', required: false },
   { label: 'Phone', name: 'phone', type: 'text', required: false },
   { label: 'Address', name: 'address', type: 'text', required: true },
   { label: 'City', name: 'city', type: 'text', required: true },
@@ -81,7 +85,20 @@ onMounted(async () => {
 })
 
 const onSubmit = async () => {
-  const res = await settingStore.updateSetting(inputs)
-  console.log(res)
+  const toast = useToast()
+  try {
+    await settingStore.updateSetting(inputs)
+    toast.add({
+      color: 'success',
+      title: 'Success',
+      description: 'General settings updated successfully.',
+    })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'An unexpected error occurred while updating general settings.',
+    })
+  }
 }
 </script>

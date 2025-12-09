@@ -44,48 +44,114 @@ const gradients = [
   { label: 'Teal', value: 'from-teal-500 to-teal-600' },
 ]
 
-const onSubmit = () => {
-  console.log('Brand Philosophy saved →', statements.value)
+const aboutStore = useAboutStore()
+
+const editableStatements = computed({
+  get() {
+    const items = aboutStore.formInputs.statements
+
+    // If empty or less than 2 → fill with beautiful defaults
+    if (!items || items.length === 0) {
+      return [
+        {
+          icon: 'i-lucide-target',
+          iconBackgroundColor: 'from-blue-500 to-blue-600',
+          title: 'Our Mission',
+          description:
+            'To empower individuals to express their unique style through carefully curated fashion that combines quality, affordability, and sustainability.',
+        },
+        {
+          icon: 'i-heroicons-sparkles',
+          iconBackgroundColor: 'from-purple-500 to-purple-600',
+          title: 'Our Vision',
+          description:
+            "To become the world's most trusted and loved fashion destination, setting new standards for customer experience and sustainable retail.",
+        },
+      ]
+    }
+
+    // If only 1 exists → add second
+    if (items.length === 1) {
+      items.push({
+        icon: 'i-heroicons-sparkles',
+        iconBackgroundColor: 'from-purple-500 to-purple-600',
+        title: 'Our Vision',
+        description: '',
+      })
+    }
+
+    return items
+  },
+  set(newVal) {
+    // Write back to store (important!)
+    aboutStore.formInputs.statements = newVal
+  },
+})
+
+const onSubmit = async () => {
+  const toast = useToast()
+
+  try {
+    const res = await aboutStore.updateAbout({ statements: editableStatements.value })
+    if (res?.data?.success) {
+      toast.add({
+        color: 'success',
+        title: 'Success',
+        description: 'Brand Philosophy section updated successfully.',
+      })
+    } else {
+      toast.add({
+        color: 'error',
+        title: 'Error',
+        description: 'Failed to update Brand Philosophy section.',
+      })
+    }
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'An unexpected error occurred while updating Brand Philosophy section.',
+    })
+  }
 }
 </script>
 
 <template>
   <UForm @submit="onSubmit" id="brand-philosophy-form">
     <UPageCard title="Brand Philosophy">
-      <template #description>
-        Define your Mission and Vision (or any two core statements). They will appear side-by-side
-        with beautiful icons.
-      </template>
-
-      <!-- Live Preview -->
+      <!-- Live Preview – uses store data (will show defaults if empty) -->
       <div class="mb-10 grid gap-8 md:grid-cols-2">
         <div
-          v-for="(item, i) in statements"
+          v-for="(item, i) in editableStatements"
           :key="i"
           class="rounded-2xl bg-white p-8 shadow-sm ring-1 ring-gray-200"
         >
           <div class="mb-6 flex justify-center">
             <div
-              :class="`flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br ${item.gradient} shadow-lg`"
+              :class="`flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br ${item.iconBackgroundColor} shadow-lg`"
             >
               <UIcon :name="item.icon" class="h-8 w-8 text-white" />
             </div>
           </div>
           <h3 class="mb-4 text-center text-2xl font-bold text-gray-900">
-            {{ item.title }}
+            {{ item.title || 'Untitled Statement' }}
           </h3>
           <p class="text-center leading-relaxed text-gray-600">
-            {{ item.description }}
+            {{ item.description || 'No description yet...' }}
           </p>
         </div>
       </div>
 
-      <!-- Form -->
+      <!-- Editable Form – always shows 2 cards -->
       <div class="grid grid-cols-1 gap-8 md:grid-cols-2">
-        <UCard v-for="(item, index) in statements" :key="index" class="rounded-xl" variant="subtle">
+        <UCard
+          v-for="(item, index) in editableStatements"
+          :key="index"
+          class="rounded-xl"
+          variant="subtle"
+        >
           <h4 class="mb-6 text-lg font-semibold">Statement {{ index + 1 }}</h4>
 
-          <!-- Icon -->
           <UFormField label="Icon" required class="mb-5">
             <USelectMenu
               v-model="item.icon"
@@ -93,7 +159,6 @@ const onSubmit = () => {
               :icon="item.icon"
               searchable
               placeholder="Choose an icon"
-              class="w-full"
             >
               <template #item="{ item: icon }">
                 <UIcon :name="icon" class="mr-3 h-5 w-5" />
@@ -102,51 +167,35 @@ const onSubmit = () => {
             </USelectMenu>
           </UFormField>
 
-          <!-- Gradient -->
           <UFormField label="Icon Background Color" required class="mb-5">
             <USelectMenu
-              v-model="item.gradient"
+              v-model="item.iconBackgroundColor"
               :items="gradients"
               value-key="value"
-              class="w-full"
+              option-key="label"
             >
               <template #item="{ item }">
                 <div class="flex items-center gap-3">
-                  <div :class="`h-8 w-8 rounded-lg bg-linear-to-br ${item.value}`" />
+                  <div :class="`h-8 w-8 rounded-lg bg-gradient-to-br ${item.value}`" />
                   <span>{{ item.label }}</span>
                 </div>
               </template>
             </USelectMenu>
           </UFormField>
 
-          <!-- Title -->
           <UFormField label="Title" required class="mb-5">
-            <UInput v-model="item.title" placeholder="Our Mission" size="lg" class="font-bold" />
+            <UInput v-model="item.title" size="lg" class="font-bold" />
           </UFormField>
 
-          <!-- Description -->
           <UFormField label="Description" required>
-            <UTextarea
-              v-model="item.description"
-              placeholder="To empower individuals to express their unique style..."
-              autoresize
-              :rows="4"
-              size="lg"
-            />
+            <UTextarea v-model="item.description" autoresize :rows="4" size="lg" />
           </UFormField>
         </UCard>
       </div>
-
-      <!-- Debug -->
-      <details class="mt-10 text-xs text-gray-500">
-        <summary>Debug: Current statements</summary>
-        <pre>{{ statements }}</pre>
-      </details>
     </UPageCard>
-    <!-- Action Buttons -->
+
     <div class="mt-10 flex gap-4">
-      <UButton variant="outline" size="lg">Skip</UButton>
-      <UButton size="lg" @click="onSubmit"> Save & Next </UButton>
+      <UButton type="submit" size="lg">Update Brand Philosophy</UButton>
     </div>
   </UForm>
 </template>

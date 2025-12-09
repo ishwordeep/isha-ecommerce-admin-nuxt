@@ -1,15 +1,9 @@
 <script setup lang="ts">
-interface FAQ {
-  question: string
-  answer: string
-  displayOrder: number
-}
-
 const productStore = useProductStore()
 const route = useRoute()
 // Add a new empty FAQ block
 const addFAQ = () => {
-  productStore.faqs.push({
+  productStore.formInputs.faqs.push({
     question: '',
     answer: '',
   })
@@ -17,19 +11,12 @@ const addFAQ = () => {
 
 // Remove FAQ
 const removeFAQ = (index: number) => {
-  productStore.faqs.splice(index, 1)
+  productStore.formInputs.faqs.splice(index, 1)
 }
-
-onMounted(async () => {
-  const id = route.params.id as string
-  if (id) {
-    await productStore.getProductFaq(id)
-  }
-})
 
 const onSubmit = async () => {
   const id = route.params.id as string
-  const payload = productStore.faqs
+  const payload = productStore.formInputs.faqs
 
   if (id) {
     await productStore.updateProductFaq(id, payload)
@@ -42,9 +29,9 @@ const onSubmit = async () => {
     @submit="onSubmit"
     id="faqs-form"
     class="grid grid-cols-1 gap-6 sm:grid-cols-2 xl:grid-cols-4"
-    v-if="productStore.faqs.length > 0"
+    v-if="productStore.formInputs.faqs.length > 0"
   >
-    <template v-for="(faq, index) in productStore.faqs" :key="index">
+    <template v-for="(faq, index) in productStore.formInputs.faqs || []" :key="index">
       <UCard :title="`FAQ ${index + 1}`" class="relative">
         <!-- Close Button -->
         <UButton
@@ -76,7 +63,7 @@ const onSubmit = async () => {
   </UForm>
 
   <!-- Empty State -->
-  <div v-if="productStore.faqs.length === 0" class="py-20 text-center">
+  <div v-if="productStore.formInputs.faqs.length === 0" class="py-20 text-center">
     <p class="mb-6 text-xl text-gray-500">No FAQs added yet</p>
     <UButton size="xl" @click="addFAQ" icon="i-heroicons-plus"> Add Your First FAQ </UButton>
   </div>
@@ -84,7 +71,7 @@ const onSubmit = async () => {
   <!-- Action Buttons -->
   <div class="mt-10 flex flex-wrap gap-2">
     <UButton
-      v-if="productStore.faqs.length > 0"
+      v-if="productStore.formInputs.faqs.length > 0"
       color="neutral"
       class="dark border-2 border-dashed border-gray-400"
       @click="addFAQ"

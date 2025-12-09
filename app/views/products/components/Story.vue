@@ -1,11 +1,28 @@
 <script setup lang="ts">
-const inputs = reactive({
-  story: '',
-})
+const productStore = useProductStore()
 
-const onSubmit = () => {
-  // Handle form submission logic here
-  console.log('Form submitted with inputs:', inputs)
+const onSubmit = async () => {
+  const toast = useToast()
+
+  try {
+    await productStore.updateProduct(productStore.selectedProduct?._id!, {
+      story: productStore.formInputs.story,
+    })
+    toast.add({
+      color: 'success',
+      title: 'Success',
+      description: 'Product story updated successfully',
+    })
+    // Navigate to FAQs tab
+    const router = useRouter()
+    router.replace({ query: { ...router.currentRoute.value.query, tab: 'faqs' } })
+  } catch (error) {
+    toast.add({
+      color: 'error',
+      title: 'Error',
+      description: 'Failed to update product story',
+    })
+  }
 }
 </script>
 
@@ -13,11 +30,10 @@ const onSubmit = () => {
   <UPageCard title="Product Story">
     <UForm @submit="onSubmit">
       <UFormField name="story" class="mb-4">
-        <UTextarea
-          v-model="inputs.story"
+        <TiptapEditor
+          v-model="productStore.formInputs.story"
           placeholder="Enter shipping details"
-          autoresize
-          :rows="8"
+          root-class="!min-h-[50dvh] !max-h-[60dvh]"
         />
       </UFormField>
     </UForm>

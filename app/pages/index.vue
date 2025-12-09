@@ -30,9 +30,9 @@
       </UCard>
     </div>
 
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3">
+    <div class="grid grid-cols-1">
       <!-- Recent Orders -->
-      <div class="lg:col-span-2">
+      <div class="lg:col-span-1">
         <UCard>
           <template #header>
             <div class="flex items-center justify-between">
@@ -77,43 +77,39 @@
       </div>
 
       <!-- Top Products -->
-      <div>
-        <UCard>
-          <template #header>
-            <div>
-              <h3 class="text-lg font-bold text-gray-900 dark:text-white">Top Products</h3>
-              <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Best selling items</p>
-            </div>
-          </template>
+      <!-- <UCard>
+        <template #header>
+          <div>
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Top Products</h3>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">Best selling items</p>
+          </div>
+        </template>
 
-          <div class="divide-y divide-gray-200 dark:divide-gray-800">
-            <div
-              v-for="(product, idx) in topProducts"
-              :key="idx"
-              class="flex items-center justify-between py-4"
-            >
-              <div>
-                <p class="font-semibold text-gray-900 dark:text-white">{{ product.name }}</p>
-                <p class="text-sm text-gray-500 dark:text-gray-400">{{ product.sales }} sales</p>
-              </div>
-              <div class="text-right">
-                <p class="font-bold text-gray-900 dark:text-white">{{ product.revenue }}</p>
-                <div
-                  :class="product.trend === 'up' ? 'text-green-600' : 'text-red-600'"
-                  class="mt-1 flex items-center justify-end gap-1"
-                >
-                  <UIcon
-                    :name="
-                      product.trend === 'up' ? 'i-lucide-trending-up' : 'i-lucide-trending-down'
-                    "
-                    class="h-4 w-4"
-                  />
-                </div>
+        <div class="divide-y divide-gray-200 dark:divide-gray-800">
+          <div
+            v-for="(product, idx) in topProducts"
+            :key="idx"
+            class="flex items-center justify-between py-4"
+          >
+            <div>
+              <p class="font-semibold text-gray-900 dark:text-white">{{ product.name }}</p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">{{ product.sales }} sales</p>
+            </div>
+            <div class="text-right">
+              <p class="font-bold text-gray-900 dark:text-white">{{ product.revenue }}</p>
+              <div
+                :class="product.trend === 'up' ? 'text-green-600' : 'text-red-600'"
+                class="mt-1 flex items-center justify-end gap-1"
+              >
+                <UIcon
+                  :name="product.trend === 'up' ? 'i-lucide-trending-up' : 'i-lucide-trending-down'"
+                  class="h-4 w-4"
+                />
               </div>
             </div>
           </div>
-        </UCard>
-      </div>
+        </div>
+      </UCard> -->
     </div>
 
     <!-- Quick Actions -->

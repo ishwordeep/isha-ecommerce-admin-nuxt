@@ -47,10 +47,15 @@ const selectedCategory = ref('')
 
 onBeforeMount(async () => {
   headerStore.setHeaders('Products', 'Manage your products here')
+})
+
+// Ensure categories are loaded
+onMounted(async () => {
   if (!categoryStore.list?.length) {
     await categoryStore.fetchListOnly()
   }
 })
+
 const searchQuery = ref('')
 const handleSearch = (value: string) => {
   searchQuery.value = value

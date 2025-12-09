@@ -22,6 +22,8 @@ export const useSettingStore = defineStore('setting', {
 
   actions: {
     async fetchSetting() {
+      const authStore = useAuthStore()
+      if (!authStore.isAuthenticated) return
       this.loading = true
       try {
         // Simulate an API call to fetch settings
@@ -42,11 +44,16 @@ export const useSettingStore = defineStore('setting', {
       try {
         // Simulate an API call to fetch settings
         const response = await SettingService.updateSetting(this.setting?._id || '', data)
-        if (response.data) {
+        if (response.data?.success && response.data.data) {
           this.setting = response.data.data
         }
+        return response
       } catch (error) {
-        console.error('Failed to fetch settings:', error)
+        return {
+          success: false,
+          error,
+          message: 'Failed to update setting',
+        }
       } finally {
         this.loading = false
       }
