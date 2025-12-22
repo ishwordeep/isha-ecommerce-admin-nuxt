@@ -53,6 +53,16 @@
           </UFormField>
         </div>
 
+        <UFormField label="Target Audience" name="target_audience">
+          <UInputTags
+            v-model="productStore.formInputs.target_audience"
+            placeholder="Add target audience"
+            addOnBlur
+            addOnPaste
+            addOnTab
+          />
+        </UFormField>
+
         <UFormField label="Tags" name="tags">
           <UInputTags
             v-model="productStore.formInputs.tags"
@@ -284,6 +294,7 @@ const schema = z.object({
   isFeatured: z.boolean(),
   isTrending: z.boolean(),
   tags: z.array(z.string()),
+  target_audience: z.array(z.string()),
   image: z.string(),
   images: z.array(z.string()),
   colors: z.array(z.string()),
@@ -308,7 +319,6 @@ const handleSubmit = async () => {
       title: 'Success',
       description: `Product ${isAdd ? 'added' : 'updated'} successfully`,
     })
-    productStore.reset()
     navigateTo(`/products/${response.data?.data?._id}/edit?tab=story`)
   } else {
     toast.add({

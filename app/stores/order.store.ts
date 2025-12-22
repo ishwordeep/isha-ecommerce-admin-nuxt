@@ -21,6 +21,7 @@ export const useOrderStore = defineStore('order', () => {
       const response = await OrderService.fetchOrders({ page, limit, search, status })
       if (response.data?.success) {
         orders.value = response.data?.data as OrderInterface[]
+        pagination.value = response.data?.pagination as PaginationInterface
       }
     } catch (error) {
       console.error('Error fetching orders:', error)

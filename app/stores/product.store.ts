@@ -16,6 +16,7 @@ export interface ProductForm {
   isNew: boolean
   isFeatured: boolean
   isTrending: boolean
+  target_audience: string[]
   tags: string[]
   category: string // human-readable name (not id)
   image: string
@@ -43,6 +44,7 @@ const mapProductToForm = (product: ProductInterface | null): ProductForm => {
     isNew: product.isNew ?? true,
     isFeatured: product.isFeatured ?? false,
     isTrending: product.isTrending ?? false,
+    target_audience: Array.isArray(product.target_audience) ? product.target_audience : [],
     tags: Array.isArray(product.tags) ? product.tags : [],
     category: product.category ?? '',
     image: product.image ?? '',
@@ -83,6 +85,7 @@ const emptyForm = (): ProductForm => ({
   colors: [],
   sizes: [],
   faqs: [],
+  target_audience: [],
   story: '',
 })
 

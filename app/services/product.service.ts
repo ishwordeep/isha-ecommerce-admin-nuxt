@@ -30,6 +30,7 @@ export interface ProductInterface {
   discount?: number
   sizes?: string[]
   colors?: string[]
+  target_audience?: string[]
   tags?: string[]
   isActive?: boolean
   isFeatured?: boolean

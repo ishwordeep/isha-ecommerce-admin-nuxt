@@ -11,11 +11,11 @@ interface TeamMember {
 const team = ref<TeamMember[]>([])
 const aboutStore = useAboutStore()
 const addMember = () => {
-  team.value.push({
+  aboutStore.formInputs.team.push({
     name: '',
-    title: '',
-    description: '',
-    image: '',
+    titleRole: '',
+    shortBio: '',
+    imageUrl: '',
   })
 }
 
