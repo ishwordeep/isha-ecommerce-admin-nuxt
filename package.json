@@ -3,11 +3,14 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "build": "nuxt build",
+     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
+    "preview": "nuxt preview --port 6001",
+    "start": "nuxt start --port 6001",
     "postinstall": "nuxt prepare",
+    "deploy": "npm install && npm run build && pm2 reload admin-parishjatleo || pm2 start npm --name admin-parishjatleo -- run start",
+    "deploy:dev": "npm install && npm run build && pm2 reload admin-parishjatleo || pm2 start npm --name admin-parishjatleo -- run dev",
     "stop": "taskkill /F /IM node.exe"
   },
   "dependencies": {
