@@ -30,11 +30,32 @@ export const useOrderStore = defineStore('order', () => {
     }
   }
 
+  const updateOrderStatus = async (orderId: string, status: string) => {
+    isLoading.value = true
+    try {
+      const response = await OrderService.updateOrderStatus(orderId, status)
+      if (response.data?.success) {
+        // Update the selected order status locally
+        if (selectedOrder.value && selectedOrder.value._id === orderId) {
+          selectedOrder.value.status = status
+          if (status !== 'all')
+            orders.value = orders.value?.filter((order) => order._id !== orderId) || null
+        }
+        return response
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error)
+    } finally {
+      isLoading.value = false
+    }
+  }
+
   return {
     isLoading,
     selectedOrder,
     orders,
     fetchOrders,
     pagination,
+    updateOrderStatus,
   }
 })

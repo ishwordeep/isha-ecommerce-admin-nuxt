@@ -86,6 +86,14 @@ class OrderService {
     const url = `/order/admin`
     return await AxiosService.get<OrderListResponse>(url)
   }
+
+  async updateOrderStatus(
+    orderId: string,
+    status: string
+  ): Promise<OrderServiceResponse<{ success: boolean; message: string }>> {
+    const url = `/order/${orderId}/status`
+    return await AxiosService.patch<{ success: boolean; message: string }>(url, { status })
+  }
 }
 
 export default new OrderService()

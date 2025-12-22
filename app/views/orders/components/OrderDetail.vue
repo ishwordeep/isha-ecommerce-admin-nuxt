@@ -2,7 +2,7 @@
 const orderStore = useOrderStore()
 
 const open = ref(false)
-
+const toast = useToast()
 watch(
   () => orderStore.selectedOrder,
   (newVal) => {
@@ -12,7 +12,9 @@ watch(
 )
 
 const status = ref('')
-
+const state = ref({
+  updating: false,
+})
 // Just paste this wherever you need the options
 const statusOptions = [
   { label: 'Pending Payment', value: 'PENDING_PAYMENT', icon: 'i-lucide-clock' },
@@ -25,6 +27,19 @@ const statusOptions = [
 onMounted(() => {
   status.value = orderStore.selectedOrder?.status || 'PENDING_PAYMENT'
 })
+
+const updateStatus = async () => {
+  if (!orderStore.selectedOrder) return
+  state.value.updating = true
+  await orderStore.updateOrderStatus(orderStore.selectedOrder.id, status.value)
+  toast.add({
+    color: 'success',
+    title: 'Success',
+    description: 'Order status updated successfully.',
+  })
+  state.value.updating = false
+  open.value = false
+}
 </script>
 
 <template>
@@ -55,7 +70,7 @@ onMounted(() => {
             v-model="status"
             class="flex-1"
           />
-          <UButton class="justify-center" color="primary">Update</UButton>
+          <UButton class="justify-center" color="primary" @click="updateStatus">Update</UButton>
         </div>
       </div>
 
