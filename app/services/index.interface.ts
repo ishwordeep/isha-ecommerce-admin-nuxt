@@ -12,3 +12,12 @@ export interface QueryInterface {
   category?: string
   status?: string
 }
+
+export interface StatusCountInterface {
+  ALL: number
+  PENDING_PAYMENT: number
+  PAID: number
+  SHIPPED: number
+  COMPLETED: number
+  CANCELLED: number
+}

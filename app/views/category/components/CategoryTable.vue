@@ -27,12 +27,17 @@ const states = reactive({
 const pagination = reactive({
   page: 1,
   limit: 20,
+  pages: computed(() => categoryStore.pagination?.pages || 0),
+  total: computed(() => categoryStore.pagination?.total || 0),
 })
+
+const { from, to, pageCount, hasItems, total } = usePaginationInfo(pagination)
 
 onBeforeMount(() => {
   if (!categoryStore.categories?.length) {
     categoryStore.fetchCategories({
-      ...pagination,
+      page: pagination.page,
+      limit: pagination.limit,
       search: props.search,
     })
   }
@@ -43,7 +48,8 @@ watch(
   async () => {
     states.fetching = true
     await categoryStore.fetchCategories({
-      ...pagination,
+      page: pagination.page,
+      limit: pagination.limit,
       search: props.search,
       status: props.status,
     })
@@ -150,15 +156,25 @@ const handleEdit = (row: ProductInterface) => {
 
     <!-- Pagination -->
     <template #footer>
-      <div class="flex items-center justify-between">
-        <p class="text-sm text-gray-600">
-          Showing {{ categoryStore.categories?.length || 0 }} of
-          {{ categoryStore.pagination?.total || categoryStore.categories?.length || 0 }} categories
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <p v-if="hasItems" class="flex-1 text-sm whitespace-nowrap text-gray-600">
+          Showing
+          <span class="font-medium">{{ from }}</span>
+          to
+          <span class="font-medium">{{ to }}</span>
+          of
+          <span class="font-medium">{{ total }}</span>
+          orders
         </p>
         <UPagination
-          v-model="pagination.page"
-          :page-count="Math.ceil((categoryStore.pagination?.total || 0) / pagination.limit)"
-          :total="categoryStore.pagination?.total || categoryStore.categories?.length || 0"
+          v-model:page="pagination.page"
+          :page-count="pagination.pages"
+          :total="pagination.total"
+          :items-per-page="pagination.limit"
+          :ui="{
+            root: 'flex-1',
+            list: 'justify-end',
+          }"
         />
       </div>
     </template>

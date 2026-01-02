@@ -202,7 +202,7 @@ export const useCategoryStore = defineStore('category', () => {
     categories,
     isLoading: readonly(isLoading),
     selectedCategory,
-    pagination: readonly(pagination),
+    pagination,
     list: readonly(list),
 
     initializeForAdd,

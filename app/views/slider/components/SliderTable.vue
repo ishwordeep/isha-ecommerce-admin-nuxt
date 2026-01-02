@@ -25,12 +25,17 @@ const states = reactive({
 const pagination = reactive({
   page: 1,
   limit: 20,
+  pages: computed(() => sliderStore.pagination?.pages || 1),
+  total: computed(() => sliderStore.pagination?.total || 0),
 })
+
+// const { to, from, hasItems, total } = usePaginationInfo(pagination)
 
 onBeforeMount(() => {
   if (!sliderStore.sliders?.length) {
     sliderStore.fetchSliders({
-      ...pagination,
+      page: pagination.page,
+      limit: pagination.limit,
       search: props.search,
     })
   }
@@ -41,7 +46,8 @@ watch(
   async () => {
     states.fetching = true
     await sliderStore.fetchSliders({
-      ...pagination,
+      page: pagination.page,
+      limit: pagination.limit,
       search: props.search,
     })
     states.fetching = false
@@ -116,8 +122,9 @@ const handleEdit = (row: SliderInterface) => {
     <UTable
       :data="sliderStore.sliders || []"
       :columns="columns"
-      class="flex-1"
+      class="max-h-[75dvh] flex-1"
       :ui="{ thead: 'bg-gray-100' }"
+      :sticky="true"
     >
       <template #actions-cell="{ row }">
         <div class="flex gap-2">
@@ -139,19 +146,29 @@ const handleEdit = (row: SliderInterface) => {
       </template>
     </UTable>
     <!-- Pagination -->
-    <template #footer>
-      <div class="flex items-center justify-between">
-        <p class="text-sm text-gray-600">
-          Showing {{ sliderStore.sliders?.length || 0 }} of
-          {{ sliderStore.pagination?.total || sliderStore.sliders?.length || 0 }} sliders
+    <!-- <template #footer>
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <p v-if="hasItems" class="flex-1 text-sm whitespace-nowrap text-gray-600">
+          Showing
+          <span class="font-medium">{{ from }}</span>
+          to
+          <span class="font-medium">{{ to }}</span>
+          of
+          <span class="font-medium">{{ total }}</span>
+          orders
         </p>
         <UPagination
-          v-model="pagination.page"
-          :page-count="Math.ceil(sliderStore.pagination?.total || 0 / pagination.limit)"
-          :total="sliderStore.pagination?.total"
+          v-model:page="pagination.page"
+          :page-count="pagination.pages"
+          :total="pagination.total"
+          :items-per-page="pagination.limit"
+          :ui="{
+            root: 'flex-1',
+            list: 'justify-end',
+          }"
         />
       </div>
-    </template>
+    </template> -->
   </UCard>
 
   <DeleteSlider

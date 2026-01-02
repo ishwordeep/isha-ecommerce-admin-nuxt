@@ -24,14 +24,19 @@ const props = withDefaults(
 const pagination = reactive({
   page: 1,
   limit: 20,
+  pages: computed(() => productStore.pagination?.pages || 0),
+  total: computed(() => productStore.pagination?.total || 0),
 })
+
+const { from, to, pageCount, hasItems, total } = usePaginationInfo(pagination)
 
 watch(
   () => [pagination.page, pagination.limit, props.search, props.category],
   async () => {
     states.fetching = true
     await productStore.fetchProducts({
-      ...pagination,
+      page: pagination.page,
+      limit: pagination.limit,
       search: props.search,
       category: props.category,
     })
@@ -168,15 +173,25 @@ const handleDelete = async (row: ProductInterface) => {
     </UTable>
     <!-- Pagination -->
     <template #footer>
-      <div class="flex items-center justify-between">
-        <p class="text-sm text-gray-600">
-          Showing {{ productStore.products?.length || 0 }} of
-          {{ productStore.pagination?.total || productStore.products?.length || 0 }} products
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <p v-if="hasItems" class="flex-1 text-sm whitespace-nowrap text-gray-600">
+          Showing
+          <span class="font-medium">{{ from }}</span>
+          to
+          <span class="font-medium">{{ to }}</span>
+          of
+          <span class="font-medium">{{ total }}</span>
+          orders
         </p>
         <UPagination
           v-model:page="pagination.page"
+          :page-count="pagination.pages"
+          :total="pagination.total"
           :items-per-page="pagination.limit"
-          :total="productStore.pagination?.total || 0"
+          :ui="{
+            root: 'flex-1',
+            list: 'justify-end',
+          }"
         />
       </div>
     </template>

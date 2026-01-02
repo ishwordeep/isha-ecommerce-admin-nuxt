@@ -1,4 +1,13 @@
 <script setup lang="ts">
+const props = withDefaults(
+  defineProps<{
+    selectedTab: string
+  }>(),
+  {
+    selectedTab: 'all',
+  }
+)
+
 const orderStore = useOrderStore()
 
 const open = ref(false)
@@ -28,15 +37,23 @@ onMounted(() => {
   status.value = orderStore.selectedOrder?.status || 'PENDING_PAYMENT'
 })
 
+watch(
+  () => orderStore.selectedOrder,
+  (newOrder) => {
+    status.value = newOrder?.status || 'PENDING_PAYMENT'
+  }
+)
+
 const updateStatus = async () => {
   if (!orderStore.selectedOrder) return
   state.value.updating = true
-  await orderStore.updateOrderStatus(orderStore.selectedOrder.id, status.value)
+  await orderStore.updateOrderStatus(orderStore.selectedOrder.id, status.value, props.selectedTab)
   toast.add({
     color: 'success',
     title: 'Success',
     description: 'Order status updated successfully.',
   })
+  orderStore.selectedOrder = null
   state.value.updating = false
   open.value = false
 }

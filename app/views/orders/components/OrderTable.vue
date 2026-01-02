@@ -9,7 +9,6 @@ import OrderDetail from './OrderDetail.vue'
 import OrderStatusBadge from './OrderStatusBadge.vue'
 
 const orderStore = useOrderStore()
-const searchQuery = ref('')
 const { formatDate } = useFormatDate()
 // Filters & Search
 const searchTerm = ref('')
@@ -19,7 +18,8 @@ const isFetching = ref(false)
 // Pagination
 const pagination = reactive({
   page: 1,
-  limit: 10,
+  limit: 20,
+  pages: computed(() => orderStore.pagination?.pages || 0),
   total: computed(() => orderStore.pagination?.total || 0),
 })
 
@@ -36,6 +36,8 @@ const getSelectedStatus = computed(() => {
             ? 'CANCELLED'
             : ''
 })
+
+const { from, to, hasItems, total } = usePaginationInfo(pagination)
 
 // Fetch orders
 const fetchOrders = async () => {
@@ -54,37 +56,58 @@ watch([() => pagination.page, () => pagination.limit, searchTerm, selectedStatus
   immediate: true,
 })
 
-onMounted(fetchOrders)
-const handleSearch = (value: string) => {
-  searchQuery.value = value
-}
-
-// Status tabs with counts
-const statusCounts = computed(() => {
-  const all = orderStore.orders?.length || 0
-  const map = { all, pending: 0, paid: 0, shipped: 0, completed: 0, cancelled: 0 }
-
-  orderStore.orders?.forEach((o: OrderInterface) => {
-    if (map[o.status as keyof typeof map] !== undefined) {
-      map[o.status as keyof typeof map]++
-    }
-  })
-
-  return map
+watch(selectedStatus, (newStatus, oldStatus) => {
+  if (newStatus !== oldStatus) {
+    pagination.page = 1
+  }
 })
 
-const statusOptions = [
-  { value: 'all', label: 'All Orders', icon: 'i-lucide-package' },
-  { value: 'pending', label: 'Pending', icon: 'i-lucide-clock' },
-  { value: 'paid', label: 'Paid', icon: 'i-lucide-package' },
-  { value: 'shipped', label: 'Shipped', icon: 'i-lucide-truck' },
-  { value: 'completed', label: 'Completed', icon: 'i-lucide-check-circle' },
-  { value: 'cancelled', label: 'Cancelled', icon: 'i-lucide-x-circle' },
-]
+onMounted(fetchOrders)
+const handleSearch = (value: string) => {
+  searchTerm.value = value
+}
+
+const statusOptions = computed(() => [
+  {
+    value: 'all',
+    label: 'All Orders',
+    icon: 'i-lucide-package',
+    count: orderStore.statusCount?.ALL || 0,
+  },
+  {
+    value: 'pending',
+    label: 'Pending',
+    icon: 'i-lucide-clock',
+    count: orderStore.statusCount?.PENDING_PAYMENT || 0,
+  },
+  {
+    value: 'paid',
+    label: 'Paid',
+    icon: 'i-lucide-credit-card',
+    count: orderStore.statusCount?.PAID || 0,
+  },
+  {
+    value: 'shipped',
+    label: 'Shipped',
+    icon: 'i-lucide-truck',
+    count: orderStore.statusCount?.SHIPPED || 0,
+  },
+  {
+    value: 'completed',
+    label: 'Completed',
+    icon: 'i-lucide-check-circle',
+    count: orderStore.statusCount?.COMPLETED || 0,
+  },
+  {
+    value: 'cancelled',
+    label: 'Cancelled',
+    icon: 'i-lucide-x-circle',
+    count: orderStore.statusCount?.CANCELLED || 0,
+  },
+])
 
 const viewOrder = (order: OrderInterface) => {
   orderStore.selectedOrder = order
-  console.log(orderStore.selectedOrder)
 }
 </script>
 
@@ -114,7 +137,7 @@ const viewOrder = (order: OrderInterface) => {
         :items="
           statusOptions.map((s) => ({
             ...s,
-            label: `${s.label} (${statusCounts[s.value as keyof typeof statusCounts]})`,
+            label: `${s.label} (${s.count})`,
           }))
         "
         v-model="selectedStatus"
@@ -152,7 +175,7 @@ const viewOrder = (order: OrderInterface) => {
         :ui="{
           th: 'bg-gray-100 font-semibold text-black',
         }"
-        class="max-h-[65dvh]"
+        class="scrollbar-thin max-h-[65dvh]"
       >
         <!-- Customer Cell -->
         <template #name-cell="{ row }">
@@ -230,21 +253,31 @@ const viewOrder = (order: OrderInterface) => {
 
       <!-- Pagination -->
       <template #footer>
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-600">
-            Showing {{ orderStore.orders?.length || 0 }} of
-            {{ pagination.total || orderStore.orders?.length || 0 }} orders
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <p v-if="hasItems" class="flex-1 text-sm whitespace-nowrap text-gray-600">
+            Showing
+            <span class="font-medium">{{ from }}</span>
+            to
+            <span class="font-medium">{{ to }}</span>
+            of
+            <span class="font-medium">{{ total }}</span>
+            orders
           </p>
           <UPagination
-            v-model="pagination.page"
-            :page-count="Math.ceil(pagination.total / pagination.limit)"
+            v-model:page="pagination.page"
+            :page-count="pagination.pages"
             :total="pagination.total"
+            :items-per-page="pagination.limit"
+            :ui="{
+              root: 'flex-1',
+              list: 'justify-end',
+            }"
           />
         </div>
       </template>
     </UCard>
 
     <!-- Order Detail Modal -->
-    <OrderDetail />
+    <OrderDetail :selectedTab="selectedStatus" />
   </div>
 </template>

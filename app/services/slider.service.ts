@@ -1,6 +1,6 @@
-import AxiosService from './axios.service'
 import type { PaginationInterface, QueryInterface } from '~/services/index.interface'
 import type { SliderForm } from '~/stores/slider.store'
+import AxiosService from './axios.service'
 
 export interface SliderInterface {
   _id: string
@@ -47,7 +47,8 @@ class SliderService {
     limit,
     search,
   }: QueryInterface): Promise<SliderServiceResponse<SliderListResponse>> {
-    let url = `/slider?page=${page}&limit=${limit}`
+    // let url = `/slider?page=${page}&limit=${limit}`
+    let url = `/slider`
     if (search) url += `&search=${search}`
     return await AxiosService.get<SliderListResponse>(url)
   }

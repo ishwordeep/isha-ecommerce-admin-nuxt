@@ -1,5 +1,5 @@
 import AxiosService from './axios.service'
-import type { PaginationInterface, QueryInterface } from './index.interface'
+import type { PaginationInterface, QueryInterface, StatusCountInterface } from './index.interface'
 
 export enum OrderStatus {
   PENDING_PAYMENT = 'PENDING_PAYMENT',
@@ -58,6 +58,7 @@ interface OrderListResponse {
   message: string
   success: boolean
   pagination: PaginationInterface
+  statusCounts: StatusCountInterface
 }
 
 interface OrderServiceResponse<T> {
@@ -72,18 +73,12 @@ class OrderService {
     search,
     status,
   }: QueryInterface): Promise<OrderServiceResponse<OrderListResponse>> {
-    const params = new URLSearchParams({
-      page: String(page),
-      limit: String(limit),
-      status: status || '',
-    })
-    // let url = `/order/admin?${params.toString()}`
-    // if (search) params.append('search', search)
-    // // const url = `/order/admin?${params.toString()}`
-    // if (status) {
-    //   url += `/order/admin?status=${status}`
-    // }
-    const url = `/order/admin`
+    let url = `/order/admin?page=${page}&limit=${limit}`
+    if (search) url += `&search=${search}`
+    // const url = `/order/admin?${params.toString()}`
+    if (status) {
+      url += `&status=${status}`
+    }
     return await AxiosService.get<OrderListResponse>(url)
   }
 
