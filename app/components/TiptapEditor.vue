@@ -626,11 +626,11 @@ onBeforeUnmount(() => {
 <style scoped>
 @reference 'tailwindcss'
 
-::deep(.ProseMirror) {
+:deep(.ProseMirror) {
   @apply min-h-60 outline-none;
 }
 
-::deep(.ProseMirror p.is-editor-empty:first-child::before) {
+:deep(.ProseMirror p.is-editor-empty:first-child::before) {
   @apply text-gray-400 dark:text-gray-500;
   content: attr(data-placeholder);
   float: left;
@@ -639,88 +639,88 @@ onBeforeUnmount(() => {
 }
 
 /* ====== Paragraphs ====== */
-::deep(.ProseMirror p) {
+:deep(.ProseMirror p) {
   @apply mb-3; /* equivalent to margin-bottom: 0.75rem */
   line-height: 1.6;
   min-height: 0.75rem;
 }
 
 /* ====== Headings ====== */
-::deep(.ProseMirror h1) {
+:deep(.ProseMirror h1) {
   @apply my-6 text-2xl font-bold; /* margin-top:1.5rem, margin-bottom:1rem approximated */
 }
 
-::deep(.ProseMirror h2) {
+:deep(.ProseMirror h2) {
   @apply my-5 text-xl font-semibold; /* margin-top:1.25rem, margin-bottom:0.75rem */
 }
 
-::deep(.ProseMirror h3) {
+:deep(.ProseMirror h3) {
   @apply my-4 text-lg font-semibold; /* margin-top:1rem, margin-bottom:0.5rem */
 }
 
 /* ====== Lists ====== */
-::deep(.ProseMirror ul) {
+:deep(.ProseMirror ul) {
   @apply mb-3 ml-5 list-disc; /* margin-left:1.25rem, margin-bottom:0.75rem */
 }
 
-::deep(.ProseMirror ol) {
+:deep(.ProseMirror ol) {
   @apply mb-3 ml-5 list-decimal;
 }
 
-::deep(.ProseMirror li) {
+:deep(.ProseMirror li) {
   @apply mb-1; /* margin:0.25rem 0 */
   line-height: 1.5;
   display: list-item;
 }
 
 /* ====== Line breaks ====== */
-::deep(.ProseMirror br) {
+:deep(.ProseMirror br) {
   line-height: 1.2;
 }
 
 /* ====== Images ====== */
-::deep(.ProseMirror img) {
+:deep(.ProseMirror img) {
   @apply my-4 block w-full; /* max-width:100%, margin-top/bottom:1rem */
   height: auto;
 }
 
 /* ====== Tables ====== */
-::deep(.ProseMirror table) {
+:deep(.ProseMirror table) {
   @apply my-4 w-full border-collapse;
   table-layout: fixed;
   display: table;
   overflow: hidden;
 }
 
-::deep(.ProseMirror th),
-::deep(.ProseMirror td) {
+:deep(.ProseMirror th),
+:deep(.ProseMirror td) {
   @apply border px-3 py-2 align-top; /* padding:0.5rem 0.75rem */
   min-width: 1em;
   position: relative;
   box-sizing: border-box;
 }
 
-::deep(.ProseMirror th) {
+:deep(.ProseMirror th) {
   @apply bg-gray-100 text-left font-bold; /* for light mode */
 }
 
 /* Dark mode tables */
-::deep(.ProseMirror table th),
-::deep(.ProseMirror table td) {
+:deep(.ProseMirror table th),
+:deep(.ProseMirror table td) {
   border-color: #d1d5db;
 }
 
-.dark ::deep(.ProseMirror table th) {
+.dark :deep(.ProseMirror table th) {
   background-color: #374151;
 }
 
-.dark ::deep(.ProseMirror table th),
-.dark ::deep(.ProseMirror table td) {
+.dark :deep(.ProseMirror table th),
+.dark :deep(.ProseMirror table td) {
   border-color: #4b5563;
 }
 
 /* Table paragraphs */
-::deep(.ProseMirror table p) {
+:deep(.ProseMirror table p) {
   margin: 0;
 }
 </style>
