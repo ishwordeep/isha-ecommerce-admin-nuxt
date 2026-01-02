@@ -36,7 +36,6 @@
               :to="item.to"
               class="group hover:bg-primary/50 flex w-full items-center justify-between gap-3 rounded-md px-3 py-2 font-bold text-black transition-colors hover:text-black"
               :class="accordionState[index] ? 'bg-primary/50' : ''"
-              @click="emit('navigate')"
             >
               <div class="flex items-center gap-3">
                 <UIcon :name="item.icon" class="h-5 w-5" />
