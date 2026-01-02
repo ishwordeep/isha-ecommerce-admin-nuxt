@@ -30,7 +30,6 @@ const active = computed({
     router.push({
       path: `/front-pages/about-us`,
       query: { tab },
-      hash: '#',
     })
   },
 })
@@ -69,14 +68,7 @@ const items = ref<TabsItem[]>([
 ])
 </script>
 <template>
-  <UTabs
-    :items="items"
-    class="w-full"
-    :ui="{
-      list: 'w-max mr-auto',
-    }"
-    v-model="active"
-  >
+  <UTabs :items="items" class="w-full" v-model="active">
     <template #header>
       <Header />
     </template>
