@@ -131,6 +131,7 @@ const viewOrder = (order: OrderInterface) => {
       <UTable
         :data="orderStore.orders || []"
         :loading="isFetching"
+        sticky
         :columns="[
           { accessorKey: 'orderNumber', header: 'Order ID' },
           { accessorKey: 'name', header: 'Customer' },
@@ -151,6 +152,7 @@ const viewOrder = (order: OrderInterface) => {
         :ui="{
           th: 'bg-gray-100 font-semibold text-black',
         }"
+        class="max-h-[65dvh]"
       >
         <!-- Customer Cell -->
         <template #name-cell="{ row }">

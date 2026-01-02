@@ -13,9 +13,11 @@ const openEdit = ref(false)
 const props = withDefaults(
   defineProps<{
     search?: string
+    status?: string
   }>(),
   {
     search: '',
+    status: 'active',
   }
 )
 
@@ -37,12 +39,13 @@ onBeforeMount(() => {
 })
 
 watch(
-  () => [pagination.page, pagination.limit, props.search],
+  () => [pagination.page, pagination.limit, props.search, props.status],
   async () => {
     states.fetching = true
     await categoryStore.fetchCategories({
       ...pagination,
       search: props.search,
+      status: props.status,
     })
     states.fetching = false
   }

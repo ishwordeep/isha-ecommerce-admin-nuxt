@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
-import { ref, readonly, reactive, computed } from 'vue'
-import CategoryService from '~/services/category.service'
+import { computed, reactive, readonly, ref } from 'vue'
 import type { CategoryInterface } from '~/services/category.service'
+import CategoryService from '~/services/category.service'
 import type { PaginationInterface } from '~/services/index.interface'
 
 type Mode = 'add' | 'edit'
@@ -86,10 +86,10 @@ export const useCategoryStore = defineStore('category', () => {
     }
   }
 
-  const fetchCategories = async ({ page = 1, limit = 10, search = '' } = {}) => {
+  const fetchCategories = async ({ page = 1, limit = 10, search = '', status = 'active' } = {}) => {
     isLoading.value = true
     try {
-      const response = await CategoryService.fetchCategories({ page, limit, search })
+      const response = await CategoryService.fetchCategories({ page, limit, search, status })
       if (response.data?.data) {
         categories.value = response.data.data
         pagination.value = response.data.pagination

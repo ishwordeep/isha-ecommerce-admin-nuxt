@@ -77,12 +77,12 @@ class OrderService {
       limit: String(limit),
       status: status || '',
     })
-    if (search) params.append('search', search)
-    // const url = `/order/admin?${params.toString()}`
-    if (status) {
-      const url = `/order/admin?status=${status}`
-      return await AxiosService.get<OrderListResponse>(url)
-    }
+    // let url = `/order/admin?${params.toString()}`
+    // if (search) params.append('search', search)
+    // // const url = `/order/admin?${params.toString()}`
+    // if (status) {
+    //   url += `/order/admin?status=${status}`
+    // }
     const url = `/order/admin`
     return await AxiosService.get<OrderListResponse>(url)
   }

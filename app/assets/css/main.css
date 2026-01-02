@@ -2,7 +2,7 @@
 @import '@nuxt/ui';
 
 @theme {
-  --font-sans: 'Inter', 'sans-serif';
+  --font-sans: 'Raleway', 'sans-serif';
   --color-secondary: #571a18;
   --color-primary: #b08a3a;
   --color-tertiary: #f6f3e8;

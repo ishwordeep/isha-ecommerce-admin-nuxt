@@ -1,5 +1,5 @@
-import AxiosService from './axios.service'
 import type { PaginationInterface, QueryInterface } from '~/services/index.interface'
+import AxiosService from './axios.service'
 
 export interface CategoryInterface {
   _id: string
@@ -48,9 +48,13 @@ class CategoryService {
     page,
     limit,
     search,
+    status,
   }: QueryInterface): Promise<CategoryServiceResponse<CategoryListResponse>> {
     let url = `/category?page=${page}&limit=${limit}`
     if (search) url += `&search=${search}`
+    if (status) {
+      url += `&isActive=${status === 'active' ? 'true' : 'false'}`
+    }
     return await AxiosService.get<CategoryListResponse>(url)
   }
 
