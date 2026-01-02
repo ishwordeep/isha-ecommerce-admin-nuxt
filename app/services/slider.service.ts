@@ -47,8 +47,7 @@ class SliderService {
     limit,
     search,
   }: QueryInterface): Promise<SliderServiceResponse<SliderListResponse>> {
-    // let url = `/slider?page=${page}&limit=${limit}`
-    let url = `/slider`
+    let url = `/slider?page=${page}&limit=${limit}`
     if (search) url += `&search=${search}`
     return await AxiosService.get<SliderListResponse>(url)
   }

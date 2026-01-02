@@ -29,7 +29,7 @@ const pagination = reactive({
   total: computed(() => sliderStore.pagination?.total || 0),
 })
 
-// const { to, from, hasItems, total } = usePaginationInfo(pagination)
+const { to, from, hasItems, total } = usePaginationInfo(pagination)
 
 onBeforeMount(() => {
   if (!sliderStore.sliders?.length) {
@@ -146,7 +146,7 @@ const handleEdit = (row: SliderInterface) => {
       </template>
     </UTable>
     <!-- Pagination -->
-    <!-- <template #footer>
+    <template #footer>
       <div class="flex flex-wrap items-center justify-between gap-3">
         <p v-if="hasItems" class="flex-1 text-sm whitespace-nowrap text-gray-600">
           Showing
@@ -168,7 +168,7 @@ const handleEdit = (row: SliderInterface) => {
           }"
         />
       </div>
-    </template> -->
+    </template>
   </UCard>
 
   <DeleteSlider
