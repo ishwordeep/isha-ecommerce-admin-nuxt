@@ -129,12 +129,6 @@ const onSubmit = async () => {
         Add Another Milestone
       </UButton>
     </div>
-
-    <!-- Debug (remove in production) -->
-    <details class="mt-8 text-xs text-gray-500">
-      <summary>Debug: Current stories array</summary>
-      <pre>{{ aboutStore.formInputs.productStory }}</pre>
-    </details>
   </UPageCard>
 
   <!-- Action Buttons -->

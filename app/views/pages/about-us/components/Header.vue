@@ -138,12 +138,6 @@ const onSubmit = async () => {
           </div>
         </div>
       </div>
-
-      <!-- Debug -->
-      <details class="mt-10 text-xs text-gray-500">
-        <summary>Debug: Current data</summary>
-        <pre>{{ aboutStore.formInputs.hero }}</pre>
-      </details>
     </UPageCard>
 
     <!-- Action Buttons -->

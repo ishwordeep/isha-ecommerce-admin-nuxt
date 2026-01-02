@@ -27,7 +27,12 @@ const pagination = reactive({
   page: 1,
   limit: 10,
   total: computed(() => messageStore.pagination?.total || 0),
+  pages: computed(() => messageStore.pagination?.pages || 0),
 })
+
+const { from, to, hasItems, total } = usePaginationInfo(pagination)
+
+console.log({ from, to, hasItems, total })
 
 const getSelectedStatus = computed(() => {
   return selectedStatus.value === 'NEW'
@@ -268,15 +273,25 @@ const handleViewMessage = (message: MessageInterface) => {
 
       <!-- Pagination -->
       <template #footer>
-        <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-600">
-            Showing {{ messageStore.messages?.length || 0 }} of
-            {{ pagination.total || messageStore.messages?.length || 0 }} messages
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <p v-if="hasItems" class="flex-1 text-sm whitespace-nowrap text-gray-600">
+            Showing
+            <span class="font-medium">{{ from }}</span>
+            to
+            <span class="font-medium">{{ to }}</span>
+            of
+            <span class="font-medium">{{ total }}</span>
+            messages
           </p>
           <UPagination
-            v-model="pagination.page"
-            :page-count="Math.ceil(pagination.total / pagination.limit)"
+            v-model:page="pagination.page"
+            :page-count="pagination.pages"
             :total="pagination.total"
+            :items-per-page="pagination.limit"
+            :ui="{
+              root: 'flex-1',
+              list: 'justify-end',
+            }"
           />
         </div>
       </template>

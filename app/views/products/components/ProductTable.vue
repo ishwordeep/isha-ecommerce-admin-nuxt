@@ -28,7 +28,7 @@ const pagination = reactive({
   total: computed(() => productStore.pagination?.total || 0),
 })
 
-const { from, to, pageCount, hasItems, total } = usePaginationInfo(pagination)
+const { from, to, hasItems, total } = usePaginationInfo(pagination)
 
 watch(
   () => [pagination.page, pagination.limit, props.search, props.category],
@@ -181,7 +181,7 @@ const handleDelete = async (row: ProductInterface) => {
           <span class="font-medium">{{ to }}</span>
           of
           <span class="font-medium">{{ total }}</span>
-          orders
+          products
         </p>
         <UPagination
           v-model:page="pagination.page"

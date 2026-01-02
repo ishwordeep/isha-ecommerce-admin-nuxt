@@ -183,12 +183,6 @@ const onSubmit = () => {
           Add Another Value
         </UButton>
       </div>
-
-      <!-- Debug -->
-      <details class="mt-10 text-xs text-gray-500">
-        <summary>Debug: Current values</summary>
-        <pre>{{ values }}</pre>
-      </details>
     </UPageCard>
     <!-- Action Buttons -->
     <div class="mt-10 flex gap-4">

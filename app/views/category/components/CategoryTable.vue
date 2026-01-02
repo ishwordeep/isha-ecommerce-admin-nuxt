@@ -61,7 +61,7 @@ const columns: TableColumn<any>[] = [
   {
     accessorKey: 's.n',
     header: 'S.N',
-    cell: ({ row }) => `${row.index + 1}`,
+    cell: ({ row }) => from.value + row.index,
   },
   {
     accessorKey: 'name',
@@ -164,7 +164,7 @@ const handleEdit = (row: ProductInterface) => {
           <span class="font-medium">{{ to }}</span>
           of
           <span class="font-medium">{{ total }}</span>
-          orders
+          categories
         </p>
         <UPagination
           v-model:page="pagination.page"

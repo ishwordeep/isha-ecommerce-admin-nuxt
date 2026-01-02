@@ -24,7 +24,7 @@ const states = reactive({
 })
 const pagination = reactive({
   page: 1,
-  limit: 20,
+  limit: 10,
   pages: computed(() => sliderStore.pagination?.pages || 1),
   total: computed(() => sliderStore.pagination?.total || 0),
 })
@@ -58,7 +58,7 @@ const columns: TableColumn<any>[] = [
   {
     accessorKey: 's.n',
     header: 'S.N',
-    cell: ({ row }) => `${row.index + 1}`,
+    cell: ({ row }) => from.value + row.index,
   },
 
   {
@@ -155,7 +155,7 @@ const handleEdit = (row: SliderInterface) => {
           <span class="font-medium">{{ to }}</span>
           of
           <span class="font-medium">{{ total }}</span>
-          orders
+          sliders
         </p>
         <UPagination
           v-model:page="pagination.page"

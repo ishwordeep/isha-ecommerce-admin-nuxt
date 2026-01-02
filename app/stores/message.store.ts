@@ -21,6 +21,7 @@ export const useMessageStore = defineStore('message', () => {
       const response = await MessageService.fetchMessages({ page, limit, search, status })
       if (response.data?.success) {
         messages.value = response.data?.data as MessageInterface[]
+        pagination.value = response.data?.pagination as PaginationInterface
       }
     } catch (error) {
       console.error('Error fetching messages:', error)

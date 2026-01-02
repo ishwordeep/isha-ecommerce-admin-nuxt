@@ -158,6 +158,7 @@ const menuItems = ref([
   {
     label: 'Pages',
     icon: 'i-lucide-file-text',
+    value: '/front-pages',
     defaultOpen: isPagesRoute.value,
     children: [
       { label: 'About Us', to: '/front-pages/about-us' },
@@ -174,7 +175,7 @@ const menuItems = ref([
 ])
 
 // Initialize accordion state based on current route and add outside-click handler
-// Outside click handler to close non-default-open collapsibles
+// Outside click handler to close non-default-open collapsible
 const handleDocumentClick = (e: MouseEvent) => {
   const target = e.target as Node | null
   const inside = target && sidebarRef.value ? sidebarRef.value.contains(target) : false
@@ -197,7 +198,7 @@ const handleDocumentClick = (e: MouseEvent) => {
 }
 
 onMounted(() => {
-  // Initialize open state for all collapsibles
+  // Initialize open state for all collapsible
   menuItems.value.forEach((item, index) => {
     if (item.children) {
       if (item.value === '/products') {
@@ -218,14 +219,20 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', handleDocumentClick)
 })
 
-// Watch route changes to update accordion state
-watch(isProductsRoute, (newValue) => {
-  menuItems.value.forEach((item, index) => {
-    if (item.children && item.value === '/products') {
-      accordionState.value[index] = newValue
-    } else if (item.children && item.value === '/front-pages') {
-      accordionState.value[index] = isPagesRoute.value
-    }
-  })
-})
+// Watch route changes to automatically open/close the correct accordion
+watch(
+  [isProductsRoute, isPagesRoute],
+  () => {
+    menuItems.value.forEach((item, index) => {
+      if (!item.children) return
+
+      if (item.value === '/products') {
+        accordionState.value[index] = isProductsRoute.value
+      } else if (item.value === '/front-pages') {
+        accordionState.value[index] = isPagesRoute.value
+      }
+    })
+  },
+  { immediate: true } // Important: run on mount too!
+)
 </script>

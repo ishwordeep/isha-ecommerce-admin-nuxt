@@ -135,7 +135,7 @@
       <UCard class="border-0 bg-gradient-to-br from-green-500 to-green-600 text-white">
         <h3 class="mb-2 text-lg font-bold">Manage Orders</h3>
         <p class="mb-6 text-sm text-green-100">Process pending orders</p>
-        <UButton label="Manage Orders" color="white" class="font-semibold" />
+        <UButton label="Manage Orders" color="white" class="font-semibold" to="/orders" />
       </UCard>
     </div>
   </div>
